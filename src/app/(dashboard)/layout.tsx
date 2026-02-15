@@ -1,5 +1,6 @@
-import Header from "@/components/Dashboard/shared/Header";
-import Sidebar from "@/components/Dashboard/shared/Sidebar";
+ 
+import DashboardHeader from "@/components/shared/Header";
+import Sidebar from "@/components/shared/Sidebar";
 import { Metadata } from "next";
 import React from "react";
 
@@ -23,7 +24,7 @@ export default function RootLayout({
       <div className="flex-1 flex flex-col ml-64">
         {/* Header */}
         <div className="sticky top-0 z-10 ">
-          <Header />
+          <DashboardHeader />
         </div>
 
         {/* Page Content */}
