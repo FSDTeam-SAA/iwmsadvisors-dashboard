@@ -11,18 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bell, KeyIcon, LogOut, Menu, User2Icon } from "lucide-react";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
 import { useState } from "react";
-import HeaderTitle from "../ReusableComponents/HeaderTitle";
+import HeaderTitle from "../Dashboard/ReusableComponents/HeaderTitle";
+ 
 
 export default function DashboardHeader() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -58,23 +52,11 @@ export default function DashboardHeader() {
           <Menu size={22} />
         </button>
 
-        <HeaderTitle title="Overview" subtitle="See your updates today!" />
+        <HeaderTitle title="Dashboard Overview" subtitle="See your updates today!" />
       </div>
 
       {/* Right side */}
       <div className="flex items-center gap-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="relative p-2 rounded-md border hover:bg-gray-100">
-              <Bell size={22} />
-              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse"></span>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem>No new notifications</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
         {/* User Avatar */}
         <Avatar className="cursor-pointer">
           <AvatarImage src="/avatar.png" alt="User Avatar" />
