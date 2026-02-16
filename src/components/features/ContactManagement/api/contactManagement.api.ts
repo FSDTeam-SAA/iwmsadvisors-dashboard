@@ -8,3 +8,10 @@ export const getContactManagementApi =
     const response = await axiosInstance.get(`/contact?page=${page}&limit=${limit}`);
     return response.data;
   };
+
+
+// delete contact
+export const deleteContactApi = async (id: string) => {
+  const response = await axiosInstance.delete(`/contact/${id}`);
+  return response.data;
+};

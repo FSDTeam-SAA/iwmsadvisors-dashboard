@@ -10,11 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight, Eye } from "lucide-react";
-import { useContactManagement } from "../hooks/useContactManagement";
+import { ChevronLeft, ChevronRight, Eye, Trash2 } from "lucide-react";
+import {
+  useContactManagement,
+  useDeleteContact,
+} from "../hooks/useContactManagement";
 import MessageDetailsModal from "../../dashboard/component/Overview/MessageDetailsModal";
 import { Contact } from "../types/contactManagement.types";
 import { cn } from "@/lib/utils";
+// import { deleteContactApi } from "../api/contactManagement.api";
+import { toast } from "sonner";
 
 export default function ContactManagement() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,6 +83,20 @@ export default function ContactManagement() {
     }
 
     return pages;
+  };
+
+  const { mutate: deleteContact } = useDeleteContact();
+
+  // delete contact
+  const handleDelete = (id: string) => {
+    deleteContact(id, {
+      onSuccess: () => {
+        toast.success("Contact deleted successfully");
+      },
+      onError: () => {
+        toast.error("Failed to delete contact");
+      },
+    });
   };
 
   if (isError || (response && !response.success)) {
@@ -162,12 +181,18 @@ export default function ContactManagement() {
                     <TableCell className="py-4 text-center text-gray-600">
                       {contact.service}
                     </TableCell>
-                    <TableCell className="py-4 text-center">
+                    <TableCell className=" py-4 text-center">
                       <button
                         onClick={() => handleOpenModal(contact)}
                         className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
                       >
                         <Eye className="w-5 h-5 text-white" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(contact._id)}
+                        className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer ml-2"
+                      >
+                        <Trash2 className="w-5 h-5 text-white" />
                       </button>
                     </TableCell>
                   </TableRow>
