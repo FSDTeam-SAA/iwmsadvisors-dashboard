@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import ContactUsSummery from "./ContactUsSummery";
-import RecentOverview from "./RecentOverview";
 import TopPerformingServices from "./TopPerformingServices";
 import {
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import RecentMessages from "./RecentMessages";
 
 const YEARS = ["2024", "2025", "2026"];
 
@@ -57,7 +57,7 @@ export default function Overview() {
       </div>
       <div className="mt-8">
         <div>
-          <RecentOverview />
+          <RecentMessages />
         </div>
       </div>
     </div>
