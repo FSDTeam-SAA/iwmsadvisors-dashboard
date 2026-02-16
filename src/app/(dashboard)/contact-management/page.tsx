@@ -1,4 +1,4 @@
-import ContactManagement from '@/components/features/dashboard/ContactManagement/ContactManagement'
+import ContactManagement from '@/components/features/dashboard/component/ContactManagement/ContactManagement'
  
 export default function page() {
   return (

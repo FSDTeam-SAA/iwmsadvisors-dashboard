@@ -5,9 +5,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Dashboard Template",
+  title: "IWMS Advisors",
   description:
-    "A modern dashboard template built with Next.js and Tailwind CSS.",
+    "IWMS Advisors is a leading provider of IWMS solutions, helping organizations optimize their real estate and facilities management operations.",
 };
 
 export default function RootLayout({
