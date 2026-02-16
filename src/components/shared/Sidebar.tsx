@@ -19,28 +19,28 @@ import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard Overview", href: "/", icon: LayoutDashboard },
-  { name: "Contact Management", href: "/dealers", icon: UsersRound },
+  { name: "Contact Management", href: "/contact-management", icon: UsersRound },
   {
     name: "Content Management",
-    href: "/submission-forms",
+    href: "/content-management",
     icon: TvMinimalPlay,
   },
   {
     name: "Service Management",
-    href: "/submission-forms",
+    href: "/service-management",
     icon: ShoppingBasket,
   },
   {
     name: "Career Management",
-    href: "/submission-forms",
+    href: "/career-management",
     icon: BowArrow
   },
   {
     name: "Performance & Reporting",
-    href: "/submission-forms",
+    href: "/performance-reporting",
     icon: ClockPlus,
   },
-  { name: "Settings", href: "/submission-forms", icon: Settings },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -54,7 +54,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex h-screen w-64 flex-col bg-[#FFFFFF] border-r border-gray-200 fixed">
+    <div className="flex h-screen w-68 flex-col bg-[#FFFFFF] border-r border-gray-200 fixed">
       {/* Logo */}
       <div className="flex  items-center py-5 justify-center px-6">
         <Link href="/" className="flex items-center ">

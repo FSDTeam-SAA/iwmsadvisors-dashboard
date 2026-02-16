@@ -1,7 +1,7 @@
-import CardOverview from "./CardOverview";
+import CardOverview from "../../features/dashboard/Overview/CardOverview";
 import { Anchor, ChartLine, Clock4, TrendingUp } from "lucide-react";
-import RecentOverview from "./RecentOverview";
-import QuickActions from "./QuickActions";
+import RecentOverview from "../../features/dashboard/Overview/RecentOverview";
+import QuickActions from "../../features/dashboard/Overview/QuickActions";
 
 export default function Overview() {
   return (
