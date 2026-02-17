@@ -1,7 +1,9 @@
-import React from 'react'
+import MrefSection from "@/components/features/MrefSection/component/MrefSection";
 
 export default function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <MrefSection />
+    </div>
+  );
 }
