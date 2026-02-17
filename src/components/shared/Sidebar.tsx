@@ -2,7 +2,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Ship, LogOut, HardDrive, ShoppingBasket, LayoutDashboard, UsersRound, TvMinimalPlay, Settings, ClockPlus, BowArrow } from "lucide-react";
+import {
+  LogOut,
+  ShoppingBasket,
+  LayoutDashboard,
+  UsersRound,
+  TvMinimalPlay,
+  Settings,
+  ClockPlus,
+  BowArrow,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import {
@@ -19,11 +30,18 @@ import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard Overview", href: "/", icon: LayoutDashboard },
+
   { name: "Contact Management", href: "/contact-management", icon: UsersRound },
   {
     name: "Content Management",
     href: "/content-management",
     icon: TvMinimalPlay,
+    subItems: [
+      { name: "Case Study", href: "/content-management/case-study" },
+      { name: "MREF Section", href: "/content-management/mref-section" },
+      { name: "FAQ Section", href: "/content-management/faq-section" },
+      { name: "Blog Section", href: "/content-management/blog-section" },
+    ],
   },
   {
     name: "Service Management",
@@ -33,7 +51,7 @@ const navigation = [
   {
     name: "Career Management",
     href: "/career-management",
-    icon: BowArrow
+    icon: BowArrow,
   },
   {
     name: "Performance & Reporting",
@@ -46,6 +64,15 @@ const navigation = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [openMenus, setOpenMenus] = useState<string[]>(["Content Management"]); // Default open for Content Management
+
+  const toggleMenu = (name: string) => {
+    setOpenMenus((prev) =>
+      prev.includes(name)
+        ? prev.filter((item) => item !== name)
+        : [...prev, name],
+    );
+  };
 
   const handleLogout = () => {
     // NextAuth signOut with redirect to login page
@@ -68,28 +95,75 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-3">
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navigation.map((item) => {
-          // Active logic
+          const hasSubItems = item.subItems && item.subItems.length > 0;
+          const isMenuOpen = openMenus.includes(item.name);
           const isActive =
             item.href === "/"
               ? pathname === "/"
               : pathname?.startsWith(item.href);
 
           return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg p-3 text-base leading-[150%] tracking-[0%] font-semibold transition-colors",
-                isActive
-                  ? "bg-[#005696] text-[#FFFFFF] font-bold text-[16px]"
-                  : "text-[#111111] hover:bg-[#005696] hover:text-[#FFFFFF] font-semibold",
+            <div key={item.name} className="space-y-1">
+              {hasSubItems ? (
+                <button
+                  onClick={() => toggleMenu(item.name)}
+                  className={cn(
+                    "w-full flex items-center justify-between gap-3 rounded-lg p-3 text-base leading-[150%] tracking-[0%] font-semibold transition-colors cursor-pointer",
+                    isActive
+                      ? "bg-[#005696] text-[#FFFFFF] font-bold"
+                      : "text-[#111111] hover:bg-[#005696]/10 font-semibold",
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </div>
+                  {isMenuOpen ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </button>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg p-3 text-base leading-[150%] tracking-[0%] font-semibold transition-colors",
+                    isActive
+                      ? "bg-[#005696] text-[#FFFFFF] font-bold"
+                      : "text-[#111111] hover:bg-[#005696] hover:text-[#FFFFFF] font-semibold",
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.name}
+                </Link>
               )}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.name}
-            </Link>
+
+              {/* Nested Items */}
+              {hasSubItems && isMenuOpen && (
+                <div className="ml-9 space-y-1">
+                  {item.subItems?.map((subItem) => {
+                    const isSubActive = pathname === subItem.href;
+                    return (
+                      <Link
+                        key={subItem.name}
+                        href={subItem.href}
+                        className={cn(
+                          "block rounded-lg p-2 text-sm font-medium transition-colors",
+                          isSubActive
+                            ? "text-[#005696] font-bold bg-[#005696]/5"
+                            : "text-gray-500 hover:text-[#005696] hover:bg-[#005696]/5",
+                        )}
+                      >
+                        {subItem.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>
