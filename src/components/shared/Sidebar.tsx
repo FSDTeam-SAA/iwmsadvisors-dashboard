@@ -143,7 +143,7 @@ export default function Sidebar() {
 
               {/* Nested Items */}
               {hasSubItems && isMenuOpen && (
-                <div className="ml-9 space-y-1">
+                <div className="ml-3 bg-[#005696]/3 rounded-lg space-y-1">
                   {item.subItems?.map((subItem) => {
                     const isSubActive = pathname === subItem.href;
                     return (
@@ -151,7 +151,7 @@ export default function Sidebar() {
                         key={subItem.name}
                         href={subItem.href}
                         className={cn(
-                          "block rounded-lg p-2 text-sm font-medium transition-colors",
+                          "block rounded-lg p-2 text-sm font-medium transition-colors my-3",
                           isSubActive
                             ? "text-[#005696] font-bold bg-[#005696]/5"
                             : "text-gray-500 hover:text-[#005696] hover:bg-[#005696]/5",
