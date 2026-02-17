@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,12 +13,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface CaseStudyEditModalProps {
   readonly isOpen: boolean;
   readonly onClose: () => void;
   readonly caseStudy: CaseStudy | null;
-  readonly onSave: (updatedCaseStudy: Partial<CaseStudy>) => void;
+  readonly onSave: (
+    updatedCaseStudy: Partial<CaseStudy> & { imageFile?: File },
+  ) => void;
 }
 
 export default function CaseStudyEditModal({
@@ -48,6 +51,25 @@ export default function CaseStudyEditModal({
 
   const [formData, setFormData] = useState(initialFormData);
   const [techInput, setTechInput] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Set default preview to existing image when modal opens or caseStudy changes
+  useEffect(() => {
+    if (caseStudy?.image?.url) {
+      setImagePreview(caseStudy.image.url);
+    } else {
+      setImagePreview(null);
+    }
+    // Clean up object URL if any from previous selection
+    return () => {
+      if (imagePreview && imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseStudy]);
 
   // Reset form when the selected case study changes
   // Note: This is a valid use case for syncing form state with props
@@ -101,7 +123,10 @@ export default function CaseStudyEditModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    onSave({
+      ...formData,
+      ...(imageFile ? { imageFile } : {}),
+    });
     onClose();
   };
 
@@ -149,6 +174,87 @@ export default function CaseStudyEditModal({
               className="w-full"
               placeholder="Enter subtitle"
             />
+          </div>
+
+          {/* Image Preview and Upload */}
+          <div className="space-y-2">
+            <Label htmlFor="image" className="text-sm font-bold text-gray-700">
+              Image
+            </Label>
+            <input
+              ref={fileInputRef}
+              id="image"
+              name="image"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                setImageFile(file);
+                if (imagePreview && imagePreview.startsWith("blob:")) {
+                  URL.revokeObjectURL(imagePreview);
+                }
+                if (file) {
+                  const url = URL.createObjectURL(file);
+                  setImagePreview(url);
+                } else {
+                  setImagePreview(caseStudy?.image?.url ?? null);
+                }
+              }}
+            />
+            <div
+              className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {imagePreview ? (
+                <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
+                  <Image
+                    src={imagePreview}
+                    alt={caseStudy.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-40 text-gray-500">
+                  <p className="text-sm font-medium">
+                    Click to upload or drag & drop
+                  </p>
+                  <p className="text-xs">PNG, JPG up to ~5MB</p>
+                  <Button
+                    type="button"
+                    className="mt-3 bg-[#0057B8] hover:bg-[#004494]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                  >
+                    Choose Image
+                  </Button>
+                </div>
+              )}
+            </div>
+            {imageFile && (
+              <div className="flex items-center justify-between mt-2">
+                <p className="text-xs text-gray-500 truncate">
+                  {imageFile.name}
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setImageFile(null);
+                    if (imagePreview && imagePreview.startsWith("blob:")) {
+                      URL.revokeObjectURL(imagePreview);
+                    }
+                    setImagePreview(caseStudy?.image?.url ?? null);
+                  }}
+                  className="h-8"
+                >
+                  Remove
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Description */}

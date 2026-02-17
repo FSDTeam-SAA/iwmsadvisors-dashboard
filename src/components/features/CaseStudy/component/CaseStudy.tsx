@@ -10,7 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight, Eye, Trash2, Edit } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Trash2,
+  Edit,
+  Plus,
+} from "lucide-react";
 import {
   useCaseStudies,
   useUpdateCaseStudy,
@@ -21,6 +28,9 @@ import { cn } from "@/lib/utils";
 import CaseStudyViewModal from "./CaseStudyViewModal";
 import CaseStudyEditModal from "./CaseStudyEditModal";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import CaseStudyAddModal from "./CaseStudyAddModal";
+import { useCreateCaseStudy } from "../hooks/casestudy";
 
 export default function CaseStudy() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,10 +39,12 @@ export default function CaseStudy() {
     useState<CaseStudyType | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const { data: response, isLoading, isError } = useCaseStudies();
   const { mutate: updateCaseStudy } = useUpdateCaseStudy();
   const { mutate: deleteCaseStudy } = useDeleteCaseStudy();
+  const { mutate: createCaseStudy } = useCreateCaseStudy();
 
   const caseStudies = response?.data || [];
   const pagination = response?.pagination;
@@ -89,7 +101,9 @@ export default function CaseStudy() {
     setIsEditModalOpen(true);
   };
 
-  const handleSave = (updatedData: Partial<CaseStudyType>) => {
+  const handleSave = (
+    updatedData: Partial<CaseStudyType> & { imageFile?: File },
+  ) => {
     if (selectedCaseStudy) {
       updateCaseStudy(
         { id: selectedCaseStudy._id, data: updatedData },
@@ -107,16 +121,51 @@ export default function CaseStudy() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this case study?")) {
-      deleteCaseStudy(id, {
+    deleteCaseStudy(id, {
+      onSuccess: () => {
+        toast.success("Case study deleted successfully");
+      },
+      onError: () => {
+        toast.error("Failed to delete case study");
+      },
+    });
+  };
+
+  const handleAddNew = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCreate = (newData: {
+    title: string;
+    subtitle?: string;
+    description: string;
+    client?: string;
+    duration?: string;
+    teamSize?: string;
+    challenge?: string;
+    solution?: string;
+    technologiesUsed: string[];
+    resultImpact?: string;
+    caseExperience?: string;
+    clientName?: string;
+    companyName?: string;
+    imageFile?: File | null;
+  }) => {
+    createCaseStudy(
+      newData as unknown as Omit<
+        CaseStudyType,
+        "_id" | "createdAt" | "updatedAt" | "__v"
+      >,
+      {
         onSuccess: () => {
-          toast.success("Case study deleted successfully");
+          toast.success("Case study added successfully");
+          setIsAddModalOpen(false);
         },
         onError: () => {
-          toast.error("Failed to delete case study");
+          toast.error("Failed to add case study");
         },
-      });
-    }
+      },
+    );
   };
 
   if (isError || (response && !response.success)) {
@@ -142,6 +191,15 @@ export default function CaseStudy() {
               Case Study Management
             </span>
           </nav>
+        </div>
+        <div className="w-full md:w-auto flex md:justify-end">
+          <Button
+            onClick={handleAddNew}
+            className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Case Study
+          </Button>
         </div>
       </div>
 
@@ -291,6 +349,11 @@ export default function CaseStudy() {
         onClose={() => setIsEditModalOpen(false)}
         caseStudy={selectedCaseStudy}
         onSave={handleSave}
+      />
+      <CaseStudyAddModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSave={handleCreate}
       />
     </div>
   );
