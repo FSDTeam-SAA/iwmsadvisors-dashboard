@@ -1,0 +1,401 @@
+"use client";
+
+import { useState, useMemo, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { CaseStudy } from "../types/casestudy.types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
+
+interface CaseStudyEditModalProps {
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly caseStudy: CaseStudy | null;
+  readonly onSave: (updatedCaseStudy: Partial<CaseStudy>) => void;
+}
+
+export default function CaseStudyEditModal({
+  isOpen,
+  onClose,
+  caseStudy,
+  onSave,
+}: CaseStudyEditModalProps) {
+  const initialFormData = useMemo(
+    () => ({
+      title: caseStudy?.title || "",
+      subtitle: caseStudy?.subtitle || "",
+      description: caseStudy?.description || "",
+      client: caseStudy?.client || "",
+      duration: caseStudy?.duration || "",
+      teamSize: caseStudy?.teamSize || "",
+      challenge: caseStudy?.challenge || "",
+      solution: caseStudy?.solution || "",
+      technologiesUsed: caseStudy?.technologiesUsed || [],
+      resultImpact: caseStudy?.resultImpact || "",
+      caseExperience: caseStudy?.caseExperience || "",
+      clientName: caseStudy?.clientName || "",
+      companyName: caseStudy?.companyName || "",
+    }),
+    [caseStudy],
+  );
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [techInput, setTechInput] = useState("");
+
+  // Reset form when the selected case study changes
+  // Note: This is a valid use case for syncing form state with props
+  useEffect(() => {
+    if (caseStudy) {
+      setFormData({
+        title: caseStudy.title || "",
+        subtitle: caseStudy.subtitle || "",
+        description: caseStudy.description || "",
+        client: caseStudy.client || "",
+        duration: caseStudy.duration || "",
+        teamSize: caseStudy.teamSize || "",
+        challenge: caseStudy.challenge || "",
+        solution: caseStudy.solution || "",
+        technologiesUsed: caseStudy.technologiesUsed || [],
+        resultImpact: caseStudy.resultImpact || "",
+        caseExperience: caseStudy.caseExperience || "",
+        clientName: caseStudy.clientName || "",
+        companyName: caseStudy.companyName || "",
+      });
+      setTechInput("");
+    }
+  }, [caseStudy]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddTechnology = () => {
+    if (
+      techInput.trim() &&
+      !formData.technologiesUsed.includes(techInput.trim())
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        technologiesUsed: [...prev.technologiesUsed, techInput.trim()],
+      }));
+      setTechInput("");
+    }
+  };
+
+  const handleRemoveTechnology = (tech: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      technologiesUsed: prev.technologiesUsed.filter((t) => t !== tech),
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+    onClose();
+  };
+
+  if (!caseStudy) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
+        <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
+          <DialogTitle className="text-2xl font-bold text-[#1E293B]">
+            Edit Case Study
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Title */}
+          <div className="space-y-2">
+            <Label htmlFor="title" className="text-sm font-bold text-gray-700">
+              Title *
+            </Label>
+            <Input
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="w-full"
+              placeholder="Enter case study title"
+            />
+          </div>
+
+          {/* Subtitle */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="subtitle"
+              className="text-sm font-bold text-gray-700"
+            >
+              Subtitle
+            </Label>
+            <Input
+              id="subtitle"
+              name="subtitle"
+              value={formData.subtitle}
+              onChange={handleChange}
+              className="w-full"
+              placeholder="Enter subtitle"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="description"
+              className="text-sm font-bold text-gray-700"
+            >
+              Description *
+            </Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              rows={4}
+              className="w-full resize-none"
+              placeholder="Enter case study description"
+            />
+          </div>
+
+          {/* Client Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label
+                htmlFor="client"
+                className="text-sm font-bold text-gray-700"
+              >
+                Client
+              </Label>
+              <Input
+                id="client"
+                name="client"
+                value={formData.client}
+                onChange={handleChange}
+                placeholder="Enter client name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="companyName"
+                className="text-sm font-bold text-gray-700"
+              >
+                Company Name
+              </Label>
+              <Input
+                id="companyName"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+                placeholder="Enter company name"
+              />
+            </div>
+          </div>
+
+          {/* Duration and Team Size */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label
+                htmlFor="duration"
+                className="text-sm font-bold text-gray-700"
+              >
+                Duration
+              </Label>
+              <Input
+                id="duration"
+                name="duration"
+                value={formData.duration}
+                onChange={handleChange}
+                placeholder="e.g., 12 Months"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="teamSize"
+                className="text-sm font-bold text-gray-700"
+              >
+                Team Size
+              </Label>
+              <Input
+                id="teamSize"
+                name="teamSize"
+                value={formData.teamSize}
+                onChange={handleChange}
+                placeholder="e.g., 200 Members"
+              />
+            </div>
+          </div>
+
+          {/* Challenge */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="challenge"
+              className="text-sm font-bold text-gray-700"
+            >
+              Challenge
+            </Label>
+            <Textarea
+              id="challenge"
+              name="challenge"
+              value={formData.challenge}
+              onChange={handleChange}
+              rows={3}
+              className="w-full resize-none"
+              placeholder="Describe the challenge"
+            />
+          </div>
+
+          {/* Solution */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="solution"
+              className="text-sm font-bold text-gray-700"
+            >
+              Solution
+            </Label>
+            <Textarea
+              id="solution"
+              name="solution"
+              value={formData.solution}
+              onChange={handleChange}
+              rows={3}
+              className="w-full resize-none"
+              placeholder="Describe the solution"
+            />
+          </div>
+
+          {/* Technologies Used */}
+          <div className="space-y-2">
+            <Label className="text-sm font-bold text-gray-700">
+              Technologies Used
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                value={techInput}
+                onChange={(e) => setTechInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddTechnology();
+                  }
+                }}
+                placeholder="Add technology and press Enter"
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={handleAddTechnology}
+                className="bg-[#0057B8] hover:bg-[#004494]"
+              >
+                Add
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {formData.technologiesUsed.map((tech, index) => (
+                <span
+                  key={index}
+                  className="px-4 py-2 bg-[#0057B8] text-white text-sm font-semibold rounded-lg flex items-center gap-2"
+                >
+                  {tech}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTechnology(tech)}
+                    className="hover:bg-white/20 rounded-full p-0.5"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Result Impact */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="resultImpact"
+              className="text-sm font-bold text-gray-700"
+            >
+              Result & Impact
+            </Label>
+            <Textarea
+              id="resultImpact"
+              name="resultImpact"
+              value={formData.resultImpact}
+              onChange={handleChange}
+              rows={3}
+              className="w-full resize-none"
+              placeholder="Describe the results and impact"
+            />
+          </div>
+
+          {/* Case Experience */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="caseExperience"
+              className="text-sm font-bold text-gray-700"
+            >
+              Case Experience
+            </Label>
+            <Textarea
+              id="caseExperience"
+              name="caseExperience"
+              value={formData.caseExperience}
+              onChange={handleChange}
+              rows={3}
+              className="w-full resize-none"
+              placeholder="Describe the case experience"
+            />
+          </div>
+
+          {/* Client Name */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="clientName"
+              className="text-sm font-bold text-gray-700"
+            >
+              Client Contact Name
+            </Label>
+            <Input
+              id="clientName"
+              name="clientName"
+              value={formData.clientName}
+              onChange={handleChange}
+              placeholder="Enter client contact name"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4 pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="px-6"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="px-6 bg-[#0057B8] hover:bg-[#004494]"
+            >
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

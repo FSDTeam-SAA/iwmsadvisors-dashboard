@@ -1,7 +1,9 @@
-import React from 'react'
+import CaseStudy from '@/components/features/CaseStudy/component/CaseStudy'
 
 export default function page() {
   return (
-    <div>page</div>
+    <div>
+      <CaseStudy />
+    </div>
   )
 }
