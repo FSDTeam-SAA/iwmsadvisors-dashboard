@@ -9,30 +9,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { X, Plus } from "lucide-react";
-import { FaqItem } from "../types/faqSection.types";
+
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: { title: string; subtitle: string; items: FaqItem[] }) => void;
+  onSave: (data: { question: string; answer: string }) => void;
 }
 
 export default function FaqSectionAddModal({ isOpen, onClose, onSave }: Props) {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [items, setItems] = useState<FaqItem[]>([]);
-
-  // Temporary state for new item input
-  const [newQuestion, setNewQuestion] = useState("");
-  const [newAnswer, setNewAnswer] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
 
   const resetAll = () => {
-    setTitle("");
-    setSubtitle("");
-    setItems([]);
-    setNewQuestion("");
-    setNewAnswer("");
+    setQuestion("");
+    setAnswer("");
   };
 
   const close = () => {
@@ -40,23 +31,10 @@ export default function FaqSectionAddModal({ isOpen, onClose, onSave }: Props) {
     onClose();
   };
 
-  const addItem = () => {
-    if (!newQuestion.trim() || !newAnswer.trim()) return;
-    setItems((prev) => [
-      ...prev,
-      { question: newQuestion.trim(), answer: newAnswer.trim() },
-    ]);
-    setNewQuestion("");
-    setNewAnswer("");
-  };
-
-  const removeItem = (index: number) => {
-    setItems((prev) => prev.filter((_, i) => i !== index));
-  };
-
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, subtitle, items });
+    if (!question.trim() || !answer.trim()) return;
+    onSave({ question: question.trim(), answer: answer.trim() });
     close();
   };
 
@@ -69,100 +47,44 @@ export default function FaqSectionAddModal({ isOpen, onClose, onSave }: Props) {
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={submit} className="p-8 space-y-6">
+        <form onSubmit={submit} className="px-8 space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label
-                htmlFor="title"
+                htmlFor="question"
                 className="text-sm font-bold text-gray-700"
               >
-                Title *
+                Question *
               </Label>
               <Input
-                id="title"
+                id="question"
                 required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter section title"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Enter question"
               />
             </div>
 
             <div className="space-y-2">
               <Label
-                htmlFor="subtitle"
+                htmlFor="answer"
                 className="text-sm font-bold text-gray-700"
               >
-                Subtitle
+                Answer *
               </Label>
-              <Input
-                id="subtitle"
-                value={subtitle}
-                onChange={(e) => setSubtitle(e.target.value)}
-                placeholder="Enter section subtitle"
+              <Textarea
+                id="answer"
+                required
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                placeholder="Enter answer"
+                className="resize-none"
+                rows={4}
               />
             </div>
           </div>
 
-          <div className="space-y-4 pt-4 border-t">
-            <Label className="text-sm font-bold text-gray-700">Q&A Items</Label>
-
-            <div className="bg-gray-50 p-4 rounded-lg space-y-4 border">
-              <div className="space-y-2">
-                <Input
-                  value={newQuestion}
-                  onChange={(e) => setNewQuestion(e.target.value)}
-                  placeholder="Question"
-                />
-                <Textarea
-                  value={newAnswer}
-                  onChange={(e) => setNewAnswer(e.target.value)}
-                  placeholder="Answer"
-                  className="resize-none"
-                  rows={2}
-                />
-                <Button
-                  type="button"
-                  onClick={addItem}
-                  className="w-full bg-[#0057B8] hover:bg-[#004494]"
-                  disabled={!newQuestion.trim() || !newAnswer.trim()}
-                >
-                  <Plus className="w-4 h-4 mr-2" /> Add Item
-                </Button>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              {items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex gap-4 p-4 bg-white border rounded-lg shadow-sm"
-                >
-                  <div className="flex-1 space-y-1">
-                    <p className="font-semibold text-gray-900">
-                      {item.question}
-                    </p>
-                    <p className="text-sm text-gray-600">{item.answer}</p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeItem(idx)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
-              {items.length === 0 && (
-                <p className="text-center text-gray-500 py-4 text-sm">
-                  No items added yet.
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-4 pt-4 border-t">
+          <div className="flex justify-end gap-4 pt-4 mb-5 border-t">
             <Button
               type="button"
               variant="outline"
@@ -174,7 +96,7 @@ export default function FaqSectionAddModal({ isOpen, onClose, onSave }: Props) {
             <Button
               type="submit"
               className="px-6 bg-[#0057B8] hover:bg-[#004494]"
-              disabled={!title}
+              disabled={!question.trim() || !answer.trim()}
             >
               Save
             </Button>
