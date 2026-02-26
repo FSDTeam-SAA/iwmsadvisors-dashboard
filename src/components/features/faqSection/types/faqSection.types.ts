@@ -5,12 +5,11 @@ export interface FaqItem {
 }
 
 export interface FaqSection {
-  _id: string;
-  title: string;
-  subtitle: string;
-  items: FaqItem[];
-  createdAt: string;
-  updatedAt: string;
+  _id?: string;
+   question: string;
+  answer: string;
+  createdAt?: string;
+  updatedAt?: string;
   __v?: number;
 }
 
