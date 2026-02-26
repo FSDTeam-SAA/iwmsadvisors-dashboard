@@ -25,7 +25,6 @@ import FaqSectionEditModal from "./FaqSectionEditModal";
 import FaqSectionViewModal from "./FaqSectionViewModal";
 import {
   FaqSection as FaqSectionType,
-  FaqItem,
 } from "../types/faqSection.types";
 import {
   useCreateFaqSection,
@@ -91,7 +90,8 @@ export default function FaqSection() {
   };
 
   // Delete functionality
-  const onDelete = (id: string) => {
+  const onDelete = (id: string | undefined) => {
+    if (!id) return;
     deleteItem(id, {
       onSuccess: () => toast.success("Deleted successfully"),
       onError: () => toast.error("Failed to delete"),
@@ -100,29 +100,25 @@ export default function FaqSection() {
 
   const onAdd = () => setIsAddOpen(true);
 
-  const handleCreate = (data: {
-    title: string;
-    subtitle: string;
-    items: FaqItem[];
-  }) => {
+  const handleCreate = (data: { question: string; answer: string }) => {
     createItem(data, {
       onSuccess: () => {
-        toast.success("FAQ Section added successfully");
+        toast.success("FAQ added successfully");
         setIsAddOpen(false);
       },
-      onError: () => toast.error("Failed to add FAQ Section"),
+      onError: () => toast.error("Failed to add FAQ"),
     });
   };
 
-  const handleSave = (id: string, data: Partial<FaqSectionType>) => {
+  const handleSave = (id: string, data: { question: string; answer: string }) => {
     updateItem(
       { id, data },
       {
         onSuccess: () => {
-          toast.success("FAQ Section updated successfully");
+          toast.success("FAQ updated successfully");
           setIsEditOpen(false);
         },
-        onError: () => toast.error("Failed to update FAQ Section"),
+        onError: () => toast.error("Failed to update FAQ"),
       },
     );
   };
@@ -163,13 +159,10 @@ export default function FaqSection() {
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Title
+                  Question
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Subtitle
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Items
+                  Answer
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Action
@@ -184,13 +177,10 @@ export default function FaqSection() {
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
                     <TableCell className="py-4 text-center text-gray-700 font-medium">
-                      {item.title}
+                      {item.question || "N/A"}
                     </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600">
-                      {item.subtitle || "N/A"}
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600">
-                      {item.items?.length ?? 0}
+                    <TableCell className="py-4 text-center text-gray-600 max-w-xs truncate">
+                      {item.answer || "N/A"}
                     </TableCell>
                     <TableCell className="py-4 text-center">
                       <button
