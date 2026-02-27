@@ -50,11 +50,12 @@ export default function Login() {
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <Image
-            src="/images/logo.png"
+            src="/images/fotter-logo-xl.svg"
             alt="Logo"
-            width={80}
-            height={80}
+            width={100}
+            height={100}
             priority
+            className="w-full aspect-auto"
           />
         </div>
 
