@@ -195,8 +195,8 @@ export default function CaseStudyAddModal({
             <Label className="text-sm font-bold text-gray-700">Image</Label>
             <input
               ref={fileInputRef}
-              id="image"
-              name="image"
+              id="file"
+              name="file"
               type="file"
               accept="image/*"
               className="hidden"
