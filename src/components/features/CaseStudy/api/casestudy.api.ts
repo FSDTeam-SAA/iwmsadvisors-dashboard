@@ -41,15 +41,11 @@ export const casestudyApi = {
       formData.append("caseExperience", data.caseExperience ?? "");
       formData.append("clientName", data.clientName ?? "");
       formData.append("companyName", data.companyName ?? "");
-      formData.append("image", data.imageFile);
+      formData.append("file", data.imageFile);
 
-      const response = await axiosInstance.put(
-        `/case-study/${id}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
-      );
+      const response = await axiosInstance.put(`/case-study/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return response.data;
     }
 
@@ -94,7 +90,7 @@ export const casestudyApi = {
       formData.append("caseExperience", data.caseExperience ?? "");
       formData.append("clientName", data.clientName ?? "");
       formData.append("companyName", data.companyName ?? "");
-      formData.append("image", data.imageFile);
+      formData.append("file", data.imageFile);
 
       const response = await axiosInstance.post("/case-study", formData, {
         headers: { "Content-Type": "multipart/form-data" },
