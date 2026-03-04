@@ -1,90 +1,94 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { BlogSection } from "../types/blogsection.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 
-interface BlogSectionEditModalProps {
+interface BannerSectionAddModalProps {
   readonly isOpen: boolean;
   readonly onClose: () => void;
-  readonly blogSection: BlogSection | null;
-  readonly onSave: (
-    updatedBlogSection: Partial<BlogSection> & { imageFile?: File },
-  ) => void;
+  readonly onSave: (newBannerSection: {
+    title: string;
+    subTitle?: string;
+    btn1?: string;
+    btn2?: string;
+    imageFile?: File | null;
+  }) => void;
 }
 
-export default function BlogSectionEditModal({
+export default function BannerSectionAddModal({
   isOpen,
   onClose,
-  blogSection,
   onSave,
-}: BlogSectionEditModalProps) {
+}: BannerSectionAddModalProps) {
   const [formData, setFormData] = useState({
     title: "",
-    subtitle: "",
-    description: "",
+    subTitle: "",
+    btn1: "",
+    btn2: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Set default state when modal opens or blogSection changes
   useEffect(() => {
-    if (blogSection) {
-      setFormData({
-        title: blogSection.title || "",
-        subtitle: blogSection.subtitle || "",
-        description: blogSection.description || "",
-      });
-      if (blogSection.image?.url) {
-        setImagePreview(blogSection.image.url);
-      } else {
-        setImagePreview(null);
-      }
-    }
-    // Clean up object URL if any from previous selection
     return () => {
-      if (imagePreview && imagePreview.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreview);
-      }
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blogSection]);
+  }, [imagePreview]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      ...(imageFile ? { imageFile } : {}),
+    onSave({ ...formData, imageFile });
+    // Reset form after submission
+    setFormData({
+      title: "",
+      subTitle: "",
+      btn1: "",
+      btn2: "",
     });
+    setImageFile(null);
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+      setImagePreview(null);
+    }
+  };
+
+  const handleClose = () => {
+    // Reset form when closing
+    setFormData({
+      title: "",
+      subTitle: "",
+      btn1: "",
+      btn2: "",
+    });
+    setImageFile(null);
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+      setImagePreview(null);
+    }
     onClose();
   };
 
-  if (!blogSection) return null;
-
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
         <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
           <DialogTitle className="text-2xl font-bold text-[#1E293B]">
-            Edit Blog Post
+            Add Banner
           </DialogTitle>
         </DialogHeader>
 
@@ -101,33 +105,63 @@ export default function BlogSectionEditModal({
               onChange={handleChange}
               required
               className="w-full"
-              placeholder="Enter blog title"
+              placeholder="Enter banner title"
             />
           </div>
 
           {/* Subtitle */}
           <div className="space-y-2">
             <Label
-              htmlFor="subtitle"
+              htmlFor="subTitle"
               className="text-sm font-bold text-gray-700"
             >
               Subtitle
             </Label>
             <Input
-              id="subtitle"
-              name="subtitle"
-              value={formData.subtitle}
+              id="subTitle"
+              name="subTitle"
+              value={formData.subTitle}
               onChange={handleChange}
               className="w-full"
               placeholder="Enter subtitle"
             />
           </div>
 
-          {/* Image Preview and Upload */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Button 1 */}
+            <div className="space-y-2">
+              <Label htmlFor="btn1" className="text-sm font-bold text-gray-700">
+                Button 1 Text
+              </Label>
+              <Input
+                id="btn1"
+                name="btn1"
+                value={formData.btn1}
+                onChange={handleChange}
+                className="w-full"
+                placeholder="Enter button 1 text"
+              />
+            </div>
+
+            {/* Button 2 */}
+            <div className="space-y-2">
+              <Label htmlFor="btn2" className="text-sm font-bold text-gray-700">
+                Button 2 Text
+              </Label>
+              <Input
+                id="btn2"
+                name="btn2"
+                value={formData.btn2}
+                onChange={handleChange}
+                className="w-full"
+                placeholder="Enter button 2 text"
+              />
+            </div>
+          </div>
+
+          {/* Image Upload */}
           <div className="space-y-2">
-            <Label htmlFor="image" className="text-sm font-bold text-gray-700">
-              Image
-            </Label>
+            <Label className="text-sm font-bold text-gray-700">Image</Label>
             <input
               ref={fileInputRef}
               id="image"
@@ -138,17 +172,17 @@ export default function BlogSectionEditModal({
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
                 setImageFile(file);
-                if (imagePreview && imagePreview.startsWith("blob:")) {
-                  URL.revokeObjectURL(imagePreview);
-                }
+                if (imagePreview) URL.revokeObjectURL(imagePreview);
                 if (file) {
                   const url = URL.createObjectURL(file);
                   setImagePreview(url);
                 } else {
-                  setImagePreview(blogSection?.image?.url ?? null);
+                  setImagePreview(null);
                 }
               }}
             />
+
+            {/* Preview area */}
             <div
               className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
@@ -157,7 +191,7 @@ export default function BlogSectionEditModal({
                 <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
                   <Image
                     src={imagePreview}
-                    alt={blogSection.title}
+                    alt="Selected image preview"
                     fill
                     className="object-cover"
                   />
@@ -181,6 +215,7 @@ export default function BlogSectionEditModal({
                 </div>
               )}
             </div>
+
             {imageFile && (
               <div className="flex items-center justify-between mt-2">
                 <p className="text-xs text-gray-500 truncate">
@@ -191,10 +226,10 @@ export default function BlogSectionEditModal({
                   variant="outline"
                   onClick={() => {
                     setImageFile(null);
-                    if (imagePreview && imagePreview.startsWith("blob:")) {
+                    if (imagePreview) {
                       URL.revokeObjectURL(imagePreview);
+                      setImagePreview(null);
                     }
-                    setImagePreview(blogSection?.image?.url ?? null);
                   }}
                   className="h-8"
                 >
@@ -204,41 +239,21 @@ export default function BlogSectionEditModal({
             )}
           </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="description"
-              className="text-sm font-bold text-gray-700"
-            >
-              Description *
-            </Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              rows={6}
-              className="w-full resize-none"
-              placeholder="Enter blog content/description"
-            />
-          </div>
-
           {/* Action Buttons */}
           <div className="flex justify-end gap-4 pt-4 border-t">
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-6"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="px-6 bg-[#0057B8] hover:bg-[#004494] cursor-pointer"
+              className="px-6 bg-[#0057B8] hover:bg-[#004494]"
             >
-              Save Changes
+              Save
             </Button>
           </div>
         </form>

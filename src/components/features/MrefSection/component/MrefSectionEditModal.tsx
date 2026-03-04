@@ -359,7 +359,7 @@ export default function MrefSectionEditModal({
             </div>
           </div>
 
-          <div className="flex justify-end gap-4 pt-4 border-t">
+          <div className="flex justify-end gap-4 pt-4 border-t cursor-pointer">
             <Button
               type="button"
               variant="outline"
@@ -370,7 +370,7 @@ export default function MrefSectionEditModal({
             </Button>
             <Button
               type="submit"
-              className="px-6 bg-[#0057B8] hover:bg-[#004494]"
+              className="px-6 bg-[#0057B8] hover:bg-[#004494] cursor-pointer"
             >
               Save Changes
             </Button>
