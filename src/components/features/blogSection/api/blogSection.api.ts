@@ -8,9 +8,7 @@ export const getBlogSections = async (
   page = 1,
   limit = 10,
 ): Promise<BlogSectionResponse> => {
-  const response = await axiosInstance.get(
-    `/blog?page=${page}&limit=${limit}`,
-  );
+  const response = await axiosInstance.get(`/blog?page=${page}&limit=${limit}`);
   return response.data;
 };
 

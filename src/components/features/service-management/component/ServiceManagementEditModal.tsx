@@ -361,10 +361,10 @@ export default function ServiceManagementEditModal({
           </div>
 
           <div className="flex justify-end gap-4 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#0057B8] hover:bg-[#004494]">
+            <Button type="submit" className="bg-[#0057B8] hover:bg-[#004494] cursor-pointer">
               Save Changes
             </Button>
           </div>
