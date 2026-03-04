@@ -41,6 +41,8 @@ const navigation = [
       { name: "MREF Section", href: "/content-management/mref-section" },
       { name: "FAQ Section", href: "/content-management/faq-section" },
       { name: "Blog Section", href: "/content-management/blog-section" },
+      { name: "Banner Section", href: "/content-management/banner-section" },
+      { name: "About Section", href: "/content-management/about-section" },
     ],
   },
   {
@@ -83,33 +85,33 @@ export default function Sidebar() {
   return (
     <div className="flex h-screen w-68 flex-col bg-[#FFFFFF] border-r border-gray-200 fixed">
       {/* Logo */}
-  <div className="flex items-center py-5 justify-center px-6">
-  <Link href="/" className="flex items-center w-full justify-center">
-    <picture>
-      {/* XL Screens */}
-      <source media="(min-width:1280px)" srcSet="/images/logo-xl.svg" />
+      <div className="flex items-center py-5 justify-center px-6">
+        <Link href="/" className="flex items-center w-full justify-center">
+          <picture>
+            {/* XL Screens */}
+            <source media="(min-width:1280px)" srcSet="/images/logo-xl.svg" />
 
-      {/* LG Screens */}
-      <source media="(min-width:1024px)" srcSet="/images/logo-lg.svg" />
+            {/* LG Screens */}
+            <source media="(min-width:1024px)" srcSet="/images/logo-lg.svg" />
 
-      {/* MD Screens */}
-      <source media="(min-width:768px)" srcSet="/images/logo-md.svg" />
+            {/* MD Screens */}
+            <source media="(min-width:768px)" srcSet="/images/logo-md.svg" />
 
-      {/* SM Screens */}
-      <source media="(min-width:640px)" srcSet="/images/logo-sm.svg" />
+            {/* SM Screens */}
+            <source media="(min-width:640px)" srcSet="/images/logo-sm.svg" />
 
-      {/* Default (Mobile) */}
-      <Image
-        src="/images/logo-mobile.svg"
-        alt="IWMS Advisors Logo"
-        width={180}
-        height={80}
-        className="w-full h-auto"
-        priority
-      />
-    </picture>
-  </Link>
-</div>
+            {/* Default (Mobile) */}
+            <Image
+              src="/images/logo-mobile.svg"
+              alt="IWMS Advisors Logo"
+              width={180}
+              height={80}
+              className="w-full h-auto"
+              priority
+            />
+          </picture>
+        </Link>
+      </div>
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navigation.map((item) => {

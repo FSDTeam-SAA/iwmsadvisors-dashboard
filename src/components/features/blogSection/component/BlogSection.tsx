@@ -91,12 +91,12 @@ export default function BlogSection() {
 
   const handleDelete = (id: string) => {
     // You might want to add a confirmation dialog here or use toast.promise if supported by your UI
-    if (window.confirm("Are you sure you want to delete this blog post?")) {
+ 
       deleteBlog(id, {
         onSuccess: () => toast.success("Blog post deleted successfully"),
         onError: () => toast.error("Failed to delete blog post"),
       });
-    }
+  
   };
 
   const handleSave = (
@@ -122,7 +122,6 @@ export default function BlogSection() {
     description: string;
     imageFile?: File | null;
   }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { imageFile, ...rest } = newData;
     createBlog(
       { ...rest, imageFile: imageFile || undefined },
