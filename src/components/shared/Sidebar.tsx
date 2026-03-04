@@ -43,6 +43,14 @@ const navigation = [
       { name: "Blog Section", href: "/content-management/blog-section" },
       { name: "Banner Section", href: "/content-management/banner-section" },
       { name: "About Section", href: "/content-management/about-section" },
+      {
+        name: "Contact Information",
+        href: "/content-management/contact-information",
+      },
+      {
+        name: "Footer Section",
+        href: "/content-management/footer-section",
+      },
     ],
   },
   {

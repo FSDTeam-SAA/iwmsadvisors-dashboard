@@ -40,11 +40,14 @@ export default function AboutSection() {
   const { mutate: deleteAbout } = useDeleteAboutSection();
 
   // Handle case where data might be a single object or an array
-  const aboutItems = response?.data
-    ? Array.isArray(response.data)
-      ? response.data
-      : [response.data]
-    : [];
+  let aboutItems: AboutSectionType[] = [];
+  if (response?.data) {
+    if (Array.isArray(response.data)) {
+      aboutItems = response.data;
+    } else {
+      aboutItems = [response.data];
+    }
+  }
 
   const handleView = (about: AboutSectionType) => {
     setSelectedAbout(about);
@@ -57,7 +60,7 @@ export default function AboutSection() {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this section?")) {
+    if (globalThis.confirm("Are you sure you want to delete this section?")) {
       deleteAbout(id, {
         onSuccess: () => toast.success("Section deleted successfully"),
         onError: () => toast.error("Failed to delete section"),
@@ -103,7 +106,7 @@ export default function AboutSection() {
     );
   };
 
-  if (isError || (response && response.status === false)) {
+  if (isError || response?.status === false) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <p className="text-red-500 font-medium">Error loading about sections</p>
@@ -122,15 +125,17 @@ export default function AboutSection() {
             <span className="text-gray-900 font-medium">About Management</span>
           </nav>
         </div>
-        {/* <div className="w-full md:w-auto flex md:justify-end">
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Section
-          </Button>
-        </div> */}
+        {!aboutItems.length && (
+          <div className="w-full md:w-auto flex md:justify-end">
+            <Button
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Section
+            </Button>
+          </div>
+        )}
       </div>
 
       <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white">
@@ -217,7 +222,13 @@ export default function AboutSection() {
                     colSpan={5}
                     className="py-10 text-center text-gray-400"
                   >
-                    No about sections found
+                    No about sections found.{" "}
+                    <button
+                      className="text-[#0057B8] hover:underline font-medium"
+                      onClick={() => setIsAddModalOpen(true)}
+                    >
+                      Add one now
+                    </button>
                   </TableCell>
                 </TableRow>
               )}

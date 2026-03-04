@@ -117,15 +117,17 @@ export default function BannerSection() {
             <span className="text-gray-900 font-medium">Banner Management</span>
           </nav>
         </div>
-        {/* <div className="w-full md:w-auto flex md:justify-end">
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Banner
-          </Button>
-        </div> */}
+        {!banners.length && (
+          <div className="w-full md:w-auto flex md:justify-end">
+            <Button
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Banner
+            </Button>
+          </div>
+        )}
       </div>
 
       <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white">
@@ -212,7 +214,13 @@ export default function BannerSection() {
                     colSpan={5}
                     className="py-10 text-center text-gray-400"
                   >
-                    No banners found
+                    No banners found.{" "}
+                    <button
+                      className="text-[#0057B8] hover:underline font-medium"
+                      onClick={() => setIsAddModalOpen(true)}
+                    >
+                      Add one now
+                    </button>
                   </TableCell>
                 </TableRow>
               )}
