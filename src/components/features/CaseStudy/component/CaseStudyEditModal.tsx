@@ -495,7 +495,7 @@ export default function CaseStudyEditModal({
             </Button>
             <Button
               type="submit"
-              className="px-6 bg-[#0057B8] hover:bg-[#004494]"
+              className="px-6 bg-[#0057B8] hover:bg-[#004494] cursor-pointer"
             >
               Save Changes
             </Button>

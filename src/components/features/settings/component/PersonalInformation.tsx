@@ -226,7 +226,7 @@ function PersonalInformationForm({
               disabled={isUpdating}
               className="bg-primary hover:bg-primary/90 text-white font-bold h-11 px-8 cursor-pointer rounded-lg shadow-soft transition-all"
             >
-              {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin cursor-pointer" />}
               Save Changes
             </Button>
           </div>

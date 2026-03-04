@@ -46,7 +46,7 @@ export const updateBannerSection = async (
   if (data.btn1) formData.append("btn1", data.btn1);
   if (data.btn2) formData.append("btn2", data.btn2);
   if (data.imageFile) {
-    formData.append("file", data.imageFile);
+    formData.append("image", data.imageFile);
   }
 
   const response = await axiosInstance.patch(`/banner/${id}`, formData, {
