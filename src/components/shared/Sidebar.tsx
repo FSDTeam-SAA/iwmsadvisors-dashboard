@@ -51,6 +51,10 @@ const navigation = [
         name: "Footer Section",
         href: "/content-management/footer-section",
       },
+      {
+        name: "IWMS Solutions",
+        href: "/content-management/iwms-solutions",
+      },
     ],
   },
   {

@@ -167,7 +167,7 @@ export default function ContactInformationSection() {
         <TableCell colSpan={5} className="py-10 text-center text-gray-400">
           No contact information found.{" "}
           <button
-            className="text-[#0057B8] hover:underline font-medium"
+            className="text-[#0057B8] hover:underline font-medium cursor-pointer"
             onClick={() => setIsAddModalOpen(true)}
           >
             Add one now

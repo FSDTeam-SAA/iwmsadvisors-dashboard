@@ -216,7 +216,7 @@ export default function BannerSection() {
                   >
                     No banners found.{" "}
                     <button
-                      className="text-[#0057B8] hover:underline font-medium"
+                      className="text-[#0057B8] hover:underline font-medium cursor-pointer"
                       onClick={() => setIsAddModalOpen(true)}
                     >
                       Add one now
