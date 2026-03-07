@@ -43,6 +43,30 @@ const navigation = [
       { name: "Blog Section", href: "/content-management/blog-section" },
       { name: "Banner Section", href: "/content-management/banner-section" },
       { name: "About Section", href: "/content-management/about-section" },
+      {
+        name: "Contact Information",
+        href: "/content-management/contact-information",
+      },
+      {
+        name: "Footer Section",
+        href: "/content-management/footer-section",
+      },
+      {
+        name: "IWMS Solutions",
+        href: "/content-management/iwms-solutions",
+      },
+      {
+        name: "Mission Vision",
+        href: "/content-management/mission-vision",
+      },
+      {
+        name: "Certifications",
+        href: "/content-management/certifications",
+      },
+      {
+        name: "Expertise",
+        href: "/content-management/expertise",
+      },
     ],
   },
   {

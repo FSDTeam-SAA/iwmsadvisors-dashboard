@@ -10,8 +10,20 @@ import axiosInstance from "@/lib/instance/axios-instance";
 
 // Get all about sections
 export const getAboutSections = async (): Promise<AboutSectionsResponse> => {
-  const response = await axiosInstance.get(`/about/get`);
-  return response.data;
+  try {
+    const response = await axiosInstance.get(`/about/get`);
+    return response.data;
+  } catch (error: unknown) {
+    const axiosError = error as { response?: { status: number } };
+    if (axiosError.response?.status === 404) {
+      return {
+        status: true, // Set to true so UI doesn't show error block
+        message: "About sections not found",
+        data: [],
+      };
+    }
+    throw error;
+  }
 };
 
 // Create a new about section

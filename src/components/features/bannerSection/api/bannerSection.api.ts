@@ -6,8 +6,20 @@ import axiosInstance from "@/lib/instance/axios-instance";
 
 // Get all banner sections
 export const getBannerSections = async (): Promise<BannerSectionResponse> => {
-  const response = await axiosInstance.get(`/banner/all`);
-  return response.data;
+  try {
+    const response = await axiosInstance.get(`/banner/all`);
+    return response.data;
+  } catch (error: unknown) {
+    const axiosError = error as { response?: { status: number } };
+    if (axiosError.response?.status === 404) {
+      return {
+        status: true, // Success-like empty state
+        message: "Banner sections not found",
+        data: [],
+      };
+    }
+    throw error;
+  }
 };
 
 // Create a new banner section
