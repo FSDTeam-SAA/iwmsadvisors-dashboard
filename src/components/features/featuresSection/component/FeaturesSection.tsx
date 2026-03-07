@@ -14,102 +14,59 @@ import { Eye, Trash2, Edit, Plus, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { AboutSection as AboutSectionType } from "../types/aboutSection.type";
+import { FeaturesSection as FeaturesSectionType } from "../types/featuresSection.type";
 import {
-  useAboutSections,
-  useCreateAboutSection,
-  useDeleteAboutSection,
-  useUpdateAboutSection,
-} from "../hooks/useAboutSection";
-import AboutSectionAddModal from "./AboutSectionAddModal";
-import AboutSectionEditModal from "./AboutSectionEditModal";
-import AboutSectionViewModal from "./AboutSectionViewModal";
+  useFeaturesSections,
+  useCreateFeaturesSection,
+  useUpdateFeaturesSection,
+  useDeleteFeaturesSection,
+} from "../hooks/useFeaturesSection";
+import FeaturesSectionAddModal from "./FeaturesSectionAddModal";
+import FeaturesSectionEditModal from "./FeaturesSectionEditModal";
+// Optional: import FeaturesSectionViewModal from "./FeaturesSectionViewModal";
 import Image from "next/image";
 
-export default function AboutSection() {
-  const [selectedAbout, setSelectedAbout] = useState<AboutSectionType | null>(
-    null,
-  );
+export default function FeaturesSection() {
+  const [selectedFeature, setSelectedFeature] =
+    useState<FeaturesSectionType | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const { data: response, isLoading, isError } = useAboutSections();
-  const { mutate: createAbout } = useCreateAboutSection();
-  const { mutate: updateAbout } = useUpdateAboutSection();
-  const { mutate: deleteAbout } = useDeleteAboutSection();
+  const { data: response, isLoading, isError } = useFeaturesSections();
+  const { mutate: createFeature } = useCreateFeaturesSection();
+  const { mutate: updateFeature } = useUpdateFeaturesSection();
+  const { mutate: deleteFeature } = useDeleteFeaturesSection();
 
-  // Handle case where data might be a single object or an array
-  let aboutItems: AboutSectionType[] = [];
+  let featureItems: FeaturesSectionType[] = [];
   if (response?.data) {
     if (Array.isArray(response.data)) {
-      aboutItems = response.data;
+      featureItems = response.data;
     } else {
-      aboutItems = [response.data];
+      featureItems = [response.data];
     }
   }
 
-  const handleView = (about: AboutSectionType) => {
-    setSelectedAbout(about);
-    setIsViewModalOpen(true);
-  };
-
-  const handleEdit = (about: AboutSectionType) => {
-    setSelectedAbout(about);
+  const handleEdit = (feature: FeaturesSectionType) => {
+    setSelectedFeature(feature);
     setIsEditModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
     if (globalThis.confirm("Are you sure you want to delete this section?")) {
-      deleteAbout(id, {
+      deleteFeature(id, {
         onSuccess: () => toast.success("Section deleted successfully"),
         onError: () => toast.error("Failed to delete section"),
       });
     }
   };
 
-  const handleSave = (
-    updatedData: Partial<AboutSectionType> & { imageFile?: File },
-  ) => {
-    if (selectedAbout) {
-      updateAbout(
-        { id: selectedAbout._id, data: updatedData },
-        {
-          onSuccess: () => {
-            toast.success("Section updated successfully");
-            setIsEditModalOpen(false);
-          },
-          onError: () => toast.error("Failed to update section"),
-        },
-      );
-    }
-  };
-
-  const handleCreate = (newData: {
-    title: string;
-    subtitle: string;
-    descriptionTitle: string;
-    description: string;
-    btnName: string;
-    imageFile?: File | null;
-  }) => {
-    const { imageFile, ...rest } = newData;
-    createAbout(
-      { ...rest, imageFile: imageFile || undefined },
-      {
-        onSuccess: () => {
-          toast.success("Section added successfully");
-          setIsAddModalOpen(false);
-        },
-        onError: () => toast.error("Failed to add section"),
-      },
-    );
-  };
-
   if (isError || response?.status === false) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500 font-medium">Error loading about sections</p>
+        <p className="text-red-500 font-medium">
+          Error loading features sections
+        </p>
       </div>
     );
   }
@@ -118,14 +75,18 @@ export default function AboutSection() {
     <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">About Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Features Management
+          </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
-            <span className="text-gray-900 font-medium">About Management</span>
+            <span className="text-gray-900 font-medium">
+              Features Management
+            </span>
           </nav>
         </div>
-        {!aboutItems.length && (
+        {!featureItems.length && (
           <div className="w-full md:w-auto flex md:justify-end">
             <Button
               onClick={() => setIsAddModalOpen(true)}
@@ -144,16 +105,13 @@ export default function AboutSection() {
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Image
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Title
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Subtitle
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Des. Title
+                  Items Count
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Action
@@ -161,45 +119,23 @@ export default function AboutSection() {
               </TableRow>
             </TableHeader>
             <TableBody className={cn(isLoading && "opacity-50")}>
-              {aboutItems.length > 0 ? (
-                aboutItems.map((item: AboutSectionType) => (
+              {featureItems.length > 0 ? (
+                featureItems.map((item: FeaturesSectionType) => (
                   <TableRow
                     key={item._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
-                    <TableCell className="py-4 text-center">
-                      <div className="relative w-12 h-12 mx-auto rounded-lg overflow-hidden bg-gray-100">
-                        {item.image ? (
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
-                            N/A
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-700 font-medium">
+                    <TableCell className="py-4 text-center text-gray-700 font-medium whitespace-nowrap">
                       {item.title}
                     </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600 max-w-[200px] truncate">
+                    <TableCell className="py-4 text-center text-gray-600 max-w-[300px] truncate">
                       {item.subtitle || "N/A"}
                     </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600 max-w-[200px] truncate">
-                      {item.descriptionTitle || "N/A"}
+                    <TableCell className="py-4 text-center text-gray-600">
+                      {item.items?.length || 0}
                     </TableCell>
                     <TableCell className="py-4 text-center">
                       <div className="flex justify-center items-center gap-2">
-                        <button
-                          onClick={() => handleView(item)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
-                        >
-                          <Eye className="w-5 h-5 text-white" />
-                        </button>
                         <button
                           onClick={() => handleEdit(item)}
                           className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
@@ -219,10 +155,10 @@ export default function AboutSection() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={4}
                     className="py-10 text-center text-gray-400"
                   >
-                    No about sections found.{" "}
+                    No features sections found.{" "}
                     <button
                       className="text-[#0057B8] hover:underline font-medium cursor-pointer"
                       onClick={() => setIsAddModalOpen(true)}
@@ -237,24 +173,20 @@ export default function AboutSection() {
         </div>
       </Card>
 
-      <AboutSectionViewModal
-        isOpen={isViewModalOpen}
-        onClose={() => setIsViewModalOpen(false)}
-        aboutSection={selectedAbout}
-      />
+      {isAddModalOpen && (
+        <FeaturesSectionAddModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+        />
+      )}
 
-      <AboutSectionEditModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        aboutSection={selectedAbout}
-        onSave={handleSave}
-      />
-
-      <AboutSectionAddModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSave={handleCreate}
-      />
+      {isEditModalOpen && (
+        <FeaturesSectionEditModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          featuresSection={selectedFeature}
+        />
+      )}
     </div>
   );
 }
