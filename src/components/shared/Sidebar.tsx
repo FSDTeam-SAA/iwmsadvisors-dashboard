@@ -63,6 +63,10 @@ const navigation = [
         name: "Certifications",
         href: "/content-management/certifications",
       },
+      {
+        name: "Expertise",
+        href: "/content-management/expertise",
+      },
     ],
   },
   {
