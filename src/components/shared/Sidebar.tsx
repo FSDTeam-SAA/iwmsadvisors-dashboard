@@ -59,6 +59,10 @@ const navigation = [
         name: "Mission Vision",
         href: "/content-management/mission-vision",
       },
+      {
+        name: "Certifications",
+        href: "/content-management/certifications",
+      },
     ],
   },
   {
