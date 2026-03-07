@@ -55,6 +55,10 @@ const navigation = [
         name: "IWMS Solutions",
         href: "/content-management/iwms-solutions",
       },
+      {
+        name: "Mission Vision",
+        href: "/content-management/mission-vision",
+      },
     ],
   },
   {
