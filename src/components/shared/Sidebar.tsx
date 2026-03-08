@@ -13,6 +13,7 @@ import {
   BowArrow,
   ChevronDown,
   ChevronRight,
+  FileText,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -82,6 +83,11 @@ const navigation = [
     name: "Service Management",
     href: "/service-management",
     icon: ShoppingBasket,
+  },
+  {
+    name: "Application Management",
+    href: "/application-management",
+    icon: FileText,
   },
   {
     name: "Career Management",
