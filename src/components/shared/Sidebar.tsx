@@ -67,6 +67,10 @@ const navigation = [
         name: "Expertise",
         href: "/content-management/expertise",
       },
+      {
+        name: "Transforming",
+        href: "/content-management/transforming",
+      },
     ],
   },
   {
