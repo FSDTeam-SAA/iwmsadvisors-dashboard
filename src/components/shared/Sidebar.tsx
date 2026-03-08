@@ -42,6 +42,7 @@ const navigation = [
       { name: "FAQ Section", href: "/content-management/faq-section" },
       { name: "Blog Section", href: "/content-management/blog-section" },
       { name: "Banner Section", href: "/content-management/banner-section" },
+      { name: "Hero Section", href: "/content-management/hero-section" },
       { name: "About Section", href: "/content-management/about-section" },
       {
         name: "Contact Information",
