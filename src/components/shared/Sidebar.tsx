@@ -71,6 +71,10 @@ const navigation = [
         name: "Transforming",
         href: "/content-management/transforming",
       },
+      {
+        name: "Transforming Number",
+        href: "/content-management/transforming-number",
+      },
     ],
   },
   {
