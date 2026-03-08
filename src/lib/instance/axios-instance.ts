@@ -8,7 +8,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE,
   timeout: 30000,
-  headers: { "Content-Type": "application/json" },
 });
 
 // Request interceptor

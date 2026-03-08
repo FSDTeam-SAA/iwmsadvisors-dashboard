@@ -35,6 +35,7 @@ export const useUpdateIwmsSolutionsSection = () => {
     }: {
       id: string;
       data: {
+        order?: number;
         title?: string;
         subtitle?: string;
         items?: Omit<IwmsSolutionsItem, "icon">[];

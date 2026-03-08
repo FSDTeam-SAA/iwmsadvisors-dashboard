@@ -14,8 +14,9 @@ export const getTransformSections =
     try {
       const response = await axiosInstance.get("/transform/all");
       return response.data;
-    } catch (error: any) {
-      if (error.response?.status === 404) {
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { status: number } };
+      if (axiosError.response?.status === 404) {
         return {
           status: true,
           message: "Transform sections not found",
@@ -40,11 +41,7 @@ export const createTransformSection = async (
   if (data.image2) formData.append("image2", data.image2);
   if (data.image3) formData.append("image3", data.image3);
 
-  const response = await axiosInstance.post("/transform/create", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axiosInstance.post("/transform/create", formData);
   return response.data.data;
 };
 
@@ -63,11 +60,7 @@ export const updateTransformSection = async (
   if (data.image2) formData.append("image2", data.image2);
   if (data.image3) formData.append("image3", data.image3);
 
-  const response = await axiosInstance.patch(`/transform/${id}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axiosInstance.patch(`/transform/${id}`, formData);
   return response.data.data;
 };
 
