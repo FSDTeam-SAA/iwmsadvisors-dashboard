@@ -9,6 +9,7 @@ import {
 import { Application } from "../types/applicationManagement.type";
 import { format } from "date-fns";
 import { ExternalLink } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ApplicationViewModalProps {
   isOpen: boolean;
@@ -60,10 +61,33 @@ export default function ApplicationViewModal({
             </div>
             <div className="space-y-1">
               <span className="text-sm font-medium text-gray-500">
-                Applied Date
+                Agreement Status
+              </span>
+              <p
+                className={cn(
+                  "text-sm px-3 py-2 rounded-md font-medium",
+                  application.isAgreed
+                    ? "bg-green-50 text-green-700"
+                    : "bg-red-50 text-red-700",
+                )}
+              >
+                {application.isAgreed ? "Agreed" : "Not Agreed"}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-gray-500">
+                Created Date
               </span>
               <p className="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
-                {format(new Date(application.createdAt), "MMM dd, yyyy")}
+                {format(new Date(application.createdAt), "MMM dd, yyyy HH:mm")}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-gray-500">
+                Updated Date
+              </span>
+              <p className="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">
+                {format(new Date(application.updatedAt), "MMM dd, yyyy HH:mm")}
               </p>
             </div>
           </div>
@@ -134,6 +158,15 @@ export default function ApplicationViewModal({
               </div>
             </div>
           )}
+        </div>
+
+        <div className="flex justify-end pt-4 border-t mt-4">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Close
+          </button>
         </div>
       </DialogContent>
     </Dialog>

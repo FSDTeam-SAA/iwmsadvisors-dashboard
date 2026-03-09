@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2, Plus } from "lucide-react";
 import {
   useApplications,
   useDeleteApplication,
@@ -74,6 +75,18 @@ export default function ApplicationManagement() {
             Manage all job applications from the careers page.
           </p>
         </div>
+        {applications.length === 0 && (
+          <Button
+            className="bg-[#0057B8] hover:bg-[#004494]"
+            onClick={() => {
+              /* Logic to add or open add modal */
+              toast.info("Add functionality to be implemented if needed");
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Application
+          </Button>
+        )}
       </div>
 
       {/* Table Section */}

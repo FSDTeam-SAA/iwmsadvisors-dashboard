@@ -77,6 +77,14 @@ const navigation = [
         name: "Transforming Number",
         href: "/content-management/transforming-number",
       },
+      {
+        name: "Stats Section",
+        href: "/content-management/stats-section",
+      },
+      {
+        name: "Strength Section",
+        href: "/content-management/strength-section",
+      },
     ],
   },
   {
