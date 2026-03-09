@@ -20,7 +20,7 @@ export interface StrengthItem {
 export interface StrengthSectionResponse {
   status: boolean;
   message: string;
-  data: StrengthSection;
+  data: StrengthSection[];
 }
 
 export interface StrengthItemsResponse {

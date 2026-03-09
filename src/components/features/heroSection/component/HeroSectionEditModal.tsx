@@ -156,20 +156,22 @@ export default function HeroSectionEditModal({
                 </label>
                 <div className="mt-1 flex flex-col gap-4">
                   {preview ? (
-                    <div className="relative w-full h-48 rounded-md overflow-hidden border">
+                    <div className="relative w-full h-48 rounded-md overflow-hidden border ">
                       <Image
                         src={preview}
                         alt="Hero preview"
                         fill
                         className="object-cover"
                       />
-                      <button
-                        type="button"
-                        onClick={removeImage}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-md hover:bg-red-600 transition-colors cursor-pointer flex items-center gap-2"
-                      >
-                        Change <X className="w-4 h-4" />
-                      </button>
+                      <div className="absolute top-2 right-2">
+                        <button
+                          type="button"
+                          onClick={removeImage}
+                          className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                        >
+                          Change <X className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="w-full h-48 border-2 border-dashed rounded-md flex flex-col items-center justify-center bg-gray-50 text-gray-400">

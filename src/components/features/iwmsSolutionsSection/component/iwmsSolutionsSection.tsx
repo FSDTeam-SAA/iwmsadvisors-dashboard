@@ -78,13 +78,13 @@ export default function IwmsSolutionsSection() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            IwmsSolutionsSection Management
+            Iwms Solutions Section Management
           </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
             <span className="text-gray-900 font-medium">
-              IwmsSolutionsSection Management
+              Iwms SolutionsSection Management
             </span>
           </nav>
         </div>

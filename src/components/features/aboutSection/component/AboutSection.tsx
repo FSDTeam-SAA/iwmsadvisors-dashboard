@@ -24,7 +24,7 @@ export default function AboutSection() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const { data: response, isLoading, isError } = useAboutSections();
+  const { data: response, isError } = useAboutSections();
   const { mutate: createAbout } = useCreateAboutSection();
   const { mutate: updateAbout } = useUpdateAboutSection();
   const { mutate: deleteAbout } = useDeleteAboutSection();
@@ -50,12 +50,10 @@ export default function AboutSection() {
   };
 
   const handleDelete = (id: string) => {
-    if (globalThis.confirm("Are you sure you want to delete this section?")) {
-      deleteAbout(id, {
-        onSuccess: () => toast.success("Section deleted successfully"),
-        onError: () => toast.error("Failed to delete section"),
-      });
-    }
+    deleteAbout(id, {
+      onSuccess: () => toast.success("Section deleted successfully"),
+      onError: () => toast.error("Failed to delete section"),
+    });
   };
 
   const handleSave = (

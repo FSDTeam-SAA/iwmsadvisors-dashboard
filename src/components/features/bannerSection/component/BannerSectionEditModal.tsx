@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { Cross, X } from "lucide-react";
+import { X } from "lucide-react";
 
 interface BannerSectionEditModalProps {
   readonly isOpen: boolean;
@@ -207,7 +207,7 @@ export default function BannerSectionEditModal({
                       }}
                       className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
                     >
-                      Change <X className="w-4 h-4 "/>
+                      Change <X className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

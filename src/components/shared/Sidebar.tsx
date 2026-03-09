@@ -62,12 +62,8 @@ const navigation = [
         href: "/content-management/mission-vision",
       },
       {
-        name: "Certifications",
-        href: "/content-management/certifications",
-      },
-      {
-        name: "Expertise",
-        href: "/content-management/expertise",
+        name: "Expertise & Certifications",
+        href: "/content-management/expertise-certifications",
       },
       {
         name: "Transforming",
