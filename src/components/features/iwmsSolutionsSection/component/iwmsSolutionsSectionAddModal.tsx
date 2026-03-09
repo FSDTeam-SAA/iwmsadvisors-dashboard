@@ -25,6 +25,7 @@ export default function IwmsSolutionsSectionAddModal({
 }: IwmsSolutionsSectionAddModalProps) {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
+  const [order, setOrder] = useState(1);
 
   const [items, setItems] = useState([
     {
@@ -104,6 +105,7 @@ export default function IwmsSolutionsSectionAddModal({
 
     createSection(
       {
+        order,
         title,
         subtitle,
         items: cleanedItems,
@@ -117,7 +119,13 @@ export default function IwmsSolutionsSectionAddModal({
           toast.success("IwmsSolutions section created successfully");
           onClose();
         },
-        onError: () => toast.error("Failed to create IwmsSolutions section"),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+          const errorMessage =
+            error?.response?.data?.message ||
+            "Failed to create IwmsSolutions section";
+          toast.error(errorMessage);
+        },
       },
     );
   };
@@ -141,6 +149,19 @@ export default function IwmsSolutionsSectionAddModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Why Choose Us"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Section Order (1-3)
+              </label>
+              <Input
+                type="number"
+                value={order}
+                onChange={(e) => setOrder(Number.parseInt(e.target.value))}
+                min={1}
+                max={3}
                 required
               />
             </div>

@@ -35,6 +35,7 @@ export const getIwmsSolutionsSections =
 
 // Create a new section
 export const createIwmsSolutionsSection = async (data: {
+  order: number;
   title: string;
   subtitle: string;
   items: Omit<IwmsSolutionsItem, "icon">[];
@@ -44,6 +45,7 @@ export const createIwmsSolutionsSection = async (data: {
   icon_4?: File;
 }): Promise<IwmsSolutionsSectionResponse> => {
   const formData = new FormData();
+  formData.append("order", data.order.toString());
   formData.append("title", data.title);
   formData.append("subtitle", data.subtitle);
 
@@ -54,11 +56,7 @@ export const createIwmsSolutionsSection = async (data: {
   if (data.icon_3) formData.append("icon_3", data.icon_3);
   if (data.icon_4) formData.append("icon_4", data.icon_4);
 
-  const response = await axiosInstance.post("/features/create", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axiosInstance.post("/features/create", formData);
   return response.data;
 };
 
@@ -66,6 +64,7 @@ export const createIwmsSolutionsSection = async (data: {
 export const updateIwmsSolutionsSection = async (
   id: string,
   data: {
+    order?: number;
     title?: string;
     subtitle?: string;
     items?: Omit<IwmsSolutionsItem, "icon">[];
@@ -77,6 +76,7 @@ export const updateIwmsSolutionsSection = async (
 ): Promise<IwmsSolutionsSectionResponse> => {
   const formData = new FormData();
 
+  if (data.order !== undefined) formData.append("order", data.order.toString());
   if (data.title) formData.append("title", data.title);
   if (data.subtitle) formData.append("subtitle", data.subtitle);
   if (data.items) formData.append("items", JSON.stringify(data.items));
@@ -86,11 +86,7 @@ export const updateIwmsSolutionsSection = async (
   if (data.icon_3) formData.append("icon_3", data.icon_3);
   if (data.icon_4) formData.append("icon_4", data.icon_4);
 
-  const response = await axiosInstance.patch(`/features/${id}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axiosInstance.patch(`/features/${id}`, formData);
   return response.data;
 };
 

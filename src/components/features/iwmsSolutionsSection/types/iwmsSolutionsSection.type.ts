@@ -9,6 +9,7 @@ export interface IwmsSolutionsItem {
 
 export interface IwmsSolutionsSection {
   _id: string;
+  order: number;
   title: string;
   subtitle: string;
   items: IwmsSolutionsItem[];

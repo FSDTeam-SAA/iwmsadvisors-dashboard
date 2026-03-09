@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash2, Edit, Plus, ChevronRight } from "lucide-react";
+import { Trash2, Edit, Plus, ChevronRight, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -21,12 +21,14 @@ import {
 } from "../hooks/useIwmsSolutionsSection";
 import IwmsSolutionsSectionAddModal from "./iwmsSolutionsSectionAddModal";
 import IwmsSolutionsSectionEditModal from "./iwmsSolutionsSectionEditModal";
+import IwmsSolutionsSectionViewModal from "./iwmsSolutionsSectionViewModal";
 
 export default function IwmsSolutionsSection() {
   const [selectedSection, setSelectedSection] =
     useState<IwmsSolutionsSectionType | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const { data: response, isLoading, isError } = useIwmsSolutionsSections();
   const { mutate: deleteSection } = useDeleteIwmsSolutionsSection();
@@ -34,7 +36,9 @@ export default function IwmsSolutionsSection() {
   let sectionItems: IwmsSolutionsSectionType[] = [];
   if (response?.data) {
     if (Array.isArray(response.data)) {
-      sectionItems = response.data;
+      sectionItems = [...response.data].sort(
+        (a, b) => (a.order || 0) - (b.order || 0),
+      );
     } else {
       sectionItems = [response.data];
     }
@@ -43,6 +47,11 @@ export default function IwmsSolutionsSection() {
   const handleEdit = (section: IwmsSolutionsSectionType) => {
     setSelectedSection(section);
     setIsEditModalOpen(true);
+  };
+
+  const handleView = (section: IwmsSolutionsSectionType) => {
+    setSelectedSection(section);
+    setIsViewModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
@@ -79,17 +88,21 @@ export default function IwmsSolutionsSection() {
             </span>
           </nav>
         </div>
-        {!sectionItems.length && (
-          <div className="w-full md:w-auto flex md:justify-end">
-            <Button
-              onClick={() => setIsAddModalOpen(true)}
-              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Section
-            </Button>
-          </div>
-        )}
+        <div className="w-full md:w-auto flex md:justify-end items-center gap-3">
+          {sectionItems.length >= 3 && (
+            <span className="text-sm text-amber-600 font-medium bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              Maximum 3 sections reached
+            </span>
+          )}
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            disabled={sectionItems.length >= 3}
+            className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Section
+          </Button>
+        </div>
       </div>
 
       <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white">
@@ -97,6 +110,9 @@ export default function IwmsSolutionsSection() {
           <Table>
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
+                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                  Order
+                </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Title
                 </TableHead>
@@ -118,6 +134,9 @@ export default function IwmsSolutionsSection() {
                     key={item._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
+                    <TableCell className="py-4 text-center text-gray-700 font-bold whitespace-nowrap">
+                      {item.order}
+                    </TableCell>
                     <TableCell className="py-4 text-center text-gray-700 font-medium whitespace-nowrap">
                       {item.title}
                     </TableCell>
@@ -130,14 +149,23 @@ export default function IwmsSolutionsSection() {
                     <TableCell className="py-4 text-center">
                       <div className="flex justify-center items-center gap-2">
                         <button
+                          onClick={() => handleView(item)}
+                          className="p-2 bg-blue-500 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
+                          title="View Details"
+                        >
+                          <Eye className="w-5 h-5 text-white" />
+                        </button>
+                        <button
                           onClick={() => handleEdit(item)}
                           className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
+                          title="Edit"
                         >
                           <Edit className="w-5 h-5 text-white" />
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
                           className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          title="Delete"
                         >
                           <Trash2 className="w-5 h-5 text-white" />
                         </button>
@@ -148,7 +176,7 @@ export default function IwmsSolutionsSection() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={4}
+                    colSpan={5}
                     className="py-10 text-center text-gray-400"
                   >
                     No IWMS Solutions sections found.{" "}
@@ -177,6 +205,14 @@ export default function IwmsSolutionsSection() {
         <IwmsSolutionsSectionEditModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
+          iwmsSolutionsSection={selectedSection}
+        />
+      )}
+
+      {isViewModalOpen && (
+        <IwmsSolutionsSectionViewModal
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
           iwmsSolutionsSection={selectedSection}
         />
       )}

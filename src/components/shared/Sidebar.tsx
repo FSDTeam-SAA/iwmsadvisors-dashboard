@@ -13,6 +13,7 @@ import {
   BowArrow,
   ChevronDown,
   ChevronRight,
+  FileText,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -42,6 +43,7 @@ const navigation = [
       { name: "FAQ Section", href: "/content-management/faq-section" },
       { name: "Blog Section", href: "/content-management/blog-section" },
       { name: "Banner Section", href: "/content-management/banner-section" },
+      { name: "Hero Section", href: "/content-management/hero-section" },
       { name: "About Section", href: "/content-management/about-section" },
       {
         name: "Contact Information",
@@ -67,12 +69,33 @@ const navigation = [
         name: "Expertise",
         href: "/content-management/expertise",
       },
+      {
+        name: "Transforming",
+        href: "/content-management/transforming",
+      },
+      {
+        name: "Transforming Number",
+        href: "/content-management/transforming-number",
+      },
+      {
+        name: "Stats Section",
+        href: "/content-management/stats-section",
+      },
+      {
+        name: "Strength Section",
+        href: "/content-management/strength-section",
+      },
     ],
   },
   {
     name: "Service Management",
     href: "/service-management",
     icon: ShoppingBasket,
+  },
+  {
+    name: "Application Management",
+    href: "/application-management",
+    icon: FileText,
   },
   {
     name: "Career Management",
