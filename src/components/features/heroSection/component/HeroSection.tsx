@@ -1,16 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Edit, Trash2, Eye, FileImage } from "lucide-react";
+import { Plus, FileImage } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { HeroCard } from "./HeroCard";
 import { useHeroSections, useDeleteHeroSection } from "../hooks/useHeroSection";
 import HeroSectionAddModal from "./HeroSectionAddModal";
 import HeroSectionEditModal from "./HeroSectionEditModal";
@@ -23,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { HeroSection as HeroSectionType } from "../types/heroSection.type";
-import Image from "next/image";
 
 export default function HeroSection() {
   const { data: response, isLoading, isError } = useHeroSections();
@@ -118,88 +110,33 @@ export default function HeroSection() {
         </Button>
       </div>
 
-      <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-50">
-              <TableHead className="w-[80px]">Order</TableHead>
-              <TableHead className="w-[100px]">Image</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Subtitle</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sortedHeroSections.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="text-center py-8 text-gray-500"
-                >
-                  No Hero sections found. Click &quot;Add Hero Section&quot; to
-                  create one.
-                </TableCell>
-              </TableRow>
-            ) : (
-              sortedHeroSections.map((section) => (
-                <TableRow key={section._id}>
-                  <TableCell className="font-medium">{section.order}</TableCell>
-                  <TableCell>
-                    {section.image ? (
-                      <div className="relative w-12 h-12 rounded overflow-hidden border bg-gray-50">
-                        <Image
-                          src={section.image}
-                          alt={section.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-12 h-12 rounded border bg-gray-50 flex flex-col items-center justify-center text-gray-400">
-                        <FileImage className="w-4 h-4" />
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-medium">{section.title}</TableCell>
-                  <TableCell className="text-gray-500 truncate max-w-[200px]">
-                    {section.subtitle || "-"}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleViewClick(section)}
-                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                        title="View detail"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleEditClick(section)}
-                        className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                        title="Edit section"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleDeleteClick(section)}
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                        title="Delete section"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {sortedHeroSections.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+            <div className="bg-gray-50 p-4 rounded-full mb-4 text-gray-400">
+              <FileImage className="w-12 h-12 opacity-20" />
+            </div>
+            <p className="text-gray-400 text-lg font-medium">
+              No Hero sections found
+            </p>
+            <button
+              className="text-[#0057B8] hover:underline mt-2 font-semibold cursor-pointer"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Create your first hero section
+            </button>
+          </div>
+        ) : (
+          sortedHeroSections.map((section) => (
+            <HeroCard
+              key={section._id}
+              section={section}
+              onView={handleViewClick}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+            />
+          ))
+        )}
       </div>
 
       <HeroSectionAddModal

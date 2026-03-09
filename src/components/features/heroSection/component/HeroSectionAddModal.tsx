@@ -187,12 +187,12 @@ export default function HeroSectionAddModal({
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#0057B8] text-white hover:bg-[#004494]"
+              className="bg-[#0057B8] text-white hover:bg-[#004494] cursor-pointer"
               disabled={isPending}
             >
               {isPending ? "Creating..." : "Create Section"}

@@ -166,9 +166,9 @@ export default function HeroSectionEditModal({
                       <button
                         type="button"
                         onClick={removeImage}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-md hover:bg-red-600 transition-colors cursor-pointer flex items-center gap-2"
                       >
-                        <X className="w-4 h-4" />
+                        Change <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (

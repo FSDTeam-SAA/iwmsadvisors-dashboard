@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { Cross, X } from "lucide-react";
 
 interface BannerSectionEditModalProps {
   readonly isOpen: boolean;
@@ -185,13 +186,30 @@ export default function BannerSectionEditModal({
               onClick={() => fileInputRef.current?.click()}
             >
               {imagePreview ? (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
+                <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100 group/img">
                   <Image
                     src={imagePreview}
                     alt={bannerSection.title}
                     fill
                     className="object-cover"
                   />
+                  <div className="absolute top-2 right-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImageFile(null);
+                        if (imagePreview?.startsWith("blob:")) {
+                          URL.revokeObjectURL(imagePreview);
+                        }
+                        setImagePreview(null);
+                        fileInputRef.current?.click();
+                      }}
+                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                    >
+                      Change <X className="w-4 h-4 "/>
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 text-gray-500">
@@ -214,23 +232,12 @@ export default function BannerSectionEditModal({
             </div>
             {imageFile && (
               <div className="flex items-center justify-between mt-2">
-                <p className="text-xs text-gray-500 truncate">
-                  {imageFile.name}
+                <p className="text-xs text-info truncate">
+                  Selected:{" "}
+                  <span className="font-medium text-gray-700">
+                    {imageFile.name}
+                  </span>
                 </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setImageFile(null);
-                    if (imagePreview && imagePreview.startsWith("blob:")) {
-                      URL.revokeObjectURL(imagePreview);
-                    }
-                    setImagePreview(bannerSection?.image ?? null);
-                  }}
-                  className="h-8"
-                >
-                  Remove
-                </Button>
               </div>
             )}
           </div>
@@ -241,7 +248,7 @@ export default function BannerSectionEditModal({
               type="button"
               variant="outline"
               onClick={onClose}
-              className="px-6"
+              className="px-6 cursor-pointer"
             >
               Cancel
             </Button>
