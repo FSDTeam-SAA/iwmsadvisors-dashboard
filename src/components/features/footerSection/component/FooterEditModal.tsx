@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 
 interface FooterEditModalProps {
@@ -99,42 +99,28 @@ export default function FooterEditModal({
   onSave,
 }: FooterEditModalProps) {
   const [formData, setFormData] = useState({
-    description: footer?.description ?? "",
-    email: footer?.email ?? "",
-    phone: footer?.phone ?? "",
-    copyright: footer?.copyright ?? "",
-    quickLinks: footer?.quickLinks?.length ? footer.quickLinks : [emptyLink()],
-    consultingLinks: footer?.consultingLinks?.length
-      ? footer.consultingLinks
-      : [emptyLink()],
-    contactLinks: footer?.contactLinks?.length
-      ? footer.contactLinks
-      : [emptyLink()],
+    description: "",
+    email: "",
+    phone: "",
+    copyright: "",
+    quickLinks: [emptyLink()],
+    consultingLinks: [emptyLink()],
+    contactLinks: [emptyLink()],
     socialLinks: {
-      twitter: footer?.socialLinks?.twitter ?? "",
-      facebook: footer?.socialLinks?.facebook ?? "",
-      linkedin: footer?.socialLinks?.linkedin ?? "",
+      twitter: "",
+      facebook: "",
+      linkedin: "",
     },
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(
-    footer?.logo ?? null,
-  );
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const lastFooterId = useRef<string | null>(null);
+
   useEffect(() => {
-    return () => {
-      if (logoPreview && logoPreview.startsWith("blob:")) {
-        URL.revokeObjectURL(logoPreview);
-      }
-    };
-  }, [logoPreview]);
-
-  const [prevFooter, setPrevFooter] = useState<Footer | null>(footer);
-
-  if (footer !== prevFooter) {
-    setPrevFooter(footer);
-    if (footer) {
+    if (isOpen && footer && footer._id !== lastFooterId.current) {
+      lastFooterId.current = footer._id;
       setFormData({
         description: footer.description ?? "",
         email: footer.email ?? "",
@@ -157,8 +143,18 @@ export default function FooterEditModal({
       });
       setLogoFile(null);
       setLogoPreview(footer.logo ?? null);
+    } else if (!isOpen) {
+      lastFooterId.current = null;
     }
-  }
+  }, [isOpen, footer]);
+
+  useEffect(() => {
+    return () => {
+      if (logoPreview && logoPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(logoPreview);
+      }
+    };
+  }, [logoPreview]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -181,6 +177,16 @@ export default function FooterEditModal({
     onSave(footer._id, { ...formData, logoFile });
   };
 
+  const handleRemoveImage = () => {
+    setLogoFile(null);
+    if (logoPreview?.startsWith("blob:")) {
+      URL.revokeObjectURL(logoPreview);
+    }
+    setLogoPreview(null);
+    // Automatically trigger picker
+    fileInputRef.current?.click();
+  };
+
   if (!footer) return null;
 
   return (
@@ -194,7 +200,7 @@ export default function FooterEditModal({
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           {/* Logo Upload */}
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label className="text-sm font-bold text-gray-700">
               Logo Image
             </Label>
@@ -208,73 +214,47 @@ export default function FooterEditModal({
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
                 setLogoFile(file);
-                if (logoPreview && logoPreview.startsWith("blob:")) {
+                if (logoPreview?.startsWith("blob:")) {
                   URL.revokeObjectURL(logoPreview);
                 }
                 if (file) {
                   const url = URL.createObjectURL(file);
                   setLogoPreview(url);
-                } else {
-                  // Fall back to original logo if user removes selection? Or null?
-                  setLogoPreview(null);
                 }
               }}
             />
 
-            <div
-              className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
+            <div className="relative group w-full max-w-[200px] h-32 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4">
               {logoPreview ? (
-                <div className="relative w-full h-32 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center p-2">
+                <>
                   <Image
                     src={logoPreview}
                     alt="Logo preview"
                     fill
                     className="object-contain"
                   />
-                </div>
+                  <div className="absolute top-2 right-2">
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                    >
+                      Change <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </>
               ) : (
-                <div className="flex flex-col items-center justify-center h-24 text-gray-500">
-                  <p className="text-sm font-medium">
-                    Click to upload or drag & drop
+                <div
+                  className="flex flex-col items-center justify-center h-full w-full cursor-pointer hover:bg-gray-100/50 transition-colors"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Plus className="w-6 h-6 text-gray-400 mb-2" />
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center px-4">
+                    Choose Logo
                   </p>
-                  <p className="text-xs">PNG, JPG, SVG up to ~2MB</p>
-                  <Button
-                    type="button"
-                    className="mt-3 bg-[#0057B8] hover:bg-[#004494] h-8 text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
-                  >
-                    Choose Image
-                  </Button>
                 </div>
               )}
             </div>
-
-            {(logoFile || logoPreview) && (
-              <div className="flex items-center justify-between mt-2">
-                <p className="text-xs text-gray-500 truncate">
-                  {logoFile ? logoFile.name : logoPreview ? "Current Logo" : ""}
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setLogoFile(null);
-                    if (logoPreview && logoPreview.startsWith("blob:")) {
-                      URL.revokeObjectURL(logoPreview);
-                    }
-                    setLogoPreview(null);
-                  }}
-                  className="h-8"
-                >
-                  Remove
-                </Button>
-              </div>
-            )}
           </div>
 
           <div className="space-y-2">

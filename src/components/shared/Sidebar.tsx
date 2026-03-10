@@ -38,6 +38,7 @@ const navigation = [
     href: "/content-management",
     icon: TvMinimalPlay,
     subItems: [
+      { name: "logo Section", href: "/content-management/navbar" },
       { name: "Case Study", href: "/content-management/case-study" },
       { name: "MREF Section", href: "/content-management/mref-section" },
       { name: "FAQ Section", href: "/content-management/faq-section" },
@@ -62,12 +63,8 @@ const navigation = [
         href: "/content-management/mission-vision",
       },
       {
-        name: "Certifications",
-        href: "/content-management/certifications",
-      },
-      {
-        name: "Expertise",
-        href: "/content-management/expertise",
+        name: "Expertise & Certifications",
+        href: "/content-management/expertise-certifications",
       },
       {
         name: "Transforming",

@@ -80,7 +80,7 @@ export default function HeroSectionViewModal({
             )}
           </div>
 
-          <div className="border-t pt-4">
+          {/* <div className="border-t pt-4">
             <h4 className="text-sm font-semibold mb-3">System Information</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -112,10 +112,10 @@ export default function HeroSectionViewModal({
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="flex justify-end pt-4 border-t">
-            <Button type="button" onClick={onClose}>
+          <div className="flex justify-end pt-4 border-t ">
+            <Button type="button" onClick={onClose} className="cursor-pointer">
               Close
             </Button>
           </div>

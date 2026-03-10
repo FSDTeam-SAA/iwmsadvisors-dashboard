@@ -1,26 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Eye,
-  Edit,
-  Plus,
-  ChevronRight,
-  Mail,
-  Phone,
-  Copyright,
-  Trash2,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Plus, ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -34,6 +15,7 @@ import {
   useUpdateFooter,
   useDeleteFooter,
 } from "../hooks/useFooter";
+import { FooterCard } from "./FooterCard";
 import FooterAddModal from "./FooterAddModal";
 import FooterEditModal from "./FooterEditModal";
 import FooterViewModal from "./FooterViewModal";
@@ -102,93 +84,6 @@ export default function FooterSection() {
     );
   }
 
-  let tableContent: React.ReactNode;
-  if (isLoading) {
-    tableContent = (
-      <TableRow>
-        <TableCell colSpan={5} className="py-10 text-center text-gray-400">
-          Loading...
-        </TableCell>
-      </TableRow>
-    );
-  } else if (footerItem) {
-    tableContent = (
-      <TableRow className="border-b last:border-0 hover:bg-gray-50 transition-colors">
-        {/* Email */}
-        <TableCell className="py-4 text-center">
-          <div className="flex items-center justify-center gap-1.5 text-gray-600">
-            <Mail className="w-3.5 h-3.5 text-[#0057B8]" />
-            <span className="text-sm">{footerItem.email || "N/A"}</span>
-          </div>
-        </TableCell>
-
-        {/* Phone */}
-        <TableCell className="py-4 text-center">
-          <div className="flex items-center justify-center gap-1.5 text-gray-600">
-            <Phone className="w-3.5 h-3.5 text-[#0057B8]" />
-            <span className="text-sm">{footerItem.phone || "N/A"}</span>
-          </div>
-        </TableCell>
-
-        {/* Copyright */}
-        <TableCell className="py-4 text-center max-w-[240px]">
-          <div className="flex items-center justify-center gap-1.5 text-gray-600">
-            <Copyright className="w-3.5 h-3.5 text-[#0057B8] shrink-0" />
-            <span className="text-sm truncate">
-              {footerItem.copyright || "N/A"}
-            </span>
-          </div>
-        </TableCell>
-
-        {/* Links count */}
-        <TableCell className="py-4 text-center text-sm text-gray-600">
-          {(footerItem.quickLinks?.length ?? 0) +
-            (footerItem.consultingLinks?.length ?? 0) +
-            (footerItem.contactLinks?.length ?? 0)}{" "}
-          links
-        </TableCell>
-
-        {/* Actions */}
-        <TableCell className="py-4 text-center">
-          <div className="flex justify-center items-center gap-2">
-            <button
-              onClick={() => handleView(footerItem)}
-              className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
-            >
-              <Eye className="w-5 h-5 text-white" />
-            </button>
-            <button
-              onClick={() => handleEdit(footerItem)}
-              className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
-            >
-              <Edit className="w-5 h-5 text-white" />
-            </button>
-            <button
-              onClick={() => handleDelete(footerItem._id)}
-              className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
-            >
-              <Trash2 className="w-5 h-5 text-white" />
-            </button>
-          </div>
-        </TableCell>
-      </TableRow>
-    );
-  } else {
-    tableContent = (
-      <TableRow>
-        <TableCell colSpan={5} className="py-10 text-center text-gray-400">
-          No footer found.{" "}
-          <button
-            className="text-[#0057B8] hover:underline font-medium cursor-pointer"
-            onClick={() => setIsAddModalOpen(true)}
-          >
-            Add one now
-          </button>
-        </TableCell>
-      </TableRow>
-    );
-  }
-
   return (
     <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
       {/* Page Header */}
@@ -216,35 +111,35 @@ export default function FooterSection() {
         )}
       </div>
 
-      {/* Table Card */}
-      <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-[#F8F9FA]">
-              <TableRow className="border-b hover:bg-transparent">
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Email
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Phone
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Copyright
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Nav Links
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Action
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className={cn(isLoading && "opacity-50")}>
-              {tableContent}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      <div className="grid grid-cols-1 gap-8">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20 bg-white rounded-2xl border border-gray-100">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0057B8]"></div>
+          </div>
+        ) : footerItem ? (
+          <FooterCard
+            item={footerItem}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        ) : (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+            <div className="bg-gray-50 p-4 rounded-full mb-4 text-gray-400">
+              <FileText className="w-12 h-12 opacity-20" />
+            </div>
+            <p className="text-gray-400 text-lg font-medium">
+              No footer settings found
+            </p>
+            <button
+              className="text-[#0057B8] hover:underline mt-2 font-semibold cursor-pointer"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Add your footer settings now
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Modals */}
       <FooterViewModal

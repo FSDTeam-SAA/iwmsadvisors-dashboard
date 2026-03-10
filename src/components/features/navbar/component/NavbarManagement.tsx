@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Plus, Edit, Trash2, Eye, ChevronRight, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,53 +11,58 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
-import { Eye, Trash2, Edit, Plus, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
-import {
-  useStatsSections,
-  useDeleteStatsSection,
-} from "../hooks/useStatsSection";
-import { StatsSection as StatsSectionType } from "../types/statsSection.type";
-import StatsSectionAddModal from "./StatsSectionAddModal";
-import StatsSectionEditModal from "./StatsSectionEditModal";
-import StatsSectionViewModal from "./StatsSectionViewModal";
+import { useNavbar, useDeleteNavbar } from "../hooks/useNavbar";
+import { Navbar } from "../types/navbar.type";
+import NavbarAddModal from "./NavbarAddModal";
+import NavbarEditModal from "./NavbarEditModal";
+import NavbarViewModal from "./NavbarViewModal";
 
-export default function StatsSection() {
-  const [selectedStats, setSelectedStats] = useState<StatsSectionType | null>(
-    null,
-  );
+export default function NavbarManagement() {
+  const [selectedNavbar, setSelectedNavbar] = useState<Navbar | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const { data: response, isLoading, isError } = useStatsSections();
-  const { mutate: deleteSection } = useDeleteStatsSection();
+  const { data: response, isLoading, isError } = useNavbar();
+  const { mutate: deleteNavbar } = useDeleteNavbar();
 
-  const statsSections = response?.data || [];
+  // API returns single object in data. We map it to an array for the table.
+  const rawData = response?.data;
+  let navbars: Navbar[] = [];
 
-  const handleView = (section: StatsSectionType) => {
-    setSelectedStats(section);
+  if (
+    rawData &&
+    response?.status !== false &&
+    Object.keys(rawData).length > 0
+  ) {
+    navbars = Array.isArray(rawData) ? rawData : [rawData];
+  }
+
+  const handleView = (navbar: Navbar) => {
+    setSelectedNavbar(navbar);
     setIsViewModalOpen(true);
   };
 
-  const handleEdit = (section: StatsSectionType) => {
-    setSelectedStats(section);
+  const handleEdit = (navbar: Navbar) => {
+    setSelectedNavbar(navbar);
     setIsEditModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    deleteSection(id, {
-      onSuccess: () => toast.success("Stats section deleted successfully"),
-      onError: () => toast.error("Failed to delete stats section"),
+    deleteNavbar(id, {
+      onSuccess: () => toast.success("Navbar logo deleted successfully"),
+      onError: () => toast.error("Failed to delete navbar logo"),
     });
   };
 
   if (isError) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500 font-medium">Error loading stats sections</p>
+        <p className="text-red-500 font-medium">Error loading navbar data</p>
       </div>
     );
   }
@@ -65,21 +71,23 @@ export default function StatsSection() {
     <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Stats Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Navbar Management
+          </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
-            <span className="text-gray-900 font-medium">Stats Management</span>
+            <span className="text-gray-900 font-medium">Navbar Management</span>
           </nav>
         </div>
         <div className="w-full md:w-auto flex md:justify-end">
-          {statsSections.length === 0 && (
+          {navbars.length === 0 && !isLoading && (
             <Button
               onClick={() => setIsAddModalOpen(true)}
-              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
+              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer shadow-sm transition-all"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add Stats Section
+              Add Navbar Logo
             </Button>
           )}
         </div>
@@ -90,37 +98,40 @@ export default function StatsSection() {
           <Table>
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
-                <TableHead className="py-4 text-gray-600 font-bold text-left pl-8">
-                  Title
+                <TableHead className="py-4 text-gray-600 font-bold text-center w-40 pl-8">
+                  Logo
                 </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-left">
-                  Subtitle
+                <TableHead className="py-4 text-gray-600 font-bold text-center w-48">
+                  Created At
                 </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Items
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center pl-4">
+                <TableHead className="py-4 text-gray-600 font-bold text-center pl-4 w-40">
                   Actions
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className={cn(isLoading && "opacity-50")}>
-              {statsSections.length > 0 ? (
-                statsSections.map((item: StatsSectionType) => (
+              {navbars.length > 0 ? (
+                navbars.map((item: Navbar) => (
                   <TableRow
                     key={item._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
-                    <TableCell className="py-4 text-left text-gray-700 font-medium pl-8">
-                      {item.title}
+                    <TableCell className="py-4 text-center pl-8">
+                      <div className="relative w-24 h-12 mx-auto rounded overflow-hidden bg-gray-100 border border-gray-100 shadow-sm flex items-center justify-center transition-transform hover:scale-105">
+                        {item.logo ? (
+                          <Image
+                            src={item.logo}
+                            alt="Navbar Logo"
+                            fill
+                            className="object-contain p-1"
+                          />
+                        ) : (
+                          <ImageIcon className="w-5 h-5 text-gray-300" />
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell className="py-4 text-left text-gray-500 text-sm max-w-[300px] truncate">
-                      {item.subtitle || "—"}
-                    </TableCell>
-                    <TableCell className="py-4 text-center">
-                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                        {item.items?.length || 0} items
-                      </span>
+                    <TableCell className="py-4 text-center text-gray-500 text-sm font-medium">
+                      {new Date(item.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="py-4 text-center">
                       <div className="flex justify-center items-center gap-2">
@@ -152,17 +163,21 @@ export default function StatsSection() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={4}
-                    className="py-16 text-center text-gray-400 italic bg-white"
+                    colSpan={3}
+                    className="py-16 text-center text-gray-400 font-medium italic bg-white"
                   >
-                    No stats sections found.{" "}
-                    {!isLoading && (
-                      <button
-                        className="text-[#0057B8] hover:underline font-medium cursor-pointer"
-                        onClick={() => setIsAddModalOpen(true)}
-                      >
-                        Add one now
-                      </button>
+                    {isLoading ? (
+                      "Loading..."
+                    ) : (
+                      <>
+                        No navbar logo found.{" "}
+                        <button
+                          className="text-[#0057B8] hover:underline font-medium cursor-pointer"
+                          onClick={() => setIsAddModalOpen(true)}
+                        >
+                          Add one now
+                        </button>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>
@@ -172,23 +187,23 @@ export default function StatsSection() {
         </div>
       </Card>
 
-      <StatsSectionViewModal
+      <NavbarViewModal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
-        statsSection={selectedStats}
+        navbar={selectedNavbar}
       />
 
-      <StatsSectionEditModal
-        key={selectedStats?._id || "edit-modal"}
+      <NavbarEditModal
+        key={selectedNavbar?._id || "edit-modal"}
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);
-          setSelectedStats(null);
+          setSelectedNavbar(null);
         }}
-        statsSection={selectedStats}
+        navbar={selectedNavbar}
       />
 
-      <StatsSectionAddModal
+      <NavbarAddModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
       />

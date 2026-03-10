@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -27,13 +27,26 @@ export default function ContactInformationEditModal({
   onSave,
 }: ContactInformationEditModalProps) {
   const [formData, setFormData] = useState({
-    title: contactInformation?.title || "",
-    description: contactInformation?.description || "",
-    email: contactInformation?.email || "",
-    phone: contactInformation?.phone || "",
-    address: contactInformation?.address || "",
-    mapUrl: contactInformation?.mapUrl || "",
+    title: "",
+    description: "",
+    email: "",
+    phone: "",
+    address: "",
+    mapUrl: "",
   });
+
+  useEffect(() => {
+    if (contactInformation) {
+      setFormData({
+        title: contactInformation.title || "",
+        description: contactInformation.description || "",
+        email: contactInformation.email || "",
+        phone: contactInformation.phone || "",
+        address: contactInformation.address || "",
+        mapUrl: contactInformation.mapUrl || "",
+      });
+    }
+  }, [contactInformation]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,9 +15,9 @@ import { Plus, Trash2 } from "lucide-react";
 import { StatsSection, StatsSectionItem } from "../types/statsSection.type";
 
 interface StatsSectionEditModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  statsSection: StatsSection | null;
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly statsSection: StatsSection | null;
 }
 
 export default function StatsSectionEditModal({
@@ -126,15 +126,15 @@ export default function StatsSectionEditModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
+        <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
+          <DialogTitle className="text-2xl font-bold text-[#1E293B]">
             Edit Stats Section
           </DialogTitle>
         </DialogHeader>
 
         {statsSection && (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label
@@ -192,7 +192,7 @@ export default function StatsSectionEditModal({
                   <div className="space-y-4">
                     {items.map((item, index) => (
                       <div
-                        key={index}
+                        key={item.order || index}
                         className="p-4 bg-gray-50 border rounded-md space-y-3 relative"
                       >
                         <button
