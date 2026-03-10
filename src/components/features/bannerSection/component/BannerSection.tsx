@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Eye, Trash2, Edit, Plus, ChevronRight } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -24,6 +15,7 @@ import {
 import BannerSectionAddModal from "./BannerSectionAddModal";
 import BannerSectionEditModal from "./BannerSectionEditModal";
 import BannerSectionViewModal from "./BannerSectionViewModal";
+import { BannerCard } from "./BannerCard";
 import Image from "next/image";
 
 export default function BannerSection() {
@@ -130,104 +122,46 @@ export default function BannerSection() {
         )}
       </div>
 
-      <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-[#F8F9FA]">
-              <TableRow className="border-b hover:bg-transparent">
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Image
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Title
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Subtitle
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Date
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Action
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className={cn(isLoading && "opacity-50")}>
-              {banners.length > 0 ? (
-                banners.map((banner: BannerSectionType) => (
-                  <TableRow
-                    key={banner._id}
-                    className="border-b last:border-0 hover:bg-gray-50 transition-colors"
-                  >
-                    <TableCell className="py-4 text-center">
-                      <div className="relative w-12 h-12 mx-auto rounded-lg overflow-hidden bg-gray-100">
-                        {banner.image ? (
-                          <Image
-                            src={banner.image}
-                            alt={banner.title}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
-                            N/A
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-700 font-medium">
-                      {banner.title}
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600">
-                      {banner.subTitle || "N/A"}
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600">
-                      {new Date(banner.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="py-4 text-center">
-                      <div className="flex justify-center items-center gap-2">
-                        <button
-                          onClick={() => handleView(banner)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
-                        >
-                          <Eye className="w-5 h-5 text-white" />
-                        </button>
-                        <button
-                          onClick={() => handleEdit(banner)}
-                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
-                        >
-                          <Edit className="w-5 h-5 text-white" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(banner._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-5 h-5 text-white" />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="py-10 text-center text-gray-400"
-                  >
-                    No banners found.{" "}
-                    <button
-                      className="text-[#0057B8] hover:underline font-medium cursor-pointer"
-                      onClick={() => setIsAddModalOpen(true)}
-                    >
-                      Add one now
-                    </button>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      <div
+        className={cn(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8",
+          isLoading && "opacity-50 transition-opacity",
+        )}
+      >
+        {banners.length > 0 ? (
+          banners.map((banner: BannerSectionType) => (
+            <BannerCard
+              key={banner._id}
+              banner={banner}
+              onView={handleView}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))
+        ) : (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+            <div className="bg-gray-50 p-4 rounded-full mb-4">
+              <Image
+                src="/no-data.svg"
+                alt="No data"
+                width={64}
+                height={64}
+                className="opacity-20"
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
+            </div>
+            <p className="text-gray-400 text-lg font-medium">
+              No banners found
+            </p>
+            <button
+              className="text-[#0057B8] hover:underline mt-2 font-semibold cursor-pointer"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Create your first banner
+            </button>
+          </div>
+        )}
+      </div>
 
       <BannerSectionViewModal
         isOpen={isViewModalOpen}

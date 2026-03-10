@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { X } from "lucide-react";
 import Image from "next/image";
 
 interface AboutSectionEditModalProps {
@@ -224,6 +225,23 @@ export default function AboutSectionEditModal({
                     fill
                     className="object-cover"
                   />
+                  <div className="absolute top-2 right-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImageFile(null);
+                        if (imagePreview?.startsWith("blob:")) {
+                          URL.revokeObjectURL(imagePreview);
+                        }
+                        setImagePreview(null);
+                        fileInputRef.current?.click();
+                      }}
+                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                    >
+                      Change <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 text-gray-500">
@@ -247,23 +265,12 @@ export default function AboutSectionEditModal({
 
             {imageFile && (
               <div className="flex items-center justify-between mt-2">
-                <p className="text-xs text-gray-500 truncate">
-                  {imageFile.name}
+                <p className="text-xs text-info truncate">
+                  Selected:{" "}
+                  <span className="font-medium text-gray-700">
+                    {imageFile.name}
+                  </span>
                 </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setImageFile(null);
-                    if (imagePreview && imagePreview.startsWith("blob:")) {
-                      URL.revokeObjectURL(imagePreview);
-                    }
-                    setImagePreview(aboutSection?.image ?? null);
-                  }}
-                  className="h-8"
-                >
-                  Remove
-                </Button>
               </div>
             )}
           </div>

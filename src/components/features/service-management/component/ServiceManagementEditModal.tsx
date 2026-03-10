@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { ServicePage } from "../types/service-management.types";
 
@@ -259,6 +259,23 @@ export default function ServiceManagementEditModal({
                     fill
                     className="object-cover"
                   />
+                  <div className="absolute top-2 right-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImageFile(null);
+                        if (imagePreview?.startsWith("blob:")) {
+                          URL.revokeObjectURL(imagePreview);
+                        }
+                        setImagePreview(null);
+                        fileInputRef.current?.click();
+                      }}
+                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                    >
+                      Change <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 text-gray-500">
@@ -361,10 +378,18 @@ export default function ServiceManagementEditModal({
           </div>
 
           <div className="flex justify-end gap-4 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="cursor-pointer"
+            >
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#0057B8] hover:bg-[#004494] cursor-pointer">
+            <Button
+              type="submit"
+              className="bg-[#0057B8] hover:bg-[#004494] cursor-pointer"
+            >
               Save Changes
             </Button>
           </div>

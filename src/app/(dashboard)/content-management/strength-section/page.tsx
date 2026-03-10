@@ -1,6 +1,10 @@
-import StrengthSection from "@/components/features/strengthSection/component/StrengthSection";
+import StrengthItemsManagement from "@/components/features/strengthSection/component/StrengthItemsManagement";
 import React from "react";
 
 export default function page() {
-  return <StrengthSection />;
+  return (
+    <div>
+      <StrengthItemsManagement />
+    </div>
+  );
 }

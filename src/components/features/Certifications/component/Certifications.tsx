@@ -127,24 +127,17 @@ export default function Certifications() {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Certifications Management
-          </h1>
-        </div>
+    <div className="space-y-6">
+      {/* Actions */}
+      <div className="flex justify-end">
         {certifications.length === 0 && (
-          <div className="w-full md:w-auto flex md:justify-end">
-            <Button
-              onClick={() => setIsAddModalOpen(true)}
-              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Certification
-            </Button>
-          </div>
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Certification
+          </Button>
         )}
       </div>
 
