@@ -1,19 +1,26 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChevronRight } from "lucide-react";
 import StrengthHeaderSection from "./StrengthHeaderSection";
 import StrengthItemsSection from "./StrengthItemsSection";
 
 export default function StrengthItemsManagement() {
   return (
-    <div className="w-full mx-auto container p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Strength Management
-        </h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Manage heading, subtitle, and individual strength items.
-        </p>
+    <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Strength Management
+          </h1>
+          <nav className="flex items-center text-sm text-gray-500 mt-1">
+            <span>Dashboard</span>
+            <ChevronRight className="w-4 h-4 mx-1" />
+            <span className="text-gray-900 font-medium">
+              Strength Management
+            </span>
+          </nav>
+        </div>
       </div>
 
       <Tabs defaultValue="strength" className="w-full">

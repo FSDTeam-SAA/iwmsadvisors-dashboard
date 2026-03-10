@@ -81,13 +81,13 @@ export default function StrengthItemsSection() {
           <Table>
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b last:border-0 hover:bg-transparent">
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                <TableHead className="py-4 text-gray-600 font-bold text-center w-24 pl-8">
                   Image
                 </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                <TableHead className="py-4 text-gray-600 font-bold text-left">
                   Title
                 </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                <TableHead className="py-4 text-gray-600 font-bold text-left">
                   Subtitle
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
@@ -102,8 +102,8 @@ export default function StrengthItemsSection() {
                     key={item._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
-                    <TableCell className="py-4 text-center">
-                      <div className="relative w-24 h-16 mx-auto bg-gray-50 rounded-md border border-gray-100 flex items-center justify-center overflow-hidden shadow-sm">
+                    <TableCell className="py-4 text-center pl-8">
+                      <div className="relative w-12 h-12 mx-auto rounded-lg overflow-hidden bg-gray-100 border border-gray-100 shadow-sm transition-transform hover:scale-110">
                         {item.image ? (
                           <Image
                             src={item.image}
@@ -112,38 +112,40 @@ export default function StrengthItemsSection() {
                             className="object-cover"
                           />
                         ) : (
-                          <ImageIcon className="w-6 h-6 text-gray-300" />
+                          <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                            <ImageIcon className="w-5 h-5 text-gray-300" />
+                          </div>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="py-4 text-center font-bold text-gray-700">
+                    <TableCell className="py-4 text-left font-semibold text-gray-900">
                       {item.title}
                     </TableCell>
-                    <TableCell className="py-4 text-center text-gray-500 text-sm max-w-sm">
+                    <TableCell className="py-4 text-left text-gray-500 text-sm max-w-sm">
                       <p className="line-clamp-2">{item.subtitle}</p>
                     </TableCell>
                     <TableCell className="py-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleViewItem(item)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] text-white rounded-lg shadow-sm transition-colors cursor-pointer"
-                          title="View Item"
+                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          title="View"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleEditItem(item)}
-                          className="p-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-colors cursor-pointer"
-                          title="Edit Item"
+                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
+                          title="Edit"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleDeleteItem(item._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition-colors cursor-pointer"
-                          title="Delete Item"
+                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          title="Delete"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 text-white" />
                         </button>
                       </div>
                     </TableCell>
@@ -155,8 +157,15 @@ export default function StrengthItemsSection() {
                     colSpan={4}
                     className="py-16 text-center text-gray-400 font-medium italic bg-white"
                   >
-                    No strength items found. Click &quot;Add New Item&quot; to
-                    begin.
+                    No items found.{" "}
+                    {!itemsLoading && (
+                      <button
+                        className="text-[#0057B8] hover:underline font-medium cursor-pointer"
+                        onClick={handleAddItem}
+                      >
+                        Add one now
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               )}

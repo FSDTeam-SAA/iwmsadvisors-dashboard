@@ -15,8 +15,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { StatsSectionItem } from "../types/statsSection.type";
 
 interface StatsSectionAddModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
 }
 
 export default function StatsSectionAddModal({
@@ -106,14 +106,14 @@ export default function StatsSectionAddModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
+        <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
+          <DialogTitle className="text-2xl font-bold text-[#1E293B]">
             Add New Stats Section
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <label
@@ -172,7 +172,7 @@ export default function StatsSectionAddModal({
                 <div className="space-y-4">
                   {items.map((item, index) => (
                     <div
-                      key={index}
+                      key={`new-item-${index}`}
                       className="p-4 bg-gray-50 border rounded-md space-y-3 relative"
                     >
                       <button

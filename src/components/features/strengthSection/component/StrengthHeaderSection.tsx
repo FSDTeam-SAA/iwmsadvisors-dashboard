@@ -82,10 +82,10 @@ export default function StrengthHeaderSection() {
           <Table>
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b last:border-0 hover:bg-transparent">
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                <TableHead className="py-4 text-gray-600 font-bold text-left pl-8">
                   Title
                 </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                <TableHead className="py-4 text-gray-600 font-bold text-left">
                   Subtitle
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
@@ -100,34 +100,34 @@ export default function StrengthHeaderSection() {
                     key={section._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
-                    <TableCell className="py-4 text-center font-bold text-gray-700">
+                    <TableCell className="py-4 text-left font-medium text-gray-700 pl-8">
                       {section.title}
                     </TableCell>
-                    <TableCell className="py-4 text-center text-gray-500 text-sm max-w-sm">
+                    <TableCell className="py-4 text-left text-gray-500 text-sm max-w-sm">
                       <p className="line-clamp-2">{section.subtitle}</p>
                     </TableCell>
                     <TableCell className="py-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleView(section)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] text-white rounded-lg shadow-sm transition-colors cursor-pointer"
-                          title="View Header"
+                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          title="View"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleEdit(section)}
-                          className="p-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-colors cursor-pointer"
-                          title="Edit Header"
+                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
+                          title="Edit"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleDelete(section._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition-colors cursor-pointer"
-                          title="Delete Header"
+                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          title="Delete"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 text-white" />
                         </button>
                       </div>
                     </TableCell>
@@ -139,8 +139,15 @@ export default function StrengthHeaderSection() {
                     colSpan={3}
                     className="py-16 text-center text-gray-400 font-medium italic bg-white"
                   >
-                    No strength data found. Click &quot;Add Strength&quot; to
-                    begin.
+                    No strength data found.{" "}
+                    {!sectionLoading && (
+                      <button
+                        className="text-[#0057B8] hover:underline font-medium cursor-pointer"
+                        onClick={handleAdd}
+                      >
+                        Add one now
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               )}
