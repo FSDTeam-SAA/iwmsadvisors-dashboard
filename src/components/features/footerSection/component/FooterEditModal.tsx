@@ -76,11 +76,11 @@ function LinkListEditor({
               onChange={(e) => update(i, "url", e.target.value)}
               className="flex-1"
             />
-            {links.length > 1 && (
+            {links.length > 0 && (
               <button
                 type="button"
                 onClick={() => remove(i)}
-                className="p-1.5 text-red-500 hover:text-red-700 shrink-0"
+                className="p-1.5 text-red-500 hover:text-red-700 shrink-0 cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />
               </button>

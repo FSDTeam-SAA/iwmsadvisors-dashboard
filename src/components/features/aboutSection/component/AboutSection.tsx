@@ -16,7 +16,11 @@ import AboutSectionAddModal from "./AboutSectionAddModal";
 import AboutSectionEditModal from "./AboutSectionEditModal";
 import AboutSectionViewModal from "./AboutSectionViewModal";
 
-export default function AboutSection() {
+export default function AboutSection({
+  showHeader = true,
+}: {
+  showHeader?: boolean;
+}) {
   const [selectedAbout, setSelectedAbout] = useState<AboutSectionType | null>(
     null,
   );
@@ -104,27 +108,33 @@ export default function AboutSection() {
 
   return (
     <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">About Management</h1>
-          <nav className="flex items-center text-sm text-gray-500 mt-1">
-            <span>Dashboard</span>
-            <ChevronRight className="w-4 h-4 mx-1" />
-            <span className="text-gray-900 font-medium">About Management</span>
-          </nav>
-        </div>
-        {!aboutItems.length && (
-          <div className="w-full md:w-auto flex md:justify-end">
-            <Button
-              onClick={() => setIsAddModalOpen(true)}
-              className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Section
-            </Button>
+      {showHeader && (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              About Management
+            </h1>
+            <nav className="flex items-center text-sm text-gray-500 mt-1">
+              <span>Dashboard</span>
+              <ChevronRight className="w-4 h-4 mx-1" />
+              <span className="text-gray-900 font-medium">
+                About Management
+              </span>
+            </nav>
           </div>
-        )}
-      </div>
+          {!aboutItems.length && (
+            <div className="w-full md:w-auto flex md:justify-end">
+              <Button
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Section
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {aboutItems.length > 0 ? (

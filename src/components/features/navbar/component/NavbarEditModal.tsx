@@ -101,7 +101,7 @@ export default function NavbarEditModal({
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
         <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
           <DialogTitle className="text-2xl font-bold text-[#1E293B]">
-            Edit Navbar Logo
+            Edit  Logo
           </DialogTitle>
         </DialogHeader>
 
