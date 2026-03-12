@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LogOut,
@@ -14,8 +14,11 @@ import {
   ChevronDown,
   ChevronRight,
   FileText,
+  Home,
+  LayoutGrid,
+  Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import {
   Dialog,
@@ -38,14 +41,74 @@ const navigation = [
     href: "/content-management",
     icon: TvMinimalPlay,
     subItems: [
+      {
+        name: "Home",
+        isGroup: true,
+        items: [
+          {
+            name: "Banner",
+            href: "/content-management/introduction-section?tab=banner",
+          },
+          {
+            name: "About Us",
+            href: "/content-management/introduction-section?tab=about",
+          },
+          {
+            name: "IWMS Solutions",
+            href: "/content-management/iwms-solutions",
+          },
+          {
+            name: "Stats Management Section",
+            href: "/content-management/stats-section",
+          },
+        ],
+      },
+
+      {
+        name: "Service",
+        isGroup: true,
+        items: [
+          {
+            name: "Hero",
+            href: "/content-management/introduction-section?tab=hero",
+          },
+          {
+            name: "IWMS Solutions Section",
+            href: "/content-management/iwms-solutions",
+          },
+        ],
+      },
+      {
+        name: "About",
+        isGroup: true,
+        items: [
+          {
+            name: "Transforming",
+            href: "/content-management/transforming",
+          },
+          {
+            name: "Transforming Number",
+            href: "/content-management/transforming-number",
+          },
+          {
+            name: "Strength Management",
+            href: "/content-management/strength-section",
+          },
+          {
+            name: "Expertise & Certifications",
+            href: "/content-management/expertise-certifications",
+          },
+                {
+        name: "Mission Vision",
+        href: "/content-management/mission-vision",
+      },
+        ],
+      },
       { name: "logo Section", href: "/content-management/navbar" },
       { name: "Case Study", href: "/content-management/case-study" },
       { name: "MREF Section", href: "/content-management/mref-section" },
       { name: "FAQ Section", href: "/content-management/faq-section" },
       { name: "Blog Section", href: "/content-management/blog-section" },
-      { name: "Banner Section", href: "/content-management/banner-section" },
-      { name: "Hero Section", href: "/content-management/hero-section" },
-      { name: "About Section", href: "/content-management/about-section" },
       {
         name: "Contact Information",
         href: "/content-management/contact-information",
@@ -54,34 +117,7 @@ const navigation = [
         name: "Footer Section",
         href: "/content-management/footer-section",
       },
-      {
-        name: "IWMS Solutions",
-        href: "/content-management/iwms-solutions",
-      },
-      {
-        name: "Mission Vision",
-        href: "/content-management/mission-vision",
-      },
-      {
-        name: "Expertise & Certifications",
-        href: "/content-management/expertise-certifications",
-      },
-      {
-        name: "Transforming",
-        href: "/content-management/transforming",
-      },
-      {
-        name: "Transforming Number",
-        href: "/content-management/transforming-number",
-      },
-      {
-        name: "Stats Section",
-        href: "/content-management/stats-section",
-      },
-      {
-        name: "Strength Section",
-        href: "/content-management/strength-section",
-      },
+
     ],
   },
   {
@@ -109,21 +145,47 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
-  const [openMenus, setOpenMenus] = useState<string[]>(["Content Management"]); // Default open for Content Management
+  const [openMenus, setOpenMenus] = useState<string[]>(["Content Management"]);
+  const [openGroups, setOpenGroups] = useState<string[]>([]);
+
+  // Auto-expand menus and groups based on pathname
+  useEffect(() => {
+    navigation.forEach((item) => {
+      const isItemActive =
+        item.href === "/" ? pathname === "/" : pathname?.startsWith(item.href);
+      if (isItemActive && !openMenus.includes(item.name)) {
+        setOpenMenus([item.name]);
+      }
+
+      item.subItems?.forEach((subItem) => {
+        if (subItem.isGroup) {
+          const hasActiveChild = subItem.items?.some((groupItem) => {
+            const itemPath = groupItem.href.split("?")[0];
+            return pathname === itemPath;
+          });
+          if (hasActiveChild && !openGroups.includes(subItem.name)) {
+            setOpenGroups([subItem.name]);
+          }
+        }
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const toggleMenu = (name: string) => {
-    setOpenMenus((prev) =>
-      prev.includes(name)
-        ? prev.filter((item) => item !== name)
-        : [...prev, name],
-    );
+    setOpenMenus((prev) => (prev.includes(name) ? [] : [name]));
+  };
+
+  const toggleGroup = (name: string) => {
+    setOpenGroups((prev) => (prev.includes(name) ? [] : [name]));
   };
 
   const handleLogout = () => {
     // NextAuth signOut with redirect to login page
-    signOut({ callbackUrl: "/login" });
     setOpen(false);
+    signOut({ callbackUrl: "/login" });
   };
 
   return (
@@ -178,7 +240,7 @@ export default function Sidebar() {
                       : "text-[#111111] hover:bg-[#005696]/10 font-semibold",
                   )}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 ">
                     <item.icon className="h-5 w-5" />
                     {item.name}
                   </div>
@@ -207,16 +269,138 @@ export default function Sidebar() {
               {hasSubItems && isMenuOpen && (
                 <div className="ml-3 bg-[#005696]/3 rounded-lg space-y-1">
                   {item.subItems?.map((subItem) => {
+                    if (subItem.isGroup) {
+                      const isGroupOpen = openGroups.includes(subItem.name);
+                      return (
+                        <div
+                          key={subItem.name}
+                          className="mt-6 mb-4 first:mt-2"
+                        >
+                          <button
+                            onClick={() => toggleGroup(subItem.name)}
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-2 mb-2 w-full group/header cursor-pointer rounded-lg transition-all duration-200",
+                              isGroupOpen
+                                ? "bg-gray-50"
+                                : "hover:bg-gray-50/50",
+                            )}
+                          >
+                            <div className="h-px flex-1 bg-gray-100 group-hover/header:bg-gray-200 transition-colors" />
+                            <div className="flex items-center gap-2 px-1 text-3xl">
+                              {subItem.name === "Home" && (
+                                <Home
+                                  className={cn(
+                                    "h-4 w-4 transition-colors ",
+                                    isGroupOpen
+                                      ? "text-[#005696]"
+                                      : "text-gray-400 group-hover/header:text-gray-600",
+                                  )}
+                                />
+                              )}
+                              {subItem.name === "Service" && (
+                                <LayoutGrid
+                                  className={cn(
+                                    "h-4 w-4 transition-colors ",
+                                    isGroupOpen
+                                      ? "text-[#005696]"
+                                      : "text-gray-400 group-hover/header:text-gray-600",
+                                  )}
+                                />
+                              )}
+                              {subItem.name === "About" && (
+                                <Users
+                                  className={cn(
+                                    "h-4 w-4 transition-colors ",
+                                    isGroupOpen
+                                      ? "text-[#005696]"
+                                      : "text-gray-400 group-hover/header:text-gray-600",
+                                  )}
+                                />
+                              )}
+                              <span
+                                className={cn(
+                                  "text-[15px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors",
+                                  isGroupOpen
+                                    ? "text-[#005696]"
+                                    : "text-gray-400 group-hover/header:text-gray-600",
+                                )}
+                              >
+                                {subItem.name}
+                              </span>
+                              {isGroupOpen ? (
+                                <ChevronDown
+                                  className={cn(
+                                    "h-3.5 w-3.5 transition-colors",
+                                    isGroupOpen
+                                      ? "text-[#005696]"
+                                      : "text-gray-400 group-hover/header:text-gray-600",
+                                  )}
+                                />
+                              ) : (
+                                <ChevronRight className="h-3.5 w-3.5 text-gray-400 group-hover/header:text-gray-600 transition-colors" />
+                              )}
+                            </div>
+                            <div className="h-px flex-1 bg-gray-100 group-hover/header:bg-gray-200 transition-colors" />
+                          </button>
+
+                          {isGroupOpen && (
+                            <div className="space-y-0.5 relative ml-4 transition-all duration-300">
+                              {/* Vertical line connector */}
+                              <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-100 ml-[7px]" />
+
+                              {subItem.items?.map((groupItem) => {
+                                const itemPath = groupItem.href.split("?")[0];
+                                const itemTab = new URLSearchParams(
+                                  groupItem.href.split("?")[1] || "",
+                                ).get("tab");
+                                const currentTab = searchParams.get("tab");
+
+                                const isItemActive =
+                                  pathname === itemPath &&
+                                  (!itemTab || itemTab === currentTab);
+
+                                return (
+                                  <Link
+                                    key={groupItem.name}
+                                    href={groupItem.href || "#"}
+                                    className={cn(
+                                      "group/sub relative flex items-center gap-3 rounded-lg py-2 px-3 text-sm transition-all duration-200 ml-4",
+                                      isItemActive
+                                        ? "text-[#005696] font-bold bg-[#005696]/5"
+                                        : "text-gray-500 hover:text-[#005696] hover:bg-gray-50",
+                                    )}
+                                  >
+                                    {/* Dot connector */}
+                                    <div
+                                      className={cn(
+                                        "absolute -left-[13px] w-1.5 h-1.5 rounded-full border border-white transition-colors duration-200 z-10",
+                                        isItemActive
+                                          ? "bg-[#005696]"
+                                          : "bg-gray-200 group-hover/sub:bg-gray-400",
+                                      )}
+                                    />
+
+                                    <span className="truncate">
+                                      {groupItem.name}
+                                    </span>
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
                     const isSubActive = pathname === subItem.href;
                     return (
                       <Link
                         key={subItem.name}
-                        href={subItem.href}
+                        href={subItem.href || "#"}
                         className={cn(
-                          "block rounded-lg p-2 text-sm font-medium transition-colors my-3",
+                          "block rounded-lg p-2 text-sm font-medium transition-colors my-2 mx-1",
                           isSubActive
-                            ? "text-[#005696] font-bold bg-[#005696]/5"
-                            : "text-gray-500 hover:text-[#005696] hover:bg-[#005696]/5",
+                            ? "text-[#005696] font-bold bg-[#005696]/5 border-l-2 border-[#005696] rounded-l-none"
+                            : "text-gray-500 hover:text-[#005696] hover:bg-gray-50",
                         )}
                       >
                         {subItem.name}

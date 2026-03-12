@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, FileImage } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroCard } from "./HeroCard";
 import { useHeroSections, useDeleteHeroSection } from "../hooks/useHeroSection";
@@ -17,7 +17,11 @@ import {
 import { toast } from "sonner";
 import { HeroSection as HeroSectionType } from "../types/heroSection.type";
 
-export default function HeroSection() {
+export default function HeroSection({
+  showHeader = true,
+}: {
+  showHeader?: boolean;
+}) {
   const { data: response, isLoading, isError } = useHeroSections();
   const heroSections = response?.data || [];
 
@@ -92,39 +96,45 @@ export default function HeroSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            Hero Sections Management
-          </h2>
-          <p className="text-muted-foreground">
-            Manage the hero banners displayed on the landing page.
-          </p>
+      {!showHeader && (
+        <div className="flex justify-end mb-6">
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#0057B8] hover:bg-[#004494] shadow-sm transition-all duration-300"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Hero Section
+          </Button>
         </div>
-        <Button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-[#0057B8] hover:bg-[#004494]"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Hero Section
-        </Button>
-      </div>
+      )}
+
+      {showHeader && (
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Hero Sections Management
+            </h2>
+            <p className="text-muted-foreground">
+              Manage the hero banners displayed on the landing page.
+            </p>
+          </div>
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#0057B8] hover:bg-[#004494]"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Hero Section
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {sortedHeroSections.length === 0 ? (
-          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
-            <div className="bg-gray-50 p-4 rounded-full mb-4 text-gray-400">
-              <FileImage className="w-12 h-12 opacity-20" />
-            </div>
-            <p className="text-gray-400 text-lg font-medium">
-              No Hero sections found
+ 
+        {sortedHeroSections.length === 0 && !isLoading ? (
+          <div className="col-span-1 lg:col-span-1 flex flex-col items-center justify-center p-8 bg-white rounded-2xl border border-dashed border-gray-200 opacity-60">
+             <p className="text-gray-400 text-sm italic">
+              (Additional sections will appear here)
             </p>
-            <button
-              className="text-[#0057B8] hover:underline mt-2 font-semibold cursor-pointer"
-              onClick={() => setIsAddModalOpen(true)}
-            >
-              Create your first hero section
-            </button>
           </div>
         ) : (
           sortedHeroSections.map((section) => (
@@ -139,10 +149,12 @@ export default function HeroSection() {
         )}
       </div>
 
-      <HeroSectionAddModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-      />
+      {isAddModalOpen && (
+        <HeroSectionAddModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+        />
+      )}
 
       <HeroSectionEditModal
         isOpen={isEditModalOpen}

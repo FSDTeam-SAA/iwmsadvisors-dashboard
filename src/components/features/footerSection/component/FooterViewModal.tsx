@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Footer } from "../types/footer.type";
+import { Button } from "@/components/ui/button";
 import {
   Mail,
   Phone,
@@ -17,20 +21,47 @@ import {
   Twitter,
   Facebook,
   Linkedin,
+  Trash2,
 } from "lucide-react";
 
 interface FooterViewModalProps {
   readonly isOpen: boolean;
   readonly onClose: () => void;
   readonly footer: Footer | null;
+  readonly onDeleteLink: (
+    group: "quickLinks" | "consultingLinks" | "contactLinks",
+    index: number,
+  ) => void;
 }
 
 export default function FooterViewModal({
   isOpen,
   onClose,
   footer,
+  onDeleteLink,
 }: FooterViewModalProps) {
+  const [deleteLinkInfo, setDeleteLinkInfo] = useState<{
+    group: "quickLinks" | "consultingLinks" | "contactLinks";
+    index: number;
+    label: string;
+  } | null>(null);
+
   if (!footer) return null;
+
+  const handleDeleteClick = (
+    group: "quickLinks" | "consultingLinks" | "contactLinks",
+    index: number,
+    label: string,
+  ) => {
+    setDeleteLinkInfo({ group, index, label });
+  };
+
+  const confirmDelete = () => {
+    if (deleteLinkInfo) {
+      onDeleteLink(deleteLinkInfo.group, deleteLinkInfo.index);
+      setDeleteLinkInfo(null);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -141,18 +172,31 @@ export default function FooterViewModal({
                   </p>
                   <ul className="space-y-1">
                     {footer[key].map((link, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm">
-                        <span className="font-medium text-gray-700 min-w-[100px]">
-                          {link.label}
-                        </span>
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#0057B8] hover:underline break-all"
+                      <li
+                        key={i}
+                        className="flex items-center justify-between gap-2 text-sm group/link"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-gray-700 min-w-[100px]">
+                            {link.label}
+                          </span>
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0057B8] hover:underline break-all"
+                          >
+                            {link.url}
+                          </a>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 opacity-0 group-hover/link:opacity-100 transition-opacity cursor-pointer"
+                          onClick={() => handleDeleteClick(key, i, link.label)}
                         >
-                          {link.url}
-                        </a>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </li>
                     ))}
                   </ul>
@@ -212,6 +256,38 @@ export default function FooterViewModal({
             </div>
           </div>
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={!!deleteLinkInfo}
+          onOpenChange={(open) => !open && setDeleteLinkInfo(null)}
+        >
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Confirm Link Deletion</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to remove the link &quot;
+                {deleteLinkInfo?.label}&quot;? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex justify-end gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setDeleteLinkInfo(null)}
+                className="cursor-pointer"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={confirmDelete}
+                className="cursor-pointer"
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );
