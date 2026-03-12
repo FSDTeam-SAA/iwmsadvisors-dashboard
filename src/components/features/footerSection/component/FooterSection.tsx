@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, ChevronRight, FileText } from "lucide-react";
+import {
+  Plus,
+  ChevronRight,
+  FileText,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -76,6 +80,19 @@ export default function FooterSection() {
     });
   };
 
+  const handleDeleteLink = (
+    group: "quickLinks" | "consultingLinks" | "contactLinks",
+    index: number,
+  ) => {
+    if (!footerItem) return;
+
+    const updatedLinks = footerItem[group].filter((_, i) => i !== index);
+
+    handleSave(footerItem._id, {
+      [group]: updatedLinks,
+    });
+  };
+
   if (isError) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -146,6 +163,7 @@ export default function FooterSection() {
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
         footer={selectedFooter}
+        onDeleteLink={handleDeleteLink}
       />
 
       <FooterEditModal
