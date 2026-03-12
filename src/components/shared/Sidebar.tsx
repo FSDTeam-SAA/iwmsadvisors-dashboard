@@ -43,9 +43,7 @@ const navigation = [
       { name: "MREF Section", href: "/content-management/mref-section" },
       { name: "FAQ Section", href: "/content-management/faq-section" },
       { name: "Blog Section", href: "/content-management/blog-section" },
-      { name: "Banner Section", href: "/content-management/banner-section" },
-      { name: "Hero Section", href: "/content-management/hero-section" },
-      { name: "About Section", href: "/content-management/about-section" },
+      { name: "Introduction Section", href: "/content-management/introduction-section" },
       {
         name: "Contact Information",
         href: "/content-management/contact-information",

@@ -17,7 +17,11 @@ import {
 import { toast } from "sonner";
 import { HeroSection as HeroSectionType } from "../types/heroSection.type";
 
-export default function HeroSection() {
+export default function HeroSection({
+  showHeader = true,
+}: {
+  showHeader?: boolean;
+}) {
   const { data: response, isLoading, isError } = useHeroSections();
   const heroSections = response?.data || [];
 
@@ -92,23 +96,25 @@ export default function HeroSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            Hero Sections Management
-          </h2>
-          <p className="text-muted-foreground">
-            Manage the hero banners displayed on the landing page.
-          </p>
+      {showHeader && (
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Hero Sections Management
+            </h2>
+            <p className="text-muted-foreground">
+              Manage the hero banners displayed on the landing page.
+            </p>
+          </div>
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#0057B8] hover:bg-[#004494]"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Hero Section
+          </Button>
         </div>
-        <Button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-[#0057B8] hover:bg-[#004494]"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Hero Section
-        </Button>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {sortedHeroSections.length === 0 ? (

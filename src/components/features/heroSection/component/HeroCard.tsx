@@ -54,7 +54,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-amber-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-green-600 border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onEdit(section)}
             >
               <Edit className="w-4 h-4" />
