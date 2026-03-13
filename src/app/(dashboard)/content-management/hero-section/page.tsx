@@ -1,3 +1,4 @@
+"use client"
 import HeroSection from "@/components/features/heroSection/component/HeroSection";
 import React, { Suspense } from "react";
 
