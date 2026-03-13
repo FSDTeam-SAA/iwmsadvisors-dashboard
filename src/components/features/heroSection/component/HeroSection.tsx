@@ -129,10 +129,9 @@ export default function HeroSection({
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
- 
         {sortedHeroSections.length === 0 && !isLoading ? (
           <div className="col-span-1 lg:col-span-1 flex flex-col items-center justify-center p-8 bg-white rounded-2xl border border-dashed border-gray-200 opacity-60">
-             <p className="text-gray-400 text-sm italic">
+            <p className="text-gray-400 text-sm italic">
               (Additional sections will appear here)
             </p>
           </div>
