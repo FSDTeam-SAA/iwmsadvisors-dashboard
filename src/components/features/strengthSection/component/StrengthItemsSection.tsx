@@ -23,6 +23,7 @@ import { StrengthItem } from "../types/strengthSection.type";
 import { toast } from "sonner";
 
 export default function StrengthItemsSection() {
+  const MAX_ITEMS = 4;
   const { data: itemsResponse, isLoading: itemsLoading } = useStrengthItems();
   const { mutate: deleteItem } = useDeleteStrengthItem();
 
@@ -31,6 +32,7 @@ export default function StrengthItemsSection() {
   const [selectedItem, setSelectedItem] = useState<StrengthItem | null>(null);
 
   const items = itemsResponse?.data || [];
+  const canAddItem = items.length < MAX_ITEMS;
 
   const handleEditItem = (item: StrengthItem) => {
     setSelectedItem(item);
@@ -50,6 +52,10 @@ export default function StrengthItemsSection() {
   };
 
   const handleAddItem = () => {
+    if (!canAddItem) {
+      toast.error(`Maximum ${MAX_ITEMS} items allowed`);
+      return;
+    }
     setSelectedItem(null);
     setIsItemModalOpen(true);
   };
@@ -65,7 +71,7 @@ export default function StrengthItemsSection() {
   return (
     <div className="space-y-6">
       <div className="flex justify-end">
-        {items.length === 0 && (
+        {canAddItem && (
           <Button
             onClick={handleAddItem}
             className="bg-[#0057B8] hover:bg-[#004494] text-white font-medium shadow-sm transition-all"
@@ -158,7 +164,7 @@ export default function StrengthItemsSection() {
                     className="py-16 text-center text-gray-400 font-medium italic bg-white"
                   >
                     No items found.{" "}
-                    {!itemsLoading && (
+                    {!itemsLoading && canAddItem && (
                       <button
                         className="text-[#0057B8] hover:underline font-medium cursor-pointer"
                         onClick={handleAddItem}
