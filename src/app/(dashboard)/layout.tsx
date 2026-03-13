@@ -1,8 +1,7 @@
- 
 import DashboardHeader from "@/components/shared/Header";
 import Sidebar from "@/components/shared/Sidebar";
 import { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "IWMS Advisors",
@@ -18,7 +17,9 @@ export default function RootLayout({
   return (
     <div className="flex min-h-screen relative bg-[#FCFBF8]">
       {/* Sidebar */}
-      <Sidebar />
+      <Suspense fallback={null}>
+        <Sidebar />
+      </Suspense>
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col ml-68">
@@ -28,7 +29,11 @@ export default function RootLayout({
         </div>
 
         {/* Page Content */}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1 p-4">
+          <Suspense fallback={null}>
+            {children}
+          </Suspense>
+        </main>
       </div>
     </div>
   );
