@@ -25,28 +25,12 @@ export default function NavbarEditModal({
   onClose,
   navbar,
 }: NavbarEditModalProps) {
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(navbar?.logo || null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
 
   const { mutate: updateNavbar, isPending } = useUpdateNavbar();
 
-  const [prevNavbarId, setPrevNavbarId] = useState<string | undefined>(
-    undefined,
-  );
-  const [prevIsOpen, setPrevIsOpen] = useState(false);
 
-  // Reset state when modal opens/closes or navbar changes
-  if (navbar?._id !== prevNavbarId || isOpen !== prevIsOpen) {
-    setPrevNavbarId(navbar?._id);
-    setPrevIsOpen(isOpen);
-    if (isOpen && navbar) {
-      setLogoPreview(navbar.logo || null);
-      setLogoFile(null);
-    } else {
-      setLogoPreview(null);
-      setLogoFile(null);
-    }
-  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

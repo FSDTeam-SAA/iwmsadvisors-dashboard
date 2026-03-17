@@ -29,17 +29,9 @@ export default function TransformingNumberEditModal({
   onClose,
   section,
 }: TransformingNumberEditModalProps) {
-  const [items, setItems] = useState<TransformingNumberItem[]>(
-    section?.items || [],
-  );
-  const [prevSectionId, setPrevSectionId] = useState<string | null>(
-    section?._id || null,
-  );
+  const [items, setItems] = useState<TransformingNumberItem[]>(section?.items || []);
 
-  if (section && section._id !== prevSectionId) {
-    setPrevSectionId(section._id);
-    setItems(section.items);
-  }
+
 
   const { mutate: updateSection, isPending } = useUpdateTransformingNumber();
 

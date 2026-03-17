@@ -61,6 +61,10 @@ const navigation = [
             name: "Stats Management Section",
             href: "/content-management/stats-section",
           },
+          {
+            name: "Consultant Management",
+            href: "/content-management/consultant",
+          },
         ],
       },
 
@@ -83,12 +87,8 @@ const navigation = [
         isGroup: true,
         items: [
           {
-            name: "Transforming",
-            href: "/content-management/transforming",
-          },
-          {
-            name: "Transforming Number",
-            href: "/content-management/transforming-number",
+            name: "Transforming Section",
+            href: "/content-management/transforming-section",
           },
           {
             name: "Strength Management",
@@ -99,13 +99,13 @@ const navigation = [
             href: "/content-management/expertise-certifications",
           },
                 {
-        name: "Mission Vision",
+        name: "Mission & Vision",
         href: "/content-management/mission-vision",
       },
         ],
       },
-      { name: "logo Section", href: "/content-management/navbar" },
-      { name: "Case Study", href: "/content-management/case-study" },
+      { name: "Logo Section", href: "/content-management/navbar" },
+      { name: "Case Studies", href: "/content-management/case-studies" },
       { name: "MREF Section", href: "/content-management/mref-section" },
       { name: "FAQ Section", href: "/content-management/faq-section" },
       { name: "Blog Section", href: "/content-management/blog-section" },

@@ -37,7 +37,18 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
           <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100">
             <Hash className="w-3.5 h-3.5 text-[#0057B8]" />
             <span className="text-xs font-bold text-gray-900">
-              Order: {section.order}
+              {(() => {
+                const orderLabelMap: Record<number, string> = {
+                  1: "Services Page",
+                  2: "Case Studies Page",
+                  3: "Blog Page",
+                  4: "About Page",
+                  5: "FAQ Section Page",
+                  6: "Careers Page",
+                  7: "Need",
+                };
+                return orderLabelMap[section.order] || `Order: ${section.order}`;
+              })()}
             </span>
           </div>
 
@@ -46,7 +57,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-blue-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-blue-600 hover:bg-blue-500 text-white border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onView(section)}
             >
               <Eye className="w-4 h-4" />
@@ -54,7 +65,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-green-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-green-600 hover:bg-green-500 text-white border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onEdit(section)}
             >
               <Edit className="w-4 h-4" />
@@ -62,7 +73,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-red-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-red-600 hover:bg-red-500 text-white border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onDelete(section)}
             >
               <Trash2 className="w-4 h-4" />

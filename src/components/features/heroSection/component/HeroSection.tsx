@@ -96,7 +96,7 @@ export default function HeroSection({
 
   return (
     <div className="space-y-6">
-      {!showHeader && (
+      {/* {!showHeader && (
         <div className="flex justify-end mb-6">
           <Button
             onClick={() => setIsAddModalOpen(true)}
@@ -106,7 +106,7 @@ export default function HeroSection({
             Add Hero Section
           </Button>
         </div>
-      )}
+      )} */}
 
       {showHeader && (
         <div className="flex justify-between items-center">
@@ -156,6 +156,7 @@ export default function HeroSection({
       )}
 
       <HeroSectionEditModal
+        key={selectedHeroForEdit?._id ? `edit-${selectedHeroForEdit._id}` : "edit-modal"}
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);

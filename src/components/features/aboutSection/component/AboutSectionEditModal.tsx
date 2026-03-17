@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,38 +31,17 @@ export default function AboutSectionEditModal({
   onSave,
 }: AboutSectionEditModalProps) {
   const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    descriptionTitle: "",
-    description: "",
-    btnName: "",
+    title: aboutSection?.title || "",
+    subtitle: aboutSection?.subtitle || "",
+    descriptionTitle: aboutSection?.descriptionTitle || "",
+    description: aboutSection?.description || "",
+    btnName: aboutSection?.btnName || "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(aboutSection?.image || null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (aboutSection) {
-      setFormData({
-        title: aboutSection.title || "",
-        subtitle: aboutSection.subtitle || "",
-        descriptionTitle: aboutSection.descriptionTitle || "",
-        description: aboutSection.description || "",
-        btnName: aboutSection.btnName || "",
-      });
-      if (aboutSection.image) {
-        setImagePreview(aboutSection.image);
-      } else {
-        setImagePreview(null);
-      }
-    }
-    return () => {
-      if (imagePreview && imagePreview.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aboutSection]);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

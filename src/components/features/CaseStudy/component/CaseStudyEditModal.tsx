@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -52,47 +52,11 @@ export default function CaseStudyEditModal({
   const [formData, setFormData] = useState(initialFormData);
   const [techInput, setTechInput] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(caseStudy?.image?.url || null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Set default preview to existing image when modal opens or caseStudy changes
-  useEffect(() => {
-    if (caseStudy?.image?.url) {
-      setImagePreview(caseStudy.image.url);
-    } else {
-      setImagePreview(null);
-    }
-    // Clean up object URL if any from previous selection
-    return () => {
-      if (imagePreview && imagePreview.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseStudy]);
 
-  // Reset form when the selected case study changes
-  // Note: This is a valid use case for syncing form state with props
-  useEffect(() => {
-    if (caseStudy) {
-      setFormData({
-        title: caseStudy.title || "",
-        subtitle: caseStudy.subtitle || "",
-        description: caseStudy.description || "",
-        client: caseStudy.client || "",
-        duration: caseStudy.duration || "",
-        teamSize: caseStudy.teamSize || "",
-        challenge: caseStudy.challenge || "",
-        solution: caseStudy.solution || "",
-        technologiesUsed: caseStudy.technologiesUsed || [],
-        resultImpact: caseStudy.resultImpact || "",
-        caseExperience: caseStudy.caseExperience || "",
-        clientName: caseStudy.clientName || "",
-        companyName: caseStudy.companyName || "",
-      });
-      setTechInput("");
-    }
-  }, [caseStudy]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

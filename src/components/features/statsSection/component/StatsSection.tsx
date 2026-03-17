@@ -126,21 +126,21 @@ export default function StatsSection() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleView(item)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-blue-600 hover:bg-blue-500 rounded-full transition-colors cursor-pointer"
                           title="View"
                         >
                           <Eye className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleEdit(item)}
-                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-green-600 hover:bg-green-500 rounded-full transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-red-600 hover:bg-red-500 rounded-full transition-colors cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4 text-white" />
