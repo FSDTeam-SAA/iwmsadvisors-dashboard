@@ -61,6 +61,10 @@ const navigation = [
             name: "Stats Management Section",
             href: "/content-management/stats-section",
           },
+          {
+            name: "Consultant Management",
+            href: "/content-management/consultant",
+          },
         ],
       },
 
