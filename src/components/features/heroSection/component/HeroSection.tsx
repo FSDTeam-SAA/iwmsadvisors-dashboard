@@ -96,7 +96,7 @@ export default function HeroSection({
 
   return (
     <div className="space-y-6">
-      {!showHeader && (
+      {/* {!showHeader && (
         <div className="flex justify-end mb-6">
           <Button
             onClick={() => setIsAddModalOpen(true)}
@@ -106,7 +106,7 @@ export default function HeroSection({
             Add Hero Section
           </Button>
         </div>
-      )}
+      )} */}
 
       {showHeader && (
         <div className="flex justify-between items-center">
