@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -30,38 +30,17 @@ export default function BannerSectionEditModal({
   onSave,
 }: BannerSectionEditModalProps) {
   const [formData, setFormData] = useState({
-    title: "",
-    subTitle: "",
-    btn1: "",
-    btn2: "",
+    title: bannerSection?.title || "",
+    subTitle: bannerSection?.subTitle || "",
+    btn1: bannerSection?.btn1 || "",
+    btn2: bannerSection?.btn2 || "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(bannerSection?.image || null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Set default state when modal opens or bannerSection changes
-  useEffect(() => {
-    if (bannerSection) {
-      setFormData({
-        title: bannerSection.title || "",
-        subTitle: bannerSection.subTitle || "",
-        btn1: bannerSection.btn1 || "",
-        btn2: bannerSection.btn2 || "",
-      });
-      if (bannerSection.image) {
-        setImagePreview(bannerSection.image);
-      } else {
-        setImagePreview(null);
-      }
-    }
-    // Clean up object URL if any from previous selection
-    return () => {
-      if (imagePreview && imagePreview.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bannerSection]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

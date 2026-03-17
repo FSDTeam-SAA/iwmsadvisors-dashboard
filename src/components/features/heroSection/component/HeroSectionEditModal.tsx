@@ -26,27 +26,14 @@ export default function HeroSectionEditModal({
   onClose,
   heroSection,
 }: HeroSectionEditModalProps) {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
+  const [title, setTitle] = useState(heroSection?.title || "");
+  const [subtitle, setSubtitle] = useState(heroSection?.subtitle || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
+  const [preview, setPreview] = useState<string>(heroSection?.image || "");
 
   const { mutate: updateSection, isPending } = useUpdateHeroSection();
 
-  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
-  const [prevHeroSection, setPrevHeroSection] = useState(heroSection);
 
-  if (isOpen !== prevIsOpen || heroSection !== prevHeroSection) {
-    setPrevIsOpen(isOpen);
-    setPrevHeroSection(heroSection);
-
-    if (isOpen && heroSection) {
-      setTitle(heroSection.title || "");
-      setSubtitle(heroSection.subtitle || "");
-      setPreview(heroSection.image || "");
-      setImageFile(null); // Reset pending file
-    }
-  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

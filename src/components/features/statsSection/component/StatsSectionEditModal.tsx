@@ -25,26 +25,13 @@ export default function StatsSectionEditModal({
   onClose,
   statsSection,
 }: StatsSectionEditModalProps) {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [items, setItems] = useState<StatsSectionItem[]>([]);
+  const [title, setTitle] = useState(statsSection?.title || "");
+  const [subtitle, setSubtitle] = useState(statsSection?.subtitle || "");
+  const [items, setItems] = useState<StatsSectionItem[]>(statsSection?.items ? [...statsSection.items] : []);
 
   const { mutate: updateSection, isPending } = useUpdateStatsSection();
 
-  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
-  const [prevStatsSection, setPrevStatsSection] = useState(statsSection);
 
-  if (isOpen !== prevIsOpen || statsSection !== prevStatsSection) {
-    setPrevIsOpen(isOpen);
-    setPrevStatsSection(statsSection);
-
-    if (isOpen && statsSection) {
-      setTitle(statsSection.title || "");
-      setSubtitle(statsSection.subtitle || "");
-      // Copy items to avoid mutating props directly
-      setItems(statsSection.items ? [...statsSection.items] : []);
-    }
-  }
 
   const handleAddItem = () => {
     // Determine the next order number based on existing items

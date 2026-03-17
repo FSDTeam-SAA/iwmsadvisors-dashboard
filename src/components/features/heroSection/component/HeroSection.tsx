@@ -156,6 +156,7 @@ export default function HeroSection({
       )}
 
       <HeroSectionEditModal
+        key={selectedHeroForEdit?._id ? `edit-${selectedHeroForEdit._id}` : "edit-modal"}
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);

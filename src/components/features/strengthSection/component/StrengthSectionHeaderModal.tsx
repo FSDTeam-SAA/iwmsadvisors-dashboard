@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -32,12 +32,7 @@ export default function StrengthSectionHeaderModal({
   const { mutate: createSection, isPending: isCreating } = useCreateStrength();
   const { mutate: updateSection, isPending: isUpdating } = useUpdateStrength();
 
-  const [prevSection, setPrevSection] = useState<StrengthSection | null>(null);
-  const [prevIsOpen, setPrevIsOpen] = useState(false);
-
-  if (section !== prevSection || isOpen !== prevIsOpen) {
-    setPrevSection(section);
-    setPrevIsOpen(isOpen);
+  useEffect(() => {
     if (section && isOpen) {
       setTitle(section.title);
       setSubtitle(section.subtitle);
@@ -45,7 +40,7 @@ export default function StrengthSectionHeaderModal({
       setTitle("");
       setSubtitle("");
     }
-  }
+  }, [section, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

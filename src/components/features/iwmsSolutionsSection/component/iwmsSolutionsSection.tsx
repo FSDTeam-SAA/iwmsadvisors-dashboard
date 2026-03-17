@@ -78,7 +78,7 @@ export default function IwmsSolutionsSection() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Iwms Solutions Section Management
+            IWMS Solutions Section Management
           </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
@@ -203,6 +203,7 @@ export default function IwmsSolutionsSection() {
 
       {isEditModalOpen && (
         <IwmsSolutionsSectionEditModal
+          key={selectedSection?._id || "edit-modal"}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           iwmsSolutionsSection={selectedSection}

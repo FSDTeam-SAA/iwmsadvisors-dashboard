@@ -46,7 +46,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-blue-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-blue-600 hover:bg-blue-500 text-white border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onView(section)}
             >
               <Eye className="w-4 h-4" />
@@ -54,7 +54,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-green-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-green-600 hover:bg-green-500 text-white border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onEdit(section)}
             >
               <Edit className="w-4 h-4" />
@@ -62,7 +62,7 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="rounded-full shadow-lg bg-white/90 hover:bg-white text-red-600 border-none backdrop-blur-sm cursor-pointer"
+              className="rounded-full shadow-lg bg-red-600 hover:bg-red-500 text-white border-none backdrop-blur-sm cursor-pointer"
               onClick={() => onDelete(section)}
             >
               <Trash2 className="w-4 h-4" />

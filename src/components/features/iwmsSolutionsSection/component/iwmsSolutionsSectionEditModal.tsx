@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,74 +26,37 @@ export default function IwmsSolutionsSectionEditModal({
   onClose,
   iwmsSolutionsSection,
 }: IwmsSolutionsSectionEditModalProps) {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [order, setOrder] = useState(1);
+  const [title, setTitle] = useState(iwmsSolutionsSection?.title || "");
+  const [subtitle, setSubtitle] = useState(iwmsSolutionsSection?.subtitle || "");
+  const [order, setOrder] = useState(iwmsSolutionsSection?.order || 1);
 
-  const [items, setItems] = useState([
-    {
-      order: 1,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
-    {
-      order: 2,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
-    {
-      order: 3,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
-    {
-      order: 4,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
-  ]);
+  const initialItems = [
+    { order: 1, title: "", description: "", iconFile: null as File | null, preview: "" },
+    { order: 2, title: "", description: "", iconFile: null as File | null, preview: "" },
+    { order: 3, title: "", description: "", iconFile: null as File | null, preview: "" },
+    { order: 4, title: "", description: "", iconFile: null as File | null, preview: "" },
+  ];
+
+  if (iwmsSolutionsSection?.items && Array.isArray(iwmsSolutionsSection.items)) {
+    iwmsSolutionsSection.items.forEach((apiItem) => {
+      const itemIndex = initialItems.findIndex((i) => i.order === apiItem.order);
+      if (itemIndex !== -1) {
+        initialItems[itemIndex] = {
+          order: apiItem.order,
+          title: apiItem.title || "",
+          description: apiItem.description || "",
+          iconFile: null,
+          preview: apiItem.icon || "",
+        };
+      }
+    });
+  }
+
+  const [items, setItems] = useState(initialItems);
 
   const { mutate: updateSection, isPending } = useUpdateIwmsSolutionsSection();
 
-  useEffect(() => {
-    if (iwmsSolutionsSection && isOpen) {
-      setTitle(iwmsSolutionsSection.title || "");
-      setSubtitle(iwmsSolutionsSection.subtitle || "");
-      setOrder(iwmsSolutionsSection.order || 1);
 
-      const initialItems = [...items];
-
-      if (
-        iwmsSolutionsSection.items &&
-        Array.isArray(iwmsSolutionsSection.items)
-      ) {
-        iwmsSolutionsSection.items.forEach((apiItem) => {
-          const itemIndex = initialItems.findIndex(
-            (i) => i.order === apiItem.order,
-          );
-          if (itemIndex !== -1) {
-            initialItems[itemIndex] = {
-              order: apiItem.order,
-              title: apiItem.title || "",
-              description: apiItem.description || "",
-              iconFile: null,
-              preview: apiItem.icon || "",
-            };
-          }
-        });
-      }
-      setItems(initialItems);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iwmsSolutionsSection, isOpen]);
 
   const handleItemChange = (index: number, field: string, value: string) => {
     const newItems = [...items];
