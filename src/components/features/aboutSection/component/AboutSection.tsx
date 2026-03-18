@@ -172,6 +172,7 @@ export default function AboutSection({
       />
 
       <AboutSectionEditModal
+        key={selectedAbout?._id ? `edit-${selectedAbout._id}` : "edit-modal"}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         aboutSection={selectedAbout}

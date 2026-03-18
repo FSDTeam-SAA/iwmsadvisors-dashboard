@@ -65,11 +65,11 @@ export default function StatsSection() {
     <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Stats Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Our Proven Result</h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
-            <span className="text-gray-900 font-medium">Stats Management</span>
+            <span className="text-gray-900 font-medium">Our Proven Result</span>
           </nav>
         </div>
         <div className="w-full md:w-auto flex md:justify-end">
@@ -126,21 +126,21 @@ export default function StatsSection() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleView(item)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-blue-600 hover:bg-blue-500 rounded-full transition-colors cursor-pointer"
                           title="View"
                         >
                           <Eye className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleEdit(item)}
-                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-green-600 hover:bg-green-500 rounded-full transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4 text-white" />
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-red-600 hover:bg-red-500 rounded-full transition-colors cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4 text-white" />

@@ -178,6 +178,7 @@ export default function BannerSection({
       />
 
       <BannerSectionEditModal
+        key={selectedBanner?._id ? `edit-${selectedBanner._id}` : "edit-modal"}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         bannerSection={selectedBanner}

@@ -345,6 +345,11 @@ export default function CaseStudy() {
       />
 
       <CaseStudyEditModal
+        key={
+          selectedCaseStudy?._id
+            ? `edit-${selectedCaseStudy._id}`
+            : "edit-modal"
+        }
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         caseStudy={selectedCaseStudy}

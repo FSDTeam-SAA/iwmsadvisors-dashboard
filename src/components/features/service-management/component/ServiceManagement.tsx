@@ -227,7 +227,7 @@ export default function ServiceManagement() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleView(service)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-[#005696] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
                         >
                           <Eye className="w-5 h-5 text-white" />
                         </button>

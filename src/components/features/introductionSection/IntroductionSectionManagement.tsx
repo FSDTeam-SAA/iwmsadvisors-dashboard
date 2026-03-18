@@ -47,9 +47,9 @@ export default function IntroductionSectionManagement() {
             <TabsTrigger
               value="banner"
               className={cn(
-                "font-bold py-3 transition-all duration-300",
+                "font-bold py-3 transition-all duration-300 ",
                 activeTab === "banner"
-                  ? "bg-[#0057B8] text-white shadow-md rounded-md"
+                  ? "bg-[#005696] text-white shadow-md rounded-md"
                   : "text-gray-500 hover:text-[#0057B8] hover:bg-white/50",
               )}
             >
@@ -60,7 +60,7 @@ export default function IntroductionSectionManagement() {
               className={cn(
                 "font-bold py-3 transition-all duration-300",
                 activeTab === "hero"
-                  ? "bg-[#0057B8] text-white shadow-md rounded-md"
+                  ? "bg-[#005696] text-white shadow-md rounded-md"
                   : "text-gray-500 hover:text-[#0057B8] hover:bg-white/50",
               )}
             >
@@ -71,7 +71,7 @@ export default function IntroductionSectionManagement() {
               className={cn(
                 "font-bold py-3 transition-all duration-300",
                 activeTab === "about"
-                  ? "bg-[#0057B8] text-white shadow-md rounded-md"
+                  ? "bg-[#005696] text-white shadow-md rounded-md"
                   : "text-gray-500 hover:text-[#0057B8] hover:bg-white/50",
               )}
             >

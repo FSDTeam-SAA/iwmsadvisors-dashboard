@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -37,12 +37,7 @@ export default function StrengthItemModal({
   const { mutate: createItem, isPending: isCreating } = useCreateStrengthItem();
   const { mutate: updateItem, isPending: isUpdating } = useUpdateStrengthItem();
 
-  const [prevItem, setPrevItem] = useState<StrengthItem | null>(null);
-  const [prevIsOpen, setPrevIsOpen] = useState(false);
-
-  if (item !== prevItem || isOpen !== prevIsOpen) {
-    setPrevItem(item);
-    setPrevIsOpen(isOpen);
+  useEffect(() => {
     if (item && isOpen) {
       setTitle(item.title);
       setSubtitle(item.subtitle);
@@ -54,7 +49,7 @@ export default function StrengthItemModal({
       setPreviewUrl(null);
       setImageFile(null);
     }
-  }
+  }, [item, isOpen]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

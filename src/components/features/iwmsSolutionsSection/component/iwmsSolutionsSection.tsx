@@ -23,7 +23,19 @@ import IwmsSolutionsSectionAddModal from "./iwmsSolutionsSectionAddModal";
 import IwmsSolutionsSectionEditModal from "./iwmsSolutionsSectionEditModal";
 import IwmsSolutionsSectionViewModal from "./iwmsSolutionsSectionViewModal";
 
+import { usePathname } from "next/navigation";
+
 export default function IwmsSolutionsSection() {
+  const pathname = usePathname();
+  const isWhyChooseUs = pathname?.includes("why-choose-us");
+  const isOurApproach = pathname?.includes("our-approach");
+  const isContactServices = pathname?.includes("contact-services");
+  
+  let pageTitle = "IWMS Solutions Section";
+  if (isWhyChooseUs) pageTitle = "Why Choose Us";
+  if (isOurApproach) pageTitle = "Our Approach";
+  if (isContactServices) pageTitle = "Contact Services";
+
   const [selectedSection, setSelectedSection] =
     useState<IwmsSolutionsSectionType | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -67,7 +79,7 @@ export default function IwmsSolutionsSection() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <p className="text-red-500 font-medium">
-          Error loading IWMS Solutions sections
+          Error loading {pageTitle} sections
         </p>
       </div>
     );
@@ -78,13 +90,13 @@ export default function IwmsSolutionsSection() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Iwms Solutions Section Management
+            {pageTitle} Management
           </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
             <span className="text-gray-900 font-medium">
-              Iwms SolutionsSection Management
+              {pageTitle} Management
             </span>
           </nav>
         </div>
@@ -179,7 +191,7 @@ export default function IwmsSolutionsSection() {
                     colSpan={5}
                     className="py-10 text-center text-gray-400"
                   >
-                    No IWMS Solutions sections found.{" "}
+                    No {pageTitle} sections found.{" "}
                     <button
                       className="text-[#0057B8] hover:underline font-medium cursor-pointer"
                       onClick={() => setIsAddModalOpen(true)}
@@ -203,6 +215,7 @@ export default function IwmsSolutionsSection() {
 
       {isEditModalOpen && (
         <IwmsSolutionsSectionEditModal
+          key={selectedSection?._id || "edit-modal"}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           iwmsSolutionsSection={selectedSection}
