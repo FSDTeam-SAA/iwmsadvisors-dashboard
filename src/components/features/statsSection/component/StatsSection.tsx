@@ -65,11 +65,11 @@ export default function StatsSection() {
     <div className="p-6 space-y-6 bg-[#F9FAFB] min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Stats Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Our Proven Result</h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
-            <span className="text-gray-900 font-medium">Stats Management</span>
+            <span className="text-gray-900 font-medium">Our Proven Result</span>
           </nav>
         </div>
         <div className="w-full md:w-auto flex md:justify-end">
