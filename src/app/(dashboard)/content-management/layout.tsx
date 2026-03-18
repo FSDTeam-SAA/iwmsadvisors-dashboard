@@ -1,4 +1,4 @@
-import ContentManagementNav from "@/components/features/contentManagement/ContentManagementNav";
+// import ContentManagementNav from "@/components/features/contentManagement/ContentManagementNav";
 import React from "react";
 
 export default function ContentManagementLayout({
@@ -8,7 +8,7 @@ export default function ContentManagementLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <ContentManagementNav />
+      {/* <ContentManagementNav /> */}
       <div className="flex-1 p-6">
         {children}
       </div>

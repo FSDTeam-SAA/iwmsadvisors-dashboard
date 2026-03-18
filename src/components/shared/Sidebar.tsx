@@ -61,9 +61,19 @@ const navigation: NavItem[] = [
             name: "Banner Management",
             href: "/content-management/introduction-section?tab=banner",
           },
-          { name: "IWMS Solutions", href: "/content-management/iwms-solutions" },
+          // {
+          //   name: "About IWMS",
+          //   href: "/content-management/introduction-section?tab=about",
+          // },
+          {
+            name: "IWMS Solutions",
+            href: "/content-management/iwms-solutions",
+          },
           { name: "Why Choose Us", href: "/content-management/why-choose-us" },
-          { name: "Our Proven Result", href: "/content-management/stats-section" },
+          {
+            name: "Our Proven Result",
+            href: "/content-management/stats-section",
+          },
           { name: "Consultant", href: "/content-management/consultant" },
           { name: "Footer", href: "/content-management/footer-section" },
         ],
@@ -108,7 +118,10 @@ const navigation: NavItem[] = [
             name: "Transform Management",
             href: "/content-management/transforming-section",
           },
-          { name: "Mission & Vision", href: "/content-management/mission-vision" },
+          {
+            name: "Mission & Vision",
+            href: "/content-management/mission-vision",
+          },
           {
             name: "Our Core Strengths",
             href: "/content-management/strength-section",
@@ -146,6 +159,11 @@ const navigation: NavItem[] = [
       },
     ],
   },
+  // {
+  //   name: "Case Study",
+  //   href: "/content-management/case-studies",
+  //   icon: ShoppingBasket,
+  // },
 
   {
     name: "Service Management",
@@ -175,7 +193,7 @@ const normalizePath = (href: string) => href.split("?")[0];
 const findParents = (
   items: NavItem[],
   pathname: string,
-  parents: string[] = []
+  parents: string[] = [],
 ): string[] => {
   for (const item of items) {
     const isMatch = pathname === normalizePath(item.href);
@@ -196,7 +214,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>(() =>
-    findParents(navigation, pathname)
+    findParents(navigation, pathname),
   );
   const [prevPathname, setPrevPathname] = useState(pathname);
 
@@ -214,7 +232,6 @@ export default function Sidebar() {
       return isDirectMatch || isNestedMatch;
     });
   };
-
 
   const toggleMenu = (name: string, level: number) => {
     setOpenMenus((prev) => {
@@ -253,8 +270,8 @@ export default function Sidebar() {
                   level === 0 && isActive
                     ? "bg-[#005696]/10 text-[#005696]"
                     : level > 0 && isActive
-                    ? "bg-[#005696]/5 text-[#005696]"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-[#005696]"
+                      ? "bg-[#005696]/5 text-[#005696]"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-[#005696]",
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -264,13 +281,15 @@ export default function Sidebar() {
                         "h-5 w-5 transition-colors",
                         isActive
                           ? "text-[#005696]"
-                          : "text-gray-400 group-hover:text-[#005696]"
+                          : "text-gray-400 group-hover:text-[#005696]",
                       )}
                     />
                   ) : (
                     <div className="h-2 w-2 rounded-full bg-gray-300 group-hover:bg-[#005696]" />
                   )}
-                  <span className={cn(level > 0 && "text-[14px]")}>{item.name}</span>
+                  <span className={cn(level > 0 && "text-[14px]")}>
+                    {item.name}
+                  </span>
                 </div>
 
                 {isMenuOpen ? (
@@ -283,8 +302,10 @@ export default function Sidebar() {
               <div
                 className={cn(
                   "overflow-hidden transition-all duration-300 ease-in-out space-y-1",
-                  isMenuOpen ? "max-h-[1000px] opacity-100 py-1" : "max-h-0 opacity-0 py-0",
-                  level === 0 ? "pl-6" : "pl-5"
+                  isMenuOpen
+                    ? "max-h-[1000px] opacity-100 py-1"
+                    : "max-h-0 opacity-0 py-0",
+                  level === 0 ? "pl-6" : "pl-5",
                 )}
               >
                 {renderNavItems(item.subItems!, level + 1)}
@@ -297,25 +318,33 @@ export default function Sidebar() {
                 "flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 group",
                 isActive
                   ? "text-[#005696] font-bold bg-[#005696]/5"
-                  : "text-gray-500 hover:text-[#005696] hover:bg-gray-50"
+                  : "text-gray-500 hover:text-[#005696] hover:bg-gray-50",
               )}
             >
               {item.icon ? (
                 <item.icon
                   className={cn(
                     "h-4 w-4 transition-colors",
-                    isActive ? "text-[#005696]" : "text-gray-400 group-hover:text-[#005696]"
+                    isActive
+                      ? "text-[#005696]"
+                      : "text-gray-400 group-hover:text-[#005696]",
                   )}
                 />
               ) : (
                 <div
                   className={cn(
                     "h-1.5 w-1.5 rounded-full transition-all duration-200",
-                    isActive ? "bg-[#005696]" : "bg-gray-300 group-hover:bg-[#005696]"
+                    isActive
+                      ? "bg-[#005696]"
+                      : "bg-gray-300 group-hover:bg-[#005696]",
                   )}
                 />
               )}
-              <span className={cn(level > 0 ? "text-[14px]" : "text-[15px] font-semibold")}>
+              <span
+                className={cn(
+                  level > 0 ? "text-[14px]" : "text-[15px] font-semibold",
+                )}
+              >
                 {item.name}
               </span>
             </Link>
