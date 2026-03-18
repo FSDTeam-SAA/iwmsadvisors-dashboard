@@ -19,16 +19,37 @@ import { HeroSection as HeroSectionType } from "../types/heroSection.type";
 
 export default function HeroSection({
   showHeader = true,
+  filterOrder,
 }: {
-  showHeader?: boolean;
+  readonly showHeader?: boolean;
+  readonly filterOrder?: number;
 }) {
   const { data: response, isLoading, isError } = useHeroSections();
   const heroSections = response?.data || [];
 
+  const orderLabelMap: Record<number, string> = {
+    1: "Services Page",
+    2: "Case Studies Page",
+    3: "Blog Page",
+    4: "About Page",
+    5: "FAQ Section Page",
+    6: "Careers Page",
+    7: "Need",
+  };
+
+  // Filter sections if filterOrder is provided
+  const filteredHeroSections = filterOrder
+    ? heroSections.filter((section) => section.order === filterOrder)
+    : heroSections;
+
   // Sort sections by order
-  const sortedHeroSections = [...heroSections].sort(
+  const sortedHeroSections = [...filteredHeroSections].sort(
     (a, b) => a.order - b.order,
   );
+
+  const pageTitle = filterOrder
+    ? `${orderLabelMap[filterOrder]} Hero`
+    : "Hero Sections Management";
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
@@ -96,35 +117,25 @@ export default function HeroSection({
 
   return (
     <div className="space-y-6">
-      {/* {!showHeader && (
-        <div className="flex justify-end mb-6">
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#0057B8] hover:bg-[#004494] shadow-sm transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Hero Section
-          </Button>
-        </div>
-      )} */}
-
       {showHeader && (
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">
-              Hero Sections Management
+              {pageTitle}
             </h2>
             <p className="text-muted-foreground">
-              Manage the hero banners displayed on the landing page.
+              Manage the hero banners displayed on the {filterOrder ? orderLabelMap[filterOrder] : "landing page"}.
             </p>
           </div>
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#0057B8] hover:bg-[#004494]"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Hero Section
-          </Button>
+          {(!filterOrder || sortedHeroSections.length === 0) && (
+            <Button
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-[#0057B8] hover:bg-[#004494]"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Hero Section
+            </Button>
+          )}
         </div>
       )}
 
