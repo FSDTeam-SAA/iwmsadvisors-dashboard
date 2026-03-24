@@ -120,28 +120,31 @@ export default function FooterEditModal({
   const [prevFooterId, setPrevFooterId] = useState<string | null>(null);
 
   // Synchronize state during render when footer changes or modal opens
-  if (isOpen && footer && footer._id !== prevFooterId) {
-    setPrevFooterId(footer._id);
+  const footerToSync = isOpen ? footer : null;
+  if (footerToSync && footerToSync._id !== prevFooterId) {
+    setPrevFooterId(footerToSync._id);
     setFormData({
-      description: footer.description ?? "",
-      email: footer.email ?? "",
-      phone: footer.phone ?? "",
-      copyright: footer.copyright ?? "",
-      quickLinks: footer.quickLinks?.length ? footer.quickLinks : [emptyLink()],
-      consultingLinks: footer.consultingLinks?.length
-        ? footer.consultingLinks
+      description: footerToSync.description ?? "",
+      email: footerToSync.email ?? "",
+      phone: footerToSync.phone ?? "",
+      copyright: footerToSync.copyright ?? "",
+      quickLinks: footerToSync.quickLinks?.length
+        ? footerToSync.quickLinks
         : [emptyLink()],
-      contactLinks: footer.contactLinks?.length
-        ? footer.contactLinks
+      consultingLinks: footerToSync.consultingLinks?.length
+        ? footerToSync.consultingLinks
+        : [emptyLink()],
+      contactLinks: footerToSync.contactLinks?.length
+        ? footerToSync.contactLinks
         : [emptyLink()],
       socialLinks: {
-        twitter: footer.socialLinks?.twitter ?? "",
-        facebook: footer.socialLinks?.facebook ?? "",
-        linkedin: footer.socialLinks?.linkedin ?? "",
+        twitter: footerToSync.socialLinks?.twitter ?? "",
+        facebook: footerToSync.socialLinks?.facebook ?? "",
+        linkedin: footerToSync.socialLinks?.linkedin ?? "",
       },
     });
+    setLogoPreview(footerToSync.logo ?? null);
     setLogoFile(null);
-    setLogoPreview(footer.logo ?? null);
   } else if (!isOpen && prevFooterId !== null) {
     setPrevFooterId(null);
   }
