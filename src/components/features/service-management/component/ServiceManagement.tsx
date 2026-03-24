@@ -227,19 +227,19 @@ export default function ServiceManagement() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleView(service)}
-                          className="p-2 bg-[#005696] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
                         >
                           <Eye className="w-5 h-5 text-white" />
                         </button>
                         <button
                           onClick={() => handleEdit(service)}
-                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-green-600 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
                         >
                           <Edit className="w-5 h-5 text-white" />
                         </button>
                         <button
                           onClick={() => handleDelete(service._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-red-600 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-5 h-5 text-white" />
                         </button>

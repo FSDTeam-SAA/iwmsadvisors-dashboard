@@ -135,14 +135,14 @@ export default function ApplicationManagement() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleOpenModal(app)}
-                          className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
                           title="View Details"
                         >
                           <Eye className="w-5 h-5 text-white" />
                         </button>
                         <button
                           onClick={() => handleDelete(app._id)}
-                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-red-600 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
                           title="Delete Application"
                         >
                           <Trash2 className="w-5 h-5 text-white" />

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 
 interface FooterEditModalProps {
@@ -29,12 +29,12 @@ function LinkListEditor({
   label,
   links,
   onChange,
-}: {
+}: Readonly<{
   id: string;
   label: string;
   links: FooterLink[];
   onChange: (links: FooterLink[]) => void;
-}) {
+}>) {
   const update = (index: number, field: keyof FooterLink, value: string) => {
     const updated = links.map((l, i) =>
       i === index ? { ...l, [field]: value } : l,
@@ -61,7 +61,7 @@ function LinkListEditor({
       </div>
       <div className="space-y-2">
         {links.map((link, i) => (
-          <div key={i} className="flex gap-2 items-center">
+          <div key={`${id}-link-${i}`} className="flex gap-2 items-center">
             <Input
               id={`${id}-edit-label-${i}`}
               placeholder="Label"
@@ -97,7 +97,7 @@ export default function FooterEditModal({
   onClose,
   footer,
   onSave,
-}: FooterEditModalProps) {
+}: Readonly<FooterEditModalProps>) {
   const [formData, setFormData] = useState({
     description: "",
     email: "",
@@ -116,41 +116,39 @@ export default function FooterEditModal({
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const lastFooterId = useRef<string | null>(null);
+  // Track previous footer ID to synchronize state during render
+  const [prevFooterId, setPrevFooterId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isOpen && footer && footer._id !== lastFooterId.current) {
-      lastFooterId.current = footer._id;
-      setFormData({
-        description: footer.description ?? "",
-        email: footer.email ?? "",
-        phone: footer.phone ?? "",
-        copyright: footer.copyright ?? "",
-        quickLinks: footer.quickLinks?.length
-          ? footer.quickLinks
-          : [emptyLink()],
-        consultingLinks: footer.consultingLinks?.length
-          ? footer.consultingLinks
-          : [emptyLink()],
-        contactLinks: footer.contactLinks?.length
-          ? footer.contactLinks
-          : [emptyLink()],
-        socialLinks: {
-          twitter: footer.socialLinks?.twitter ?? "",
-          facebook: footer.socialLinks?.facebook ?? "",
-          linkedin: footer.socialLinks?.linkedin ?? "",
-        },
-      });
-      setLogoFile(null);
-      setLogoPreview(footer.logo ?? null);
-    } else if (!isOpen) {
-      lastFooterId.current = null;
-    }
-  }, [isOpen, footer]);
+  // Synchronize state during render when footer changes or modal opens
+  if (isOpen && footer && footer._id !== prevFooterId) {
+    setPrevFooterId(footer._id);
+    setFormData({
+      description: footer.description ?? "",
+      email: footer.email ?? "",
+      phone: footer.phone ?? "",
+      copyright: footer.copyright ?? "",
+      quickLinks: footer.quickLinks?.length ? footer.quickLinks : [emptyLink()],
+      consultingLinks: footer.consultingLinks?.length
+        ? footer.consultingLinks
+        : [emptyLink()],
+      contactLinks: footer.contactLinks?.length
+        ? footer.contactLinks
+        : [emptyLink()],
+      socialLinks: {
+        twitter: footer.socialLinks?.twitter ?? "",
+        facebook: footer.socialLinks?.facebook ?? "",
+        linkedin: footer.socialLinks?.linkedin ?? "",
+      },
+    });
+    setLogoFile(null);
+    setLogoPreview(footer.logo ?? null);
+  } else if (!isOpen && prevFooterId !== null) {
+    setPrevFooterId(null);
+  }
 
   useEffect(() => {
     return () => {
-      if (logoPreview && logoPreview.startsWith("blob:")) {
+      if (logoPreview?.startsWith("blob:")) {
         URL.revokeObjectURL(logoPreview);
       }
     };
@@ -177,15 +175,7 @@ export default function FooterEditModal({
     onSave(footer._id, { ...formData, logoFile });
   };
 
-  const handleRemoveImage = () => {
-    setLogoFile(null);
-    if (logoPreview?.startsWith("blob:")) {
-      URL.revokeObjectURL(logoPreview);
-    }
-    setLogoPreview(null);
-    // Automatically trigger picker
-    fileInputRef.current?.click();
-  };
+
 
   if (!footer) return null;
 
@@ -204,56 +194,62 @@ export default function FooterEditModal({
             <Label className="text-sm font-bold text-gray-700">
               Logo Image
             </Label>
-            <input
-              ref={fileInputRef}
-              id="edit-logo"
-              name="logo"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0] ?? null;
-                setLogoFile(file);
-                if (logoPreview?.startsWith("blob:")) {
-                  URL.revokeObjectURL(logoPreview);
-                }
-                if (file) {
-                  const url = URL.createObjectURL(file);
-                  setLogoPreview(url);
-                }
-              }}
-            />
-
-            <div className="relative group w-full max-w-[200px] h-32 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4">
-              {logoPreview ? (
-                <>
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="relative group w-full max-w-[200px] h-32 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4">
+                {logoPreview ? (
                   <Image
                     src={logoPreview}
                     alt="Logo preview"
                     fill
                     className="object-contain"
                   />
-                  <div className="absolute top-2 right-2">
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
-                    >
-                      Change <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div
-                  className="flex flex-col items-center justify-center h-full w-full cursor-pointer hover:bg-gray-100/50 transition-colors"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Plus className="w-6 h-6 text-gray-400 mb-2" />
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center px-4">
-                    Choose Logo
+                ) : (
+                  <label
+                    htmlFor="footer-logo-upload"
+                    className="flex flex-col items-center justify-center h-full w-full cursor-pointer hover:bg-gray-100/50 transition-colors"
+                  >
+                    <Plus className="w-6 h-6 text-gray-400 mb-2" />
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center px-4">
+                      Choose Logo
+                    </p>
+                  </label>
+                )}
+              </div>
+              
+              {logoPreview && (
+                <div className="flex flex-col items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
+                  >
+                    <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    Change Image
+                  </button>
+                  <p className="text-xs text-gray-500">
+                    Click to select a different logo
                   </p>
                 </div>
               )}
+              <input
+                id="footer-logo-upload"
+                ref={fileInputRef}
+                name="logo"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  setLogoFile(file);
+                  if (logoPreview?.startsWith("blob:")) {
+                    URL.revokeObjectURL(logoPreview);
+                  }
+                  if (file) {
+                    const url = URL.createObjectURL(file);
+                    setLogoPreview(url);
+                  }
+                }}
+              />
             </div>
           </div>
 

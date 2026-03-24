@@ -185,19 +185,19 @@ export default function FaqSection() {
                     <TableCell className="py-4 text-center">
                       <button
                         onClick={() => onView(item)}
-                        className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                        className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
                       >
                         <Eye className="w-5 h-5 text-white" />
                       </button>
                       <button
                         onClick={() => onEdit(item)}
-                        className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer ml-2"
+                        className="p-2 bg-green-600 hover:bg-green-600 rounded-full transition-colors cursor-pointer ml-2"
                       >
                         <Edit className="w-5 h-5 text-white" />
                       </button>
                       <button
                         onClick={() => onDelete(item._id)}
-                        className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer ml-2"
+                        className="p-2 bg-red-600 hover:bg-red-600 rounded-full transition-colors cursor-pointer ml-2"
                       >
                         <Trash2 className="w-5 h-5 text-white" />
                       </button>

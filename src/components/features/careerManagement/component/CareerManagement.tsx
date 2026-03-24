@@ -201,7 +201,7 @@ export default function CareerManagement() {
              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-2">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <Badge className="bg-[#0057B8] text-white hover:bg-[#0057B8]">Featured</Badge>
+                        <Badge className="bg-blue-600 text-white hover:bg-blue-600">Featured</Badge>
                         <h2 className="text-2xl font-black text-gray-900">{selectedCareer?.title}</h2>
                     </div>
                     <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 font-medium">
