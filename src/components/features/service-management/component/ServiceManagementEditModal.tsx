@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, X, Upload } from "lucide-react";
 import Image from "next/image";
 import { ServicePage } from "../types/service-management.types";
 
@@ -44,9 +44,11 @@ export default function ServiceManagementEditModal({
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
+  // State synchronization during render
+  const [prevId, setPrevId] = useState<string | null>(null);
+  if (isOpen && (servicePage?._id || null) !== prevId) {
+    setPrevId(servicePage?._id || null);
     if (servicePage) {
       setFormData({
         heading: servicePage.heading,
@@ -64,14 +66,20 @@ export default function ServiceManagementEditModal({
           : [{ question: "", answer: "" }],
       );
       setImagePreview(servicePage.image?.url || null);
+    } else {
+      setFormData({
+        heading: "",
+        title: "",
+        guideline: "",
+        description: "",
+      });
+      setSubtitles([""]);
+      setFaqs([{ question: "", answer: "" }]);
+      setImagePreview(null);
     }
-    return () => {
-      if (imagePreview && imagePreview.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [servicePage]);
+    setImageFile(null);
+  }
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -225,18 +233,17 @@ export default function ServiceManagementEditModal({
             />
           </div>
 
-          {/* Image Upload */}
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label className="text-sm font-bold text-gray-700">Image</Label>
             <input
-              ref={fileInputRef}
               type="file"
+              id="service-image-input"
               accept="image/*"
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
                 setImageFile(file);
-                if (imagePreview && imagePreview.startsWith("blob:")) {
+                if (imagePreview?.startsWith("blob:")) {
                   URL.revokeObjectURL(imagePreview);
                 }
                 if (file) {
@@ -247,49 +254,58 @@ export default function ServiceManagementEditModal({
                 }
               }}
             />
-            <div
-              className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {imagePreview ? (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
-                  <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute top-2 right-2">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <label
+                htmlFor="service-image-input"
+                className="relative group w-full max-w-[500px] h-60 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-100/50 transition-colors"
+                aria-label="Choose Service Image"
+              >
+                {imagePreview ? (
+                  <div className="relative w-full h-full rounded-lg overflow-hidden bg-gray-100">
+                    <Image
+                      src={imagePreview}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                    />
                     <button
                       type="button"
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         setImageFile(null);
                         if (imagePreview?.startsWith("blob:")) {
                           URL.revokeObjectURL(imagePreview);
                         }
                         setImagePreview(null);
-                        fileInputRef.current?.click();
                       }}
-                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10 shadow-sm"
                     >
-                      Change <X className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-                  <p className="text-sm font-medium">Click to upload image</p>
-                  <Button
-                    type="button"
-                    className="mt-3 bg-[#0057B8] hover:bg-[#004494]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full w-full">
+                    <Plus className="w-8 h-8 text-gray-400 mb-2" />
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider text-center px-4">
+                      Choose Image
+                    </p>
+                  </div>
+                )}
+              </label>
+
+              {imagePreview && (
+                <div className="flex flex-col items-center gap-2">
+                  <label
+                    htmlFor="service-image-input"
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
                   >
-                    Choose Image
-                  </Button>
+                    <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    Change Image
+                  </label>
+                  <p className="text-xs text-gray-500">
+                    Click to select a different image
+                  </p>
                 </div>
               )}
             </div>
