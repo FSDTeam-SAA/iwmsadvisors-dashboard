@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Plus, Upload } from "lucide-react";
 import Image from "next/image";
 
 interface BlogSectionAddModalProps {
@@ -149,61 +150,46 @@ export default function BlogSectionAddModal({
               }}
             />
 
-            {/* Preview area */}
-            <div
-              className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {imagePreview ? (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <label
+                htmlFor="image"
+                className="relative group w-full max-w-[400px] h-48 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-100/50 transition-colors"
+                aria-label="Choose Blog Image"
+              >
+                {imagePreview ? (
                   <Image
                     src={imagePreview}
                     alt="Selected image preview"
                     fill
                     className="object-cover"
                   />
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-                  <p className="text-sm font-medium">
-                    Click to upload or drag & drop
-                  </p>
-                  <p className="text-xs">PNG, JPG up to ~5MB</p>
-                  <Button
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full w-full">
+                    <Plus className="w-6 h-6 text-gray-400 mb-2" />
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center px-4">
+                      Choose Image
+                    </p>
+                  </div>
+                )}
+              </label>
+
+              {imagePreview && (
+                <div className="flex flex-col items-center gap-2">
+                  <button
                     type="button"
-                    className="mt-3 bg-[#0057B8] hover:bg-[#004494]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
                   >
-                    Choose Image
-                  </Button>
+                    <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    Change Image
+                  </button>
+                  <p className="text-xs text-gray-500">
+                    Click to select a different image
+                  </p>
                 </div>
               )}
             </div>
 
-            {imageFile && (
-              <div className="flex items-center justify-between mt-2">
-                <p className="text-xs text-gray-500 truncate">
-                  {imageFile.name}
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setImageFile(null);
-                    if (imagePreview) {
-                      URL.revokeObjectURL(imagePreview);
-                      setImagePreview(null);
-                    }
-                  }}
-                  className="h-8"
-                >
-                  Remove
-                </Button>
-              </div>
-            )}
           </div>
 
           {/* Description */}

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Plus } from "lucide-react";
 import { useUpdateTransformSection } from "../hooks/useTransforming";
 import { TransformSection } from "../types/transforming.type";
 import { toast } from "sonner";
@@ -136,46 +136,59 @@ export default function TransformEditModal({
       <Label className="text-sm font-bold text-gray-700">{label}</Label>
       <input
         type="file"
+        id={key}
         ref={fileInputRefs[key]}
         onChange={(e) => handleFileChange(e, key)}
         accept="image/*"
         className="hidden"
       />
 
-      <div
-        className="relative border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer min-h-[160px] flex items-center justify-center"
-        onClick={() => fileInputRefs[key].current?.click()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            fileInputRefs[key].current?.click();
-          }
-        }}
-        role="button"
-        tabIndex={0}
-      >
-        {previews[key] ? (
-          <div className="relative w-full h-32">
-            <Image
-              src={previews[key]!}
-              alt={label}
-              fill
-              className="object-contain rounded-lg"
-            />
+      <div className="flex flex-col items-center gap-4 text-center">
+        <label
+          htmlFor={key}
+          className="relative group w-full h-48 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-100/50 transition-colors"
+          aria-label={`Choose ${label}`}
+        >
+          {previews[key] ? (
+            <div className="relative w-full h-full">
+              <Image
+                src={previews[key]}
+                alt={label}
+                fill
+                className="object-contain rounded-lg"
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeImage(key);
+                }}
+                className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full w-full">
+              <Plus className="w-6 h-6 text-gray-400 mb-2" />
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center px-4">
+                Choose {label}
+              </p>
+            </div>
+          )}
+        </label>
+
+        {previews[key] && (
+          <div className="flex flex-col items-center gap-2">
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                removeImage(key);
-              }}
-              className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+              onClick={() => fileInputRefs[key].current?.click()}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
             >
-              <X className="w-4 h-4" />
+              <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Change Image
             </button>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center text-gray-500">
-            <Upload className="w-8 h-8 mb-2" />
-            <p className="text-xs">Click to upload {label}</p>
           </div>
         )}
       </div>

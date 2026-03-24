@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Plus } from "lucide-react";
 import Image from "next/image";
 import { useCreateMission } from "../hooks/useMissionVision";
 import { toast } from "sonner";
@@ -122,38 +122,65 @@ export default function MissionAddModal({
           </div>
 
           {/* Image Upload */}
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label className="text-sm font-bold text-gray-700">Image</Label>
-            <div className="flex items-center gap-4">
+            <input
+              type="file"
+              id="mission-image"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+            <div className="flex flex-col items-center gap-4 text-center">
+              <label
+                htmlFor="mission-image"
+                className="relative group w-full max-w-[400px] h-48 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-100/50 transition-colors"
+                aria-label="Choose Mission Image"
+              >
+                {imagePreview ? (
+                  <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
+                    <Image
+                      src={imagePreview}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeImage();
+                      }}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10 shadow-sm"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full w-full">
+                    <Plus className="w-6 h-6 text-gray-400 mb-2" />
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center px-4">
+                      Choose Image
+                    </p>
+                  </div>
+                )}
+              </label>
+
               {imagePreview && (
-                <div className="relative w-20 h-20 rounded-lg overflow-hidden border">
-                  <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5"
+                <div className="flex flex-col items-center gap-2">
+                  <label
+                    htmlFor="mission-image"
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
                   >
-                    <X className="w-3 h-3" />
-                  </button>
+                    <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    Change Image
+                  </label>
+                  <p className="text-xs text-gray-500">
+                    Click to select a different image
+                  </p>
                 </div>
               )}
-              <label className="cursor-pointer">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-50 text-sm transition-colors">
-                  <Upload className="w-4 h-4 text-gray-500" />
-                  <span>{imagePreview ? "Change Image" : "Upload Image"}</span>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-              </label>
             </div>
           </div>
 
