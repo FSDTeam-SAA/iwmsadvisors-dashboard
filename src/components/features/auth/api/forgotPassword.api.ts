@@ -4,7 +4,7 @@ import axiosInstance from "@/lib/instance/axios-instance";
 // Forgot Password
 export const forgotPasswordApi = async (email: string) => {
   try {
-    const response = await axiosInstance.post("/auth/forgot-password", {
+    const response = await axiosInstance.post("/auth/forget-password", {
       email,
     });
 
