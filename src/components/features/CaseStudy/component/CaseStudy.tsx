@@ -250,7 +250,7 @@ export default function CaseStudy() {
                     <TableCell className="py-4 text-center">
                       <button
                         onClick={() => handleView(caseStudy)}
-                        className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                        className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
                       >
                         <Eye className="w-5 h-5 text-white" />
                       </button>
@@ -262,7 +262,7 @@ export default function CaseStudy() {
                       </button>
                       <button
                         onClick={() => handleDelete(caseStudy._id)}
-                        className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer ml-2"
+                        className="p-2 bg-red-600 hover:bg-red-600 rounded-full transition-colors cursor-pointer ml-2"
                       >
                         <Trash2 className="w-5 h-5 text-white" />
                       </button>

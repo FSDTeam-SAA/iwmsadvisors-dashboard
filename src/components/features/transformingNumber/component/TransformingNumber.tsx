@@ -114,7 +114,7 @@ export default function TransformingNumberComponent() {
                     <div className="flex justify-center items-center gap-2">
                       <button
                         onClick={handleView}
-                        className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+                        className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
                         title="View"
                       >
                         <Eye className="w-4 h-4 text-white" />
@@ -128,7 +128,7 @@ export default function TransformingNumberComponent() {
                       </button>
                       <button
                         onClick={handleDelete}
-                        className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+                        className="p-2 bg-red-600 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4 text-white" />

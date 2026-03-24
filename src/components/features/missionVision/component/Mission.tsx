@@ -115,7 +115,7 @@ export default function MissionSection() {
           <div className="flex justify-center items-center gap-2">
             <button
               onClick={() => handleView(item)}
-              className="p-2 bg-[#489EFF] hover:bg-[#CCE7FF] rounded-full transition-colors cursor-pointer"
+              className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
             >
               <Eye className="w-5 h-5 text-white" />
             </button>
@@ -127,7 +127,7 @@ export default function MissionSection() {
             </button>
             <button
               onClick={() => handleDelete(item._id)}
-              className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
+              className="p-2 bg-red-600 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
             >
               <Trash2 className="w-5 h-5 text-white" />
             </button>

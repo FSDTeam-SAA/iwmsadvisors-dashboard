@@ -35,7 +35,7 @@ export function ContactInformationCard({
               <Button
                 size="icon"
                 variant="secondary"
-                className="rounded-full shadow-sm bg-blue-50 hover:bg-blue-100 text-blue-600 border-none cursor-pointer h-9 w-9"
+                className="rounded-full shadow-sm bg-blue-600 hover:bg-blue-600 text-white border-none cursor-pointer h-9 w-9"
                 onClick={() => onView(item)}
               >
                 <Eye className="w-4 h-4" />
@@ -43,7 +43,7 @@ export function ContactInformationCard({
               <Button
                 size="icon"
                 variant="secondary"
-                className="rounded-full shadow-sm bg-green-50 hover:bg-green-100 text-green-600 border-none cursor-pointer h-9 w-9"
+                className="rounded-full shadow-sm bg-green-600 hover:bg-green-600 text-white border-none cursor-pointer h-9 w-9"
                 onClick={() => onEdit(item)}
               >
                 <Edit className="w-4 h-4" />
@@ -51,7 +51,7 @@ export function ContactInformationCard({
               <Button
                 size="icon"
                 variant="secondary"
-                className="rounded-full shadow-sm bg-red-50 hover:bg-red-100 text-red-600 border-none cursor-pointer h-9 w-9"
+                className="rounded-full shadow-sm bg-red-600 hover:bg-red-600 text-white border-none cursor-pointer h-9 w-9"
                 onClick={() => onDelete(item._id)}
               >
                 <Trash2 className="w-4 h-4" />

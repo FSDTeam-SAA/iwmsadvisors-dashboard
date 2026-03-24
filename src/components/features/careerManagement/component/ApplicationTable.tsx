@@ -246,7 +246,7 @@ export default function ApplicationTable({
                   className={cn(
                     "h-9 w-9 p-0 font-bold cursor-pointer",
                     page === currentPage 
-                      ? "bg-[#0057B8] hover:bg-[#004494] text-white" 
+                      ? "bg-blue-600 hover:bg-blue-600 text-white" 
                       : "border-gray-200 text-gray-600 hover:bg-gray-50",
                     page === "..." && "border-none hover:bg-transparent"
                   )}
