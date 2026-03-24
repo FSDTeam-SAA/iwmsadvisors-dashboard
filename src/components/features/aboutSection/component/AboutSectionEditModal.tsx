@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { X } from "lucide-react";
+import { Upload } from "lucide-react";
 import Image from "next/image";
 
 interface AboutSectionEditModalProps {
@@ -38,10 +38,10 @@ export default function AboutSectionEditModal({
     btnName: aboutSection?.btnName || "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(aboutSection?.image || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    aboutSection?.image || null,
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -179,7 +179,7 @@ export default function AboutSectionEditModal({
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
                 setImageFile(file);
-                if (imagePreview && imagePreview.startsWith("blob:")) {
+                if (imagePreview?.startsWith("blob:")) {
                   URL.revokeObjectURL(imagePreview);
                 }
                 if (file) {
@@ -192,34 +192,16 @@ export default function AboutSectionEditModal({
             />
 
             {/* Preview area */}
-            <div
-              className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC] hover:bg-gray-50 transition-colors cursor-pointer"
-              onClick={() => fileInputRef.current?.click()}
-            >
+            <div className="border-2 border-dashed rounded-xl p-4 bg-[#F8FAFC]">
               {imagePreview ? (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
-                  <Image
-                    src={imagePreview}
-                    alt={aboutSection.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute top-2 right-2">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImageFile(null);
-                        if (imagePreview?.startsWith("blob:")) {
-                          URL.revokeObjectURL(imagePreview);
-                        }
-                        setImagePreview(null);
-                        fileInputRef.current?.click();
-                      }}
-                      className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
-                    >
-                      Change <X className="w-4 h-4" />
-                    </button>
+                <div className="flex flex-col items-center w-full gap-4">
+                  <div className="relative h-48 rounded-lg overflow-hidden bg-gray-100 w-full">
+                    <Image
+                      src={imagePreview}
+                      alt={aboutSection.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 </div>
               ) : (
@@ -252,6 +234,27 @@ export default function AboutSectionEditModal({
                 </p>
               </div>
             )}
+            <div className="flex flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setImageFile(null);
+                  if (imagePreview?.startsWith("blob:")) {
+                    URL.revokeObjectURL(imagePreview);
+                  }
+                  setImagePreview(null);
+                  fileInputRef.current?.click();
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
+              >
+                <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                Change Image
+              </button>
+              <p className="text-xs text-gray-500">
+                Click to select a different image
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}
