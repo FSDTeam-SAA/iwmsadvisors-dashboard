@@ -137,7 +137,7 @@ export default function NavbarManagement() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleView(item)}
-                          className="p-2 bg-[#005696] hover:bg-[#005696] rounded-full transition-colors cursor-pointer"
+                          className="p-2 bg-blue-600 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
                           title="View"
                         >
                           <Eye className="w-4 h-4 text-white" />
