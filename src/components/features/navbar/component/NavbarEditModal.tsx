@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, X } from "lucide-react";
+import { Upload } from "lucide-react";
 import Image from "next/image";
 import { useUpdateNavbar } from "../hooks/useNavbar";
 import { Navbar } from "../types/navbar.type";
@@ -25,12 +25,12 @@ export default function NavbarEditModal({
   onClose,
   navbar,
 }: NavbarEditModalProps) {
-  const [logoPreview, setLogoPreview] = useState<string | null>(navbar?.logo || null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    navbar?.logo || null,
+  );
   const [logoFile, setLogoFile] = useState<File | null>(null);
 
   const { mutate: updateNavbar, isPending } = useUpdateNavbar();
-
-
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,39 +85,25 @@ export default function NavbarEditModal({
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
         <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
           <DialogTitle className="text-2xl font-bold text-[#1E293B]">
-            Edit  Logo
+            Edit Logo
           </DialogTitle>
         </DialogHeader>
 
         {navbar && (
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             <div className="space-y-4">
-              <label className="text-sm font-semibold text-gray-700">
+              <h3 className="text-sm font-semibold text-gray-700">
                 Logo Image
-              </label>
+              </h3>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative group">
                 {logoPreview ? (
-                  <div className="relative w-full h-40">
-                    <Image
-                      src={logoPreview}
-                      alt="Logo Preview"
-                      fill
-                      className="object-contain rounded-md"
-                    />
-                    <div className="absolute top-2 right-2 flex gap-2">
-                      <button
-                        type="button"
-                        onClick={removeImage}
-                        className="bg-white/90 text-gray-700 p-1.5 rounded-full shadow-sm hover:bg-white hover:text-red-500 transition-colors border border-gray-200 text-xs font-semibold flex items-center gap-1"
-                      >
-                        <X className="w-3 h-3" /> Change
-                      </button>
-                      <Input
-                        id="navbar-logo-edit"
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleImageChange}
+                  <div className="flex flex-col items-center w-full gap-4">
+                    <div className="relative w-full h-40">
+                      <Image
+                        src={logoPreview}
+                        alt="Logo Preview"
+                        fill
+                        className="object-contain rounded-md"
                       />
                     </div>
                   </div>
@@ -147,6 +133,27 @@ export default function NavbarEditModal({
                   </div>
                 )}
               </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={removeImage}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
+              >
+                <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                Change Image
+              </button>
+              <p className="text-xs text-gray-500">
+                Click to select a different logo
+              </p>
+              <Input
+                id="navbar-logo-edit"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
             </div>
 
             <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">

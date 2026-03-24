@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useUpdateHeroSection } from "../hooks/useHeroSection";
 import { HeroSection } from "../types/heroSection.type";
-import { X, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import Image from "next/image";
 
 interface HeroSectionEditModalProps {
@@ -25,11 +25,12 @@ export default function HeroSectionEditModal({
   isOpen,
   onClose,
   heroSection,
-}: HeroSectionEditModalProps) {
+}: Readonly<HeroSectionEditModalProps>) {
   const [title, setTitle] = useState(heroSection?.title || "");
   const [subtitle, setSubtitle] = useState(heroSection?.subtitle || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>(heroSection?.image || "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutate: updateSection, isPending } = useUpdateHeroSection();
 
@@ -38,18 +39,15 @@ export default function HeroSectionEditModal({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (preview?.startsWith("blob:")) {
+        URL.revokeObjectURL(preview);
+      }
       setImageFile(file);
       setPreview(URL.createObjectURL(file));
     }
   };
 
-  const removeImage = () => {
-    if (preview && preview.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
-    }
-    setImageFile(null);
-    setPreview("");
-  };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,10 +96,10 @@ export default function HeroSectionEditModal({
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-500">
+                <label htmlFor="hero-order" className="text-sm font-medium text-gray-500">
                   Order (Cannot be edited)
                 </label>
-                <div className="px-3 py-2 bg-gray-100 rounded-md text-gray-600 font-medium">
+                <div id="hero-order" className="px-3 py-2 bg-gray-100 rounded-md text-gray-600 font-medium">
                   {heroSection.order}
                 </div>
               </div>
@@ -138,49 +136,63 @@ export default function HeroSectionEditModal({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label htmlFor="hero-image-upload" className="text-sm font-medium text-gray-700">
                   Hero Image
                 </label>
                 <div className="mt-1 flex flex-col gap-4">
                   {preview ? (
-                    <div className="relative w-full h-48 rounded-md overflow-hidden border ">
-                      <Image
-                        src={preview}
-                        alt="Hero preview"
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute top-2 right-2">
+                    <div className="flex flex-col items-center w-full gap-4">
+                      <div className="relative h-48 rounded-md overflow-hidden border w-full">
+                        <Image
+                          src={preview}
+                          alt="Hero preview"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
                         <button
                           type="button"
-                          onClick={removeImage}
-                          className="bg-white/90 text-red-600 px-3 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-white hover:scale-105 transition-all backdrop-blur-sm border border-red-100 flex items-center gap-2 cursor-pointer"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
                         >
-                          Change <X className="w-4 h-4" />
+                          <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                          Change Image
                         </button>
+                        <p className="text-xs text-gray-500">
+                          Click to select a different image
+                        </p>
+                        <input
+                          id="hero-image-upload"
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageChange}
+                        />
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-48 border-2 border-dashed rounded-md flex flex-col items-center justify-center bg-gray-50 text-gray-400">
-                      <Upload className="w-8 h-8 mb-2" />
-                      <p className="text-sm">No image selected</p>
+                    <div className="w-full">
+                      <label 
+                        className="w-full h-48 border-2 border-dashed rounded-md flex flex-col items-center justify-center bg-gray-50 text-gray-400 cursor-pointer hover:bg-gray-100 transition-colors"
+                      >
+                        <Upload className="w-8 h-8 mb-2" />
+                        <p className="text-sm">No image selected</p>
+                        <span className="mt-2 text-[#0057B8] font-medium hover:underline cursor-pointer">Upload Image</span>
+                        <input
+                          id="hero-image-upload-new"
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageChange}
+                        />
+                      </label>
                     </div>
                   )}
 
-                  <label className="cursor-pointer max-w-fit">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-50 text-sm font-medium">
-                      <Upload className="w-4 h-4 text-gray-500" />
-                      <span>
-                        {preview ? "Change Image" : "Upload New Image"}
-                      </span>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageChange}
-                    />
-                  </label>
+
                 </div>
               </div>
             </div>
