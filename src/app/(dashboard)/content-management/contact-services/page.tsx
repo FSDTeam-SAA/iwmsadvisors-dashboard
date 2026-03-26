@@ -1,4 +1,4 @@
-import IwmsSolutionsSection from "@/components/features/iwmsSolutionsSection/component/iwmsSolutionsSection";
+import ContactServices from "@/components/features/contactServices/component/ContactServices";
 import React from "react";
 
 export const metadata = {
@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return <IwmsSolutionsSection />;
+  return <ContactServices />;
 };
 
 export default page;

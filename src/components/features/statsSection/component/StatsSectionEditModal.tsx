@@ -190,7 +190,7 @@ export default function StatsSectionEditModal({
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
-                        <h4 className="font-medium text-sm text-gray-700 pb-1 border-b">
+                        <h4 className="font-bold text-xl text-gray-700 pb-1 border-b">
                           Item {index + 1}
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
