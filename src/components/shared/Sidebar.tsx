@@ -196,8 +196,15 @@ const findParents = (
   parents: string[] = [],
 ): string[] => {
   for (const item of items) {
-    const isMatch = pathname === normalizePath(item.href);
-    if (isMatch) return parents;
+    const normalizedHref = normalizePath(item.href);
+    const isMatch = pathname === normalizedHref;
+
+    if (isMatch) {
+      if (item.subItems?.length) {
+        return [...parents, item.name];
+      }
+      return parents;
+    }
 
     if (item.subItems?.length) {
       const childResult = findParents(item.subItems, pathname, [
