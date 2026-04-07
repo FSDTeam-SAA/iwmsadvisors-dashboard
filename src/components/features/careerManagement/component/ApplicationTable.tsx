@@ -63,9 +63,9 @@ export default function ApplicationTable({
       ),
     },
     {
-        accessorKey: "phone",
-        header: "Phone",
-        cell: ({ row }) => <span className="text-gray-600 font-medium">{row.original.phone}</span>,
+      accessorKey: "phone",
+      header: "Phone",
+      cell: ({ row }) => <span className="text-gray-600 font-medium">{row.original.phone}</span>,
     },
     {
       accessorKey: "resume",
@@ -76,12 +76,12 @@ export default function ApplicationTable({
         return (
           <div className="flex items-center gap-2">
             {(hasResumeFile || hasResumeLink) ? (
-               <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-100 gap-1.5 py-1">
-                 <FileText className="w-3.5 h-3.5" />
-                 Ready
-               </Badge>
+              <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-100 gap-1.5 py-1">
+                <FileText className="w-3.5 h-3.5" />
+                Ready
+              </Badge>
             ) : (
-                <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-100 py-1">
+              <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-100 py-1">
                 N/A
               </Badge>
             )}
@@ -120,19 +120,19 @@ export default function ApplicationTable({
       ),
     },
     {
-      id: "actions",
+      // id: "actions",
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <button
-            onClick={() => onView(row.original)}
+            onClick={(e) => { e.stopPropagation(); onView(row.original); }}
             className="p-2 bg-[#0057B8] hover:bg-[#004494] text-white rounded-lg transition-all shadow-sm cursor-pointer"
             title="View Details"
           >
             <Eye className="w-4 h-4" />
           </button>
           <button
-            onClick={() => onDelete(row.original._id)}
+            onClick={(e) => { e.stopPropagation(); onDelete(row.original._id); }}
             className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all shadow-sm cursor-pointer"
             title="Delete Application"
           >
@@ -245,8 +245,8 @@ export default function ApplicationTable({
                   disabled={page === "..."}
                   className={cn(
                     "h-9 w-9 p-0 font-bold cursor-pointer",
-                    page === currentPage 
-                      ? "bg-blue-600 hover:bg-blue-600 text-white" 
+                    page === currentPage
+                      ? "bg-blue-600 hover:bg-blue-600 text-white"
                       : "border-gray-200 text-gray-600 hover:bg-gray-50",
                     page === "..." && "border-none hover:bg-transparent"
                   )}

@@ -96,21 +96,21 @@ export default function PositionTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <button
-            onClick={() => onView(row.original)}
+            onClick={(e) => { e.stopPropagation(); onView(row.original); }}
             className="p-2 bg-[#0057B8] hover:bg-[#004494] text-white rounded-lg transition-all shadow-sm cursor-pointer"
-            title="Review Applications"
+            title="Review Details & Applications"
           >
             <Eye className="w-4 h-4" />
           </button>
           <button
-            onClick={() => onEdit(row.original)}
+            onClick={(e) => { e.stopPropagation(); onEdit(row.original); }}
             className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-all shadow-sm cursor-pointer"
             title="Edit Position"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
-            onClick={() => onDelete(row.original._id)}
+            onClick={(e) => { e.stopPropagation(); onDelete(row.original._id); }}
             className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all shadow-sm cursor-pointer"
             title="Delete Position"
           >
@@ -178,8 +178,7 @@ export default function PositionTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="hover:bg-[#0057B8]/5 border-b border-gray-50 transition-colors cursor-pointer group"
-                  onClick={() => onView(row.original)}
+                  className="hover:bg-[#0057B8]/5 border-b border-gray-50 transition-colors group"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-4">
