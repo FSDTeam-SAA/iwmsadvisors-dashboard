@@ -56,7 +56,7 @@ const navigation: NavItem[] = [
         href: "/content-management/navbar",
         icon: Home,
         subItems: [
-          { name: "Logo Management", href: "/content-management/navbar" },
+          { name: "Logo Management", href: "/content-management/logo" },
           {
             name: "Banner Management",
             href: "/content-management/introduction-section?tab=banner",

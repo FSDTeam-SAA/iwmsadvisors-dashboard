@@ -159,7 +159,7 @@ export default function IwmsSolutionsSectionEditModal({
       },
       {
         onSuccess: () => {
-          toast.success("IwmsSolutions section updated successfully");
+          toast.success(`${title} section updated successfully`);
           onClose();
         },
         onError: (error) => {

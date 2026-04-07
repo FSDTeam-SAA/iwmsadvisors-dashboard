@@ -66,11 +66,11 @@ export default function IwmsSolutionsSection() {
     setIsViewModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (globalThis.confirm("Are you sure you want to delete this section?")) {
-      deleteSection(id, {
-        onSuccess: () => toast.success("Section deleted successfully"),
-        onError: () => toast.error("Failed to delete section"),
+  const handleDelete = (section: IwmsSolutionsSectionType) => {
+    if (globalThis.confirm(`Are you sure you want to delete the "${section.title}" section?`)) {
+      deleteSection(section._id, {
+        onSuccess: () => toast.success(`${section.title} section deleted successfully`),
+        onError: () => toast.error(`Failed to delete "${section.title}" section`),
       });
     }
   };
@@ -175,7 +175,7 @@ export default function IwmsSolutionsSection() {
                           <Edit className="w-5 h-5 text-white" />
                         </button>
                         <button
-                          onClick={() => handleDelete(item._id)}
+                          onClick={() => handleDelete(item)}
                           className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
                           title="Delete"
                         >
