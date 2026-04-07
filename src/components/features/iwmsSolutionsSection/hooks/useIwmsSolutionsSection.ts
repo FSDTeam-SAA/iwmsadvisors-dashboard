@@ -7,7 +7,9 @@ import {
   updateIwmsSolutionsSection,
   deleteIwmsSolutionsSection,
 } from "../api/iwmsSolutionsSection.api";
-import { IwmsSolutionsItem } from "../types/iwmsSolutionsSection.type";
+import {
+  IwmsSolutionsSectionPayload,
+} from "../types/iwmsSolutionsSection.type";
 
 export const useIwmsSolutionsSections = () => {
   return useQuery({
@@ -34,16 +36,7 @@ export const useUpdateIwmsSolutionsSection = () => {
       data,
     }: {
       id: string;
-      data: {
-        order?: number;
-        title?: string;
-        subtitle?: string;
-        items?: Omit<IwmsSolutionsItem, "icon">[];
-        icon_1?: File;
-        icon_2?: File;
-        icon_3?: File;
-        icon_4?: File;
-      };
+      data: IwmsSolutionsSectionPayload;
     }) => updateIwmsSolutionsSection(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["iwms-solutions-sections"] });

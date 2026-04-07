@@ -17,6 +17,14 @@ export interface IwmsSolutionsSection {
   updatedAt: string;
 }
 
+export interface IwmsSolutionsSectionPayload {
+  order?: number;
+  title?: string;
+  subtitle?: string;
+  items?: Partial<IwmsSolutionsItem>[];
+  [key: string]: string | number | object | File | undefined;
+}
+
 export interface BaseResponse {
   status: boolean;
   message: string;

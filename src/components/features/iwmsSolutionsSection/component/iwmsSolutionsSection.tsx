@@ -30,7 +30,7 @@ export default function IwmsSolutionsSection() {
   const isWhyChooseUs = pathname?.includes("why-choose-us");
   const isOurApproach = pathname?.includes("our-approach");
   const isContactServices = pathname?.includes("contact-services");
-  
+
   let pageTitle = "IWMS Solutions Section";
   if (isWhyChooseUs) pageTitle = "Why Choose Us";
   if (isOurApproach) pageTitle = "Our Approach";

@@ -13,10 +13,20 @@ import { toast } from "sonner";
 import { useCreateIwmsSolutionsSection } from "../hooks/useIwmsSolutionsSection";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
+import { isAxiosError } from "axios";
 
 interface IwmsSolutionsSectionAddModalProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+interface ModalItem {
+  order: number;
+  title: string;
+  description: string;
+  iconFile: File | null;
+  preview: string;
+  id: string;
 }
 
 export default function IwmsSolutionsSectionAddModal({
@@ -27,38 +37,42 @@ export default function IwmsSolutionsSectionAddModal({
   const [subtitle, setSubtitle] = useState("");
   const [order, setOrder] = useState(1);
 
-  const [items, setItems] = useState([
+  const [items, setItems] = useState<ModalItem[]>(() => [
     {
       order: 1,
       title: "",
       description: "",
       iconFile: null as File | null,
       preview: "",
-    },
-    {
-      order: 2,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
-    {
-      order: 3,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
-    {
-      order: 4,
-      title: "",
-      description: "",
-      iconFile: null as File | null,
-      preview: "",
-    },
+      id: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+    }
   ]);
 
   const { mutate: createSection, isPending } = useCreateIwmsSolutionsSection();
+
+  const handleAddItem = () => {
+    const nextOrder = items.length > 0 ? Math.max(...items.map((i) => Number(i.order) || 0)) + 1 : 1;
+    setItems([
+      ...items,
+      {
+        order: nextOrder,
+        title: "",
+        description: "",
+        iconFile: null,
+        preview: "",
+        id: Date.now().toString() + Math.random().toString(),
+      },
+    ]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    const newItems = [...items];
+    if (newItems[index].preview) {
+      URL.revokeObjectURL(newItems[index].preview);
+    }
+    newItems.splice(index, 1);
+    setItems(newItems);
+  };
 
   const handleItemChange = (index: number, field: string, value: string) => {
     const newItems = [...items];
@@ -103,26 +117,28 @@ export default function IwmsSolutionsSectionAddModal({
       description: item.description,
     }));
 
-    createSection(
-      {
-        order,
-        title,
-        subtitle,
-        items: cleanedItems,
-        icon_1: items[0].iconFile || undefined,
-        icon_2: items[1].iconFile || undefined,
-        icon_3: items[2].iconFile || undefined,
-        icon_4: items[3].iconFile || undefined,
-      },
+    const payload: Record<string, string | number | object | File | undefined> = {
+      order,
+      title,
+      subtitle,
+      items: cleanedItems,
+    };
+
+    items.forEach((item, index) => {
+      if (item.iconFile) {
+        payload[`icon_${index + 1}`] = item.iconFile;
+      }
+    });
+
+    createSection(payload,
       {
         onSuccess: () => {
           toast.success("IwmsSolutions section created successfully");
           onClose();
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
+        onError: (error) => {
           const errorMessage =
-            error?.response?.data?.message ||
+            (isAxiosError(error) && error.response?.data?.message) ||
             "Failed to create IwmsSolutions section";
           toast.error(errorMessage);
         },
@@ -178,16 +194,37 @@ export default function IwmsSolutionsSectionAddModal({
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium text-lg border-b pb-2">
-              Items (Min 1, Max 4)
-            </h3>
+            <div className="flex justify-between items-center border-b pb-2">
+              <h3 className="font-medium text-lg">Items</h3>
+              <Button type="button" onClick={handleAddItem} variant="outline" size="sm" className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 cursor-pointer font-semibold">
+                + Add Item
+              </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {items.map((item, index) => (
                 <div
-                  key={item.order}
-                  className="border p-4 rounded-lg bg-gray-50 space-y-3"
+                  key={item.id}
+                  className="relative border p-4 rounded-lg bg-gray-50 space-y-3"
                 >
-                  <h4 className="font-semibold text-sm">Item {item.order}</h4>
+                  <div className="flex justify-between items-center mb-1">
+                    <h4 className="font-semibold text-sm text-[#0057B8]">Item Sequence</h4>
+                    <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-md cursor-pointer transition-colors shadow-sm">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Order Number
+                    </label>
+                    <Input
+                      type="number"
+                      value={item.order}
+                      onChange={(e) => handleItemChange(index, "order", e.target.value)}
+                      placeholder="e.g. 1"
+                      className="bg-white"
+                    />
+                  </div>
 
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-700">

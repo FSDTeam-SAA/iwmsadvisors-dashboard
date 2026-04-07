@@ -14,11 +14,21 @@ import { useUpdateIwmsSolutionsSection } from "../hooks/useIwmsSolutionsSection"
 import { IwmsSolutionsSection } from "../types/iwmsSolutionsSection.type";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
+import { isAxiosError } from "axios";
 
 interface IwmsSolutionsSectionEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   iwmsSolutionsSection: IwmsSolutionsSection | null;
+}
+
+interface ModalItem {
+  order: number;
+  title: string;
+  description: string;
+  iconFile: File | null;
+  preview: string;
+  id: string;
 }
 
 export default function IwmsSolutionsSectionEditModal({
@@ -30,31 +40,54 @@ export default function IwmsSolutionsSectionEditModal({
   const [subtitle, setSubtitle] = useState(iwmsSolutionsSection?.subtitle || "");
   const [order, setOrder] = useState(iwmsSolutionsSection?.order || 1);
 
-  const initialItems = [
-    { order: 1, title: "", description: "", iconFile: null as File | null, preview: "" },
-    { order: 2, title: "", description: "", iconFile: null as File | null, preview: "" },
-    { order: 3, title: "", description: "", iconFile: null as File | null, preview: "" },
-    { order: 4, title: "", description: "", iconFile: null as File | null, preview: "" },
-  ];
-
-  if (iwmsSolutionsSection?.items && Array.isArray(iwmsSolutionsSection.items)) {
-    iwmsSolutionsSection.items.forEach((apiItem) => {
-      const itemIndex = initialItems.findIndex((i) => i.order === apiItem.order);
-      if (itemIndex !== -1) {
-        initialItems[itemIndex] = {
-          order: apiItem.order,
-          title: apiItem.title || "",
-          description: apiItem.description || "",
-          iconFile: null,
-          preview: apiItem.icon || "",
-        };
+  const [items, setItems] = useState<ModalItem[]>(() => {
+    if (iwmsSolutionsSection?.items && Array.isArray(iwmsSolutionsSection.items) && iwmsSolutionsSection.items.length > 0) {
+      return iwmsSolutionsSection.items.map((apiItem) => ({
+        order: apiItem.order || 0,
+        title: apiItem.title || "",
+        description: apiItem.description || "",
+        iconFile: null as File | null,
+        preview: apiItem.icon || "",
+        id: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+      })).sort((a, b) => a.order - b.order);
+    }
+    return [
+      {
+        order: 1,
+        title: "",
+        description: "",
+        iconFile: null as File | null,
+        preview: "",
+        id: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
       }
-    });
-  }
-
-  const [items, setItems] = useState(initialItems);
+    ];
+  });
 
   const { mutate: updateSection, isPending } = useUpdateIwmsSolutionsSection();
+
+  const handleAddItem = () => {
+    const nextOrder = items.length > 0 ? Math.max(...items.map((i) => Number(i.order) || 0)) + 1 : 1;
+    setItems([
+      ...items,
+      {
+        order: nextOrder,
+        title: "",
+        description: "",
+        iconFile: null,
+        preview: "",
+        id: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+      },
+    ]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    const newItems = [...items];
+    if (newItems[index].preview && newItems[index].preview.startsWith("blob:")) {
+      URL.revokeObjectURL(newItems[index].preview);
+    }
+    newItems.splice(index, 1);
+    setItems(newItems);
+  };
 
 
 
@@ -106,29 +139,32 @@ export default function IwmsSolutionsSectionEditModal({
       description: item.description,
     }));
 
+    const payloadData: Record<string, string | number | object | File | undefined> = {
+      order,
+      title,
+      subtitle,
+      items: cleanedItems,
+    };
+
+    items.forEach((item, index) => {
+      if (item.iconFile) {
+        payloadData[`icon_${index + 1}`] = item.iconFile;
+      }
+    });
+
     updateSection(
       {
         id: iwmsSolutionsSection._id,
-        data: {
-          order,
-          title,
-          subtitle,
-          items: cleanedItems,
-          icon_1: items[0].iconFile || undefined,
-          icon_2: items[1].iconFile || undefined,
-          icon_3: items[2].iconFile || undefined,
-          icon_4: items[3].iconFile || undefined,
-        },
+        data: payloadData,
       },
       {
         onSuccess: () => {
           toast.success("IwmsSolutions section updated successfully");
           onClose();
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
+        onError: (error) => {
           const errorMessage =
-            error?.response?.data?.message ||
+            (isAxiosError(error) && error.response?.data?.message) ||
             "Failed to update IwmsSolutions section";
           toast.error(errorMessage);
         },
@@ -184,14 +220,37 @@ export default function IwmsSolutionsSectionEditModal({
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium text-lg border-b pb-2">Items</h3>
+            <div className="flex justify-between items-center border-b pb-2">
+              <h3 className="font-medium text-lg">Items</h3>
+              <Button type="button" onClick={handleAddItem} variant="outline" size="sm" className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 cursor-pointer font-semibold">
+                + Add Item
+              </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {items.map((item, index) => (
                 <div
-                  key={item.order}
-                  className="border p-4 rounded-lg bg-gray-50 space-y-3"
+                  key={item.id}
+                  className="relative border p-4 rounded-lg bg-gray-50 space-y-3"
                 >
-                  <h4 className="font-semibold text-sm">Item {item.order}</h4>
+                  <div className="flex justify-between items-center mb-1">
+                    <h4 className="font-semibold text-sm text-[#0057B8]">Item Sequence</h4>
+                    <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-md cursor-pointer transition-colors shadow-sm">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Order Number
+                    </label>
+                    <Input
+                      type="number"
+                      value={item.order}
+                      onChange={(e) => handleItemChange(index, "order", e.target.value)}
+                      placeholder="e.g. 1"
+                      className="bg-white"
+                    />
+                  </div>
 
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-700">
