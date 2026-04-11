@@ -183,10 +183,10 @@ function PersonalInformationForm({
                   onChange={handleChange}
                   className="pl-10"
                   placeholder="your.email@example.com"
-                  disabled
+    
                 />
               </div>
-              <p className="text-xs text-gray-400">Email cannot be changed contact support for assistance.</p>
+              {/* <p className="text-xs text-gray-400">Email cannot be changed contact support for assistance.</p> */}
             </div>
 
             <div className="space-y-2">
