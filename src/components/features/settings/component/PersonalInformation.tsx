@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, User as UserIcon, Mail, Phone, Info } from "lucide-react";
+import { Loader2, User as UserIcon, Mail, Phone, Info, AlertCircle, CheckCircle } from "lucide-react";
 import { useProfile, useUpdateProfile, useUploadAvatar } from "../hooks/useProfile";
 import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
+import NextImage from "next/image";
 import { UpdateProfileRequest, User } from "../types/profile.types";
+import { toast } from "sonner";
 
 export default function PersonalInformation() {
   const { data: profileResponse, isLoading } = useProfile();
@@ -83,6 +84,11 @@ function PersonalInformationForm({
     bio: user.bio || "",
   });
 
+  const [avatarValidation, setAvatarValidation] = useState<{
+    status: "idle" | "error" | "success";
+    message: string;
+  }>({ status: "idle", message: "" });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -95,9 +101,76 @@ function PersonalInformationForm({
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onUploadAvatar(file);
+    if (!file) return;
+
+    // Constants for validation
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const MAX_MEGAPIXELS = 10;
+    const ALLOWED_FORMATS = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+    // Validate file type
+    if (!ALLOWED_FORMATS.includes(file.type)) {
+      const errorMsg = `Invalid file format. Allowed formats: JPEG, PNG, WebP, GIF`;
+      setAvatarValidation({ status: "error", message: errorMsg });
+      toast.error(errorMsg);
+      return;
     }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      const maxSizeMB = (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
+      const errorMsg = `File size (${fileSizeMB} MB) exceeds the maximum limit of ${maxSizeMB} MB`;
+      setAvatarValidation({ status: "error", message: errorMsg });
+      toast.error(errorMsg);
+      return;
+    }
+
+    // Validate image dimensions and megapixels
+    const img = new Image();
+
+    img.onload = () => {
+      const width = img.width;
+      const height = img.height;
+      const megapixels = (width * height) / 1000000;
+
+      console.log(`✓ Image loaded - Dimensions: ${width}x${height}, Megapixels: ${megapixels.toFixed(2)} MP`);
+
+      if (megapixels > MAX_MEGAPIXELS) {
+        const errorMsg = `Image resolution (${megapixels.toFixed(2)} MP) exceeds the maximum limit of ${MAX_MEGAPIXELS} MP. Please use a lower resolution image.`;
+        setAvatarValidation({ status: "error", message: errorMsg });
+        toast.error(errorMsg);
+      } else {
+        const successMsg = `✓ Image validated successfully (${width}x${height}, ${megapixels.toFixed(2)} MP)`;
+        setAvatarValidation({ status: "success", message: successMsg });
+        toast.success("Image validated successfully");
+        console.log(successMsg);
+        onUploadAvatar(file);
+      }
+    };
+
+    img.onerror = () => {
+      const errorMsg = "Failed to load image. Please ensure you've selected a valid image file.";
+      setAvatarValidation({ status: "error", message: errorMsg });
+      toast.error(errorMsg);
+      console.error("❌ Image load error:", errorMsg);
+    };
+
+    img.onabort = () => {
+      const errorMsg = "Image loading was aborted. Please try again.";
+      setAvatarValidation({ status: "error", message: errorMsg });
+      toast.error(errorMsg);
+      console.error("❌ Image loading aborted:", errorMsg);
+    };
+
+    // Create object URL and load image
+    const objectUrl = URL.createObjectURL(file);
+    img.src = objectUrl;
+
+    // Cleanup URL when done
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
   };
 
   return (
@@ -108,7 +181,7 @@ function PersonalInformationForm({
           <div className="relative group">
             <div className="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-primary/10 shadow-sm">
               {user?.profileImage ? (
-                <Image
+                <NextImage
                   src={user.profileImage}
                   alt="Profile"
                   fill
@@ -128,14 +201,38 @@ function PersonalInformationForm({
               </div>
             )}
           </div>
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {user?.firstName} {user?.lastName}
-            </h2>
-            <p className="text-gray-500 font-medium">{user?.email}</p>
-            <div className="mt-2 text-xs font-semibold px-2 py-1 bg-primary/10 text-primary rounded-full inline-block">
-              {user?.role}
+          <div className="flex-1">
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {user?.firstName} {user?.lastName}
+              </h2>
+              <p className="text-gray-500 font-medium">{user?.email}</p>
+              <div className="mt-2 text-xs font-semibold px-2 py-1 bg-primary/10 text-primary rounded-full inline-block">
+                {user?.role}
+              </div>
             </div>
+            {avatarValidation.status !== "idle" && (
+              <div
+                className={`mt-4 p-3 rounded-lg flex items-start gap-3 ${
+                  avatarValidation.status === "error"
+                    ? "bg-red-50 border border-red-200"
+                    : "bg-green-50 border border-green-200"
+                }`}
+              >
+                {avatarValidation.status === "error" ? (
+                  <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                )}
+                <p
+                  className={`text-sm font-medium ${
+                    avatarValidation.status === "error" ? "text-red-700" : "text-green-700"
+                  }`}
+                >
+                  {avatarValidation.message}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
