@@ -196,14 +196,14 @@ export default function IwmsSolutionsSectionEditModal({
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Section Order (1-3)
+                Section Order (1-4)
               </label>
               <Input
                 type="number"
                 value={order}
                 onChange={(e) => setOrder(Number.parseInt(e.target.value))}
                 min={1}
-                max={3}
+                max={4}
                 required
               />
             </div>

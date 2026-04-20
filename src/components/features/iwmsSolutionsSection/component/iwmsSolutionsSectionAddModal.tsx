@@ -18,6 +18,8 @@ import { isAxiosError } from "axios";
 interface IwmsSolutionsSectionAddModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultTitle?: string;
+  defaultOrder?: number;
 }
 
 interface ModalItem {
@@ -32,10 +34,12 @@ interface ModalItem {
 export default function IwmsSolutionsSectionAddModal({
   isOpen,
   onClose,
+  defaultTitle = "",
+  defaultOrder = 1,
 }: IwmsSolutionsSectionAddModalProps) {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(defaultTitle);
   const [subtitle, setSubtitle] = useState("");
-  const [order, setOrder] = useState(1);
+  const [order, setOrder] = useState(defaultOrder);
 
   const [items, setItems] = useState<ModalItem[]>(() => [
     {
@@ -170,14 +174,14 @@ export default function IwmsSolutionsSectionAddModal({
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Section Order (1-3)
+                Section Order (1-4)
               </label>
               <Input
                 type="number"
                 value={order}
                 onChange={(e) => setOrder(Number.parseInt(e.target.value))}
                 min={1}
-                max={3}
+                max={4}
                 required
               />
             </div>

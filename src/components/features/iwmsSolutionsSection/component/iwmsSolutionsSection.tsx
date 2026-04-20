@@ -32,9 +32,20 @@ export default function IwmsSolutionsSection() {
   const isContactServices = pathname?.includes("contact-services");
 
   let pageTitle = "IWMS Solutions Section";
-  if (isWhyChooseUs) pageTitle = "Why Choose Us";
-  if (isOurApproach) pageTitle = "Our Approach";
-  if (isContactServices) pageTitle = "Contact Services";
+  let targetOrder = 1;
+
+  if (isWhyChooseUs) {
+    pageTitle = "Why Choose Us";
+    targetOrder = 2;
+  }
+  if (isOurApproach) {
+    pageTitle = "Our Approach";
+    targetOrder = 3;
+  }
+  if (isContactServices) {
+    pageTitle = "Contact Services";
+    targetOrder = 4;
+  }
 
   const [selectedSection, setSelectedSection] =
     useState<IwmsSolutionsSectionType | null>(null);
@@ -48,11 +59,14 @@ export default function IwmsSolutionsSection() {
   let sectionItems: IwmsSolutionsSectionType[] = [];
   if (response?.data) {
     if (Array.isArray(response.data)) {
-      sectionItems = [...response.data].sort(
-        (a, b) => (a.order || 0) - (b.order || 0),
-      );
+      sectionItems = [...response.data]
+        .filter((item) => item.order === targetOrder)
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
     } else {
-      sectionItems = [response.data];
+      const data = response.data as IwmsSolutionsSectionType;
+      if (data.order === targetOrder) {
+        sectionItems = [data];
+      }
     }
   }
 
@@ -101,14 +115,14 @@ export default function IwmsSolutionsSection() {
           </nav>
         </div>
         <div className="w-full md:w-auto flex md:justify-end items-center gap-3">
-          {sectionItems.length >= 3 && (
+          {sectionItems.length >= 1 && (
             <span className="text-sm text-amber-600 font-medium bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-              Maximum 3 sections reached
+              {pageTitle} section already exists
             </span>
           )}
           <Button
             onClick={() => setIsAddModalOpen(true)}
-            disabled={sectionItems.length >= 3}
+            disabled={sectionItems.length >= 1}
             className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -210,6 +224,8 @@ export default function IwmsSolutionsSection() {
         <IwmsSolutionsSectionAddModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
+          defaultTitle={pageTitle}
+          defaultOrder={targetOrder}
         />
       )}
 
