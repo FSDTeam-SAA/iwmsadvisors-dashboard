@@ -65,19 +65,24 @@ const navigation: NavItem[] = [
           //   name: "About IWMS",
           //   href: "/content-management/introduction-section?tab=about",
           // },
+          // {
+          //   name: "IWMS Solutions",
+          //   href: "/content-management/iwms-solutions",
+          // },
+          { name: "Why Choose Us", href: "/content-management/why-choose-us" },
           {
-            name: "IWMS Solutions",
-            href: "/content-management/iwms-solutions",
-          },
-          {
-            name: "Real Estate",
+            name: "MREF Section",
             href: "/content-management/mref-section",
           },
           // {
           //   name: "Real Estate",
           //   href: "/content-management/real-estate",
           // },
-          { name: "Why Choose Us", href: "/content-management/why-choose-us" },
+          // { name: "Why Choose Us", href: "/content-management/why-choose-us" },
+          {
+            name: "IWMS Solutions",
+            href: "/content-management/iwms-solutions",
+          },
           {
             name: "Our Proven Result",
             href: "/content-management/stats-section",

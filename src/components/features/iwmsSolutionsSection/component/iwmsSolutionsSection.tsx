@@ -32,11 +32,11 @@ export default function IwmsSolutionsSection() {
   const isContactServices = pathname?.includes("contact-services");
 
   let pageTitle = "IWMS Solutions Section";
-  let targetOrder = 1;
+  let targetOrder = 2;
 
   if (isWhyChooseUs) {
     pageTitle = "Why Choose Us";
-    targetOrder = 2;
+    targetOrder = 1;
   }
   if (isOurApproach) {
     pageTitle = "Our Approach";

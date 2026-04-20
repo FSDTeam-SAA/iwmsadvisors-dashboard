@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { X } from "lucide-react";
+import { X, Upload } from "lucide-react";
 import Image from "next/image";
 import { MrefSection } from "../types/mrefSection.types";
 
@@ -195,6 +195,24 @@ export default function MrefSectionEditModal({
                 </div>
               )}
             </div>
+            {imagePreview && (
+              <div className="mt-4 flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fileInputRef.current?.click();
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
+                >
+                  <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Change Image
+                </button>
+                <p className="text-xs text-gray-500">
+                  Click to select a different image
+                </p>
+              </div>
+            )}
             {imageFile && (
               <div className="flex items-center justify-between mt-2">
                 <p className="text-xs text-gray-500 truncate">
