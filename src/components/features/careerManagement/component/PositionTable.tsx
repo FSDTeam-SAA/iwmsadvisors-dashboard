@@ -57,7 +57,14 @@ export default function PositionTable({
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
-            <div className="font-bold text-gray-900">{row.original.title}</div>
+            <div className="font-bold text-gray-900 flex items-center gap-2">
+              {row.original.title}
+              {row.original.isMultipleRoles && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-[#0057B8] border border-blue-100 uppercase tracking-tighter">
+                  Multiple
+                </span>
+              )}
+            </div>
             <div className="text-xs text-gray-500">{row.original.department}</div>
           </div>
         </div>

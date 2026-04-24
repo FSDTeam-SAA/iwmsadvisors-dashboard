@@ -157,6 +157,7 @@ export default function CareerManagement() {
 
       {/* Modals */}
       <PositionModal
+        key={careerToEdit?._id || (isPositionModalOpen ? "new" : "closed")}
         isOpen={isPositionModalOpen}
         onClose={() => {
           setIsPositionModalOpen(false);

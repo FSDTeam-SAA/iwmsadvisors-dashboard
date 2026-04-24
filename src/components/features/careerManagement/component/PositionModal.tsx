@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -34,44 +34,18 @@ export default function PositionModal({
   const { mutate: updateCareer, isPending: isUpdating } = useUpdateCareer();
 
   const [formData, setFormData] = useState({
-    title: "",
-    role: "",
-    department: "",
-    location: "",
-    type: "full time" as CareerType,
-    description: "",
-    requirements: "",
-    responsibilities: "",
+    title: career?.title || "",
+    role: career?.role || "",
+    department: career?.department || "",
+    location: career?.location || "",
+    type: (career?.type || "full time") as CareerType,
+    description: career?.description || "",
+    requirements: career?.requirements || "",
+    responsibilities: career?.responsibilities || "",
+    isMultipleRoles: career?.isMultipleRoles || false,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    if (career) {
-      setFormData({
-        title: career.title,
-        role: career.role || "",
-        department: career.department,
-        location: career.location,
-        type: career.type,
-        description: career.description,
-        requirements: career.requirements,
-        responsibilities: career.responsibilities,
-      });
-    } else {
-      setFormData({
-        title: "",
-        role: "",
-        department: "",
-        location: "",
-        type: "full time",
-        description: "",
-        requirements: "",
-        responsibilities: "",
-      });
-    }
-    setErrors({});
-  }, [career, isOpen]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -89,8 +63,10 @@ export default function PositionModal({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    
+    setFormData((prev) => ({ ...prev, [name]: val }));
     if (errors[name]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -158,6 +134,23 @@ export default function PositionModal({
                 onChange={handleChange}
               />
             </div>
+          </div>
+
+          <div className="flex items-center space-x-2 bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+            <input
+              type="checkbox"
+              id="isMultipleRoles"
+              name="isMultipleRoles"
+              checked={formData.isMultipleRoles}
+              onChange={handleChange}
+              className="w-5 h-5 rounded border-gray-300 text-[#0057B8] focus:ring-[#0057B8] cursor-pointer"
+            />
+            <Label 
+              htmlFor="isMultipleRoles" 
+              className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
+            >
+              Multiple positions available (Show &quot;Multiple Roles&quot; badge)
+            </Label>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
