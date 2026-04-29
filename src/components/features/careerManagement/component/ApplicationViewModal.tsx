@@ -103,7 +103,7 @@ export default function ApplicationViewModal({
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Resume / CV</h3>
                 {resumeUrl ? (
                   <div className="bg-[#0057B8]/5 border border-[#0057B8]/20 rounded-lg p-4 flex items-center justify-between group hover:bg-[#0057B8]/10 transition-colors cursor-pointer"
-                       onClick={() => window.open(resumeUrl, '_blank')}>
+                    onClick={() => window.open(resumeUrl, '_blank')}>
                     <div className="flex items-center gap-3">
                       <FileText className="w-6 h-6 text-[#0057B8]" />
                       <div>
@@ -123,14 +123,14 @@ export default function ApplicationViewModal({
               </div>
 
               {application.portfolioLink && (
-                 <div className="space-y-1">
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Portfolio</h3>
-                    <a href={application.portfolioLink} target="_blank" rel="noreferrer" 
-                       className="text-sm text-[#0057B8] hover:underline flex items-center">
-                      <ExternalLink className="w-4 h-4 mr-1.5" />
-                      View Portfolio
-                    </a>
-                 </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Portfolio</h3>
+                  <a href={application.portfolioLink} target="_blank" rel="noreferrer"
+                    className="text-sm text-[#0057B8] hover:underline flex items-center">
+                    <ExternalLink className="w-4 h-4 mr-1.5" />
+                    View Portfolio
+                  </a>
+                </div>
               )}
             </div>
           </div>

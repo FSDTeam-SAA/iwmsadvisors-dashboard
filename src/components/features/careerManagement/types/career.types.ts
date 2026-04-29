@@ -1,6 +1,6 @@
 // src/components/features/careerManagement/types/career.types.ts
 
-export type CareerType = "full time" | "part-time" | "freelance";
+export type CareerType = "full time" | "part-time" | "freelance" | "contract";
 
 export interface Career {
   _id: string;
@@ -12,6 +12,8 @@ export interface Career {
   description: string;
   requirements: string;
   responsibilities: string;
+  isActive: boolean;
+  multiplePosition: boolean;
   isMultipleRoles?: boolean;
   createdAt: string;
   updatedAt: string;

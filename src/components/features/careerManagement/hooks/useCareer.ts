@@ -15,10 +15,18 @@ import {
 import { Career, ApplicationStatus } from "../types/career.types";
 import { toast } from "sonner";
 
-export const useCareers = (page = 1, limit = 10) => {
+export const useCareers = (
+  page = 1,
+  limit = 10,
+  filters: {
+    type?: string;
+    isActive?: boolean | string;
+    multiplePosition?: boolean | string;
+  } = {}
+) => {
   return useQuery({
-    queryKey: ["careers", page, limit],
-    queryFn: () => getCareers(page, limit),
+    queryKey: ["careers", page, limit, filters],
+    queryFn: () => getCareers(page, limit, filters),
   });
 };
 

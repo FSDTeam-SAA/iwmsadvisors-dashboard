@@ -28,6 +28,7 @@ interface PositionTableProps {
   onView: (career: Career) => void;
   onEdit: (career: Career) => void;
   onDelete: (id: string) => void;
+  onToggleStatus: (id: string, isActive: boolean) => void;
   currentPage: number;
   totalPages: number;
   totalResults: number;
@@ -41,6 +42,7 @@ export default function PositionTable({
   onView,
   onEdit,
   onDelete,
+  onToggleStatus,
   currentPage,
   totalPages,
   totalResults,
@@ -59,7 +61,7 @@ export default function PositionTable({
           <div>
             <div className="font-bold text-gray-900 flex items-center gap-2">
               {row.original.title}
-              {row.original.isMultipleRoles && (
+              {(row.original.multiplePosition || row.original.isMultipleRoles) && (
                 <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-[#0057B8] border border-blue-100 uppercase tracking-tighter">
                   Multiple
                 </span>
@@ -69,6 +71,23 @@ export default function PositionTable({
           </div>
         </div>
       ),
+    },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ row }) => {
+        const isActive = row.original.isActive ?? true;
+        return (
+          <span className={cn(
+            "px-3 py-1 rounded-full text-xs font-semibold border",
+            isActive
+              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+              : "bg-gray-50 text-gray-500 border-gray-100"
+          )}>
+            {isActive ? "Active" : "Inactive"}
+          </span>
+        );
+      },
     },
     {
       accessorKey: "location",
@@ -96,6 +115,26 @@ export default function PositionTable({
           })}
         </span>
       ),
+    },
+    {
+      id: "toggle",
+      header: () => <div className="text-center">Status(Inactive/Active)</div>,
+      cell: ({ row }) => {
+        const isActive = row.original.isActive ?? true;
+        return (
+          <div className="flex items-center justify-center">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={isActive}
+                onChange={() => onToggleStatus(row.original._id, !isActive)}
+              />
+              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0057B8]"></div>
+            </label>
+          </div>
+        );
+      },
     },
     {
       id: "actions",
@@ -162,9 +201,9 @@ export default function PositionTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -235,8 +274,8 @@ export default function PositionTable({
                   disabled={page === "..."}
                   className={cn(
                     "h-9 w-9 p-0 font-bold cursor-pointer",
-                    page === currentPage 
-                      ? "bg-[#0057B8] hover:bg-[#004494] text-white" 
+                    page === currentPage
+                      ? "bg-[#0057B8] hover:bg-[#004494] text-white"
                       : "border-gray-200 text-gray-600 hover:bg-gray-50",
                     page === "..." && "border-none hover:bg-transparent"
                   )}

@@ -18,10 +18,25 @@ import {
 export const getCareers = async (
   page = 1,
   limit = 10,
+  filters: {
+    type?: string;
+    isActive?: boolean | string;
+    multiplePosition?: boolean | string;
+  } = {}
 ): Promise<CareerResponse> => {
-  const response = await axiosInstance.get(
-    `/career?page=${page}&limit=${limit}`,
-  );
+  let url = `/career?page=${page}&limit=${limit}`;
+  
+  if (filters.type) {
+    url += `&type=${filters.type}`;
+  }
+  if (filters.isActive !== undefined && filters.isActive !== "") {
+    url += `&isActive=${filters.isActive}`;
+  }
+  if (filters.multiplePosition !== undefined && filters.multiplePosition !== "") {
+    url += `&multiplePosition=${filters.multiplePosition}`;
+  }
+
+  const response = await axiosInstance.get(url);
   return response.data;
 };
 

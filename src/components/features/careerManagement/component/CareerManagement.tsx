@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   useCareers,
   useDeleteCareer,
+  useUpdateCareer,
   useCareerApplications,
   useDeleteCareerApplication
 } from "../hooks/useCareer";
@@ -33,6 +34,11 @@ import {
 export default function CareerManagement() {
   // State for Careers
   const [careerPage, setCareerPage] = useState(1);
+  const [filters, setFilters] = useState({
+    type: "",
+    isActive: "",
+    multiplePosition: "",
+  });
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [isPositionModalOpen, setIsPositionModalOpen] = useState(false);
   const [isPositionViewModalOpen, setIsPositionViewModalOpen] = useState(false);
@@ -46,7 +52,7 @@ export default function CareerManagement() {
   const [applicationToDelete, setApplicationToDelete] = useState<string | null>(null);
 
   // Queries
-  const { data: careerData, isLoading: isLoadingCareers } = useCareers(careerPage, 10);
+  const { data: careerData, isLoading: isLoadingCareers } = useCareers(careerPage, 10, filters);
   const { data: applicationData, isLoading: isLoadingApplications } = useCareerApplications(
     applicationPage,
     10,
@@ -56,6 +62,20 @@ export default function CareerManagement() {
   // Mutations
   const { mutate: deleteCareerAction, isPending: isDeletingCareer } = useDeleteCareer();
   const { mutate: deleteAppAction, isPending: isDeletingApp } = useDeleteCareerApplication();
+
+  const handleFilterChange = (name: string, value: string) => {
+    setFilters(prev => ({ ...prev, [name]: value }));
+    setCareerPage(1); // Reset to first page on filter change
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      type: "",
+      isActive: "",
+      multiplePosition: "",
+    });
+    setCareerPage(1);
+  };
 
   // Handlers for Careers
   const handleAddNew = () => {
@@ -94,6 +114,12 @@ export default function CareerManagement() {
         onSuccess: () => setApplicationToDelete(null),
       });
     }
+  };
+
+  const { mutate: updateCareerAction } = useUpdateCareer();
+
+  const handleToggleStatus = (id: string, isActive: boolean) => {
+    updateCareerAction({ id, data: { isActive } });
   };
 
   return (
@@ -135,18 +161,64 @@ export default function CareerManagement() {
 
       {/* Main Content Area */}
       <div className="space-y-6 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-2">
           <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             <BriefcaseIcon className="w-6 h-6 text-[#0057B8]" />
             Position List
           </h2>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <select
+              value={filters.type}
+              onChange={(e) => handleFilterChange("type", e.target.value)}
+              className="h-10 px-3 rounded-lg border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0057B8]/20 transition-all cursor-pointer bg-white"
+            >
+              <option value="">All Job Types</option>
+              <option value="full time">Full Time</option>
+              <option value="part-time">Part-time</option>
+              {/* <option value="freelance">Freelance</option> */}
+              <option value="contract">Contract</option>
+            </select>
+
+            <select
+              value={filters.isActive}
+              onChange={(e) => handleFilterChange("isActive", e.target.value)}
+              className="h-10 px-3 rounded-lg border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0057B8]/20 transition-all cursor-pointer bg-white"
+            >
+              <option value="">All Status</option>
+              <option value="true">Active Only</option>
+              <option value="false">Inactive Only</option>
+            </select>
+
+            {/* <select
+              value={filters.multiplePosition}
+              onChange={(e) => handleFilterChange("multiplePosition", e.target.value)}
+              className="h-10 px-3 rounded-lg border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#0057B8]/20 transition-all cursor-pointer bg-white"
+            >
+              <option value="">Multiple Positions?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select> */}
+
+            {(filters.type || filters.isActive !== "" || filters.multiplePosition !== "") && (
+              <Button
+                variant="ghost"
+                onClick={clearFilters}
+                className="h-10 text-gray-500 hover:text-red-500 font-bold cursor-pointer"
+              >
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
+        
         <PositionTable
           data={careerData?.data || []}
           isLoading={isLoadingCareers}
           onView={handleViewPosition}
           onEdit={handleEditCareer}
           onDelete={(id) => setCareerToDelete(id)}
+          onToggleStatus={handleToggleStatus}
           currentPage={careerPage}
           totalPages={careerData?.pagination?.totalPages || 1}
           totalResults={careerData?.pagination?.total || 0}

@@ -42,7 +42,8 @@ export default function PositionModal({
     description: career?.description || "",
     requirements: career?.requirements || "",
     responsibilities: career?.responsibilities || "",
-    isMultipleRoles: career?.isMultipleRoles || false,
+    isActive: career?.isActive ?? true,
+    multiplePosition: career?.multiplePosition ?? (career?.isMultipleRoles || false),
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -136,21 +137,40 @@ export default function PositionModal({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-            <input
-              type="checkbox"
-              id="isMultipleRoles"
-              name="isMultipleRoles"
-              checked={formData.isMultipleRoles}
-              onChange={handleChange}
-              className="w-5 h-5 rounded border-gray-300 text-[#0057B8] focus:ring-[#0057B8] cursor-pointer"
-            />
-            <Label 
-              htmlFor="isMultipleRoles" 
-              className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
-            >
-              Multiple positions available (Show &quot;Multiple Roles&quot; badge)
-            </Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center space-x-3 bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+              <input
+                type="checkbox"
+                id="multiplePosition"
+                name="multiplePosition"
+                checked={formData.multiplePosition}
+                onChange={handleChange}
+                className="w-5 h-5 rounded border-gray-300 text-[#0057B8] focus:ring-[#0057B8] cursor-pointer"
+              />
+              <Label 
+                htmlFor="multiplePosition" 
+                className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
+              >
+                Multiple positions available
+              </Label>
+            </div>
+
+            <div className="flex items-center space-x-3 bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
+              <input
+                type="checkbox"
+                id="isActive"
+                name="isActive"
+                checked={formData.isActive}
+                onChange={handleChange}
+                className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600 cursor-pointer"
+              />
+              <Label 
+                htmlFor="isActive" 
+                className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
+              >
+                Position is Active
+              </Label>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -178,7 +198,8 @@ export default function PositionModal({
               >
                 <option value="full time">Full Time</option>
                 <option value="part-time">Part-time</option>
-                <option value="freelance">Freelance</option>
+                {/* <option value="freelance">Freelance</option> */}
+                <option value="contract">Contract</option>
               </select>
             </div>
           </div>

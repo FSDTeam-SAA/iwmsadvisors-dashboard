@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Career } from "../types/career.types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Briefcase, MapPin, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface PositionViewModalProps {
   isOpen: boolean;
@@ -39,29 +40,44 @@ export default function PositionViewModal({
                   <Briefcase className="w-5 h-5" />
                 </div>
                 {career.title}
+                {(career.multiplePosition || career.isMultipleRoles) && (
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-[#0057B8] border border-blue-100 uppercase tracking-wider">
+                    Multiple Positions
+                  </span>
+                )}
               </DialogTitle>
               <div className="flex flex-wrap gap-4 text-sm text-gray-500 font-medium ml-1">
                 <span className="flex items-center"><MapPin className="w-4 h-4 mr-1.5" /> {career.location}</span>
                 <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" /> {career.type}</span>
               </div>
             </div>
-            <Badge className="bg-[#0057B8]/10 text-[#0057B8] hover:bg-[#0057B8]/20 px-3 py-1 font-bold capitalize">
-              {career.department}
-            </Badge>
+            <div className="flex flex-col items-end gap-2">
+              {/* <Badge className="bg-[#0057B8]/10 text-[#0057B8] hover:bg-[#0057B8]/20 px-3 py-1 font-bold capitalize">
+                {career.department}
+              </Badge> */}
+              {/* <Badge className={cn(
+                "px-3 py-1 font-bold",
+                (career.isActive ?? true)
+                  ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                  : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+              )}>
+                {(career.isActive ?? true) ? "Active" : "Inactive"}
+              </Badge> */}
+            </div>
           </div>
         </DialogHeader>
 
         <Tabs defaultValue="details" className="flex-1 flex flex-col overflow-hidden min-h-0">
           <div className="px-6 border-b flex-shrink-0">
             <TabsList className="w-full justify-start h-auto p-0 bg-transparent gap-8">
-              <TabsTrigger 
-                value="details" 
+              <TabsTrigger
+                value="details"
                 className="data-[state=active]:border-b-2 data-[state=active]:border-[#0057B8] data-[state=active]:text-[#0057B8] rounded-none px-0 py-4 font-bold data-[state=active]:shadow-none data-[state=active]:bg-transparent text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
               >
                 Job Details
               </TabsTrigger>
-              <TabsTrigger 
-                value="applications" 
+              <TabsTrigger
+                value="applications"
                 className="data-[state=active]:border-b-2 data-[state=active]:border-[#0057B8] data-[state=active]:text-[#0057B8] rounded-none px-0 py-4 font-bold data-[state=active]:shadow-none data-[state=active]:bg-transparent text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
               >
                 Applications
@@ -75,7 +91,7 @@ export default function PositionViewModal({
                 <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Job Description</h3>
                 <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">{career.description}</div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-blue-50/30 p-6 rounded-xl border border-blue-50">
                   <h3 className="text-sm font-bold text-[#0057B8] uppercase tracking-wider mb-3">Requirements</h3>
@@ -87,7 +103,7 @@ export default function PositionViewModal({
                 </div>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="applications" className="m-0 h-full animate-in fade-in duration-300">
               {applicationsContent}
             </TabsContent>
