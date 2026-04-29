@@ -39,9 +39,9 @@ export default function PositionModal({
     department: career?.department || "",
     location: career?.location || "",
     type: (Array.isArray(career?.type) 
-      ? career?.type 
+      ? career?.type.map((t: string) => t === "full-time" ? "full time" : t) 
       : career?.type 
-        ? [career.type === "full time" ? "full-time" : career.type] 
+        ? [career.type === "full-time" ? "full time" : career.type] 
         : []) as CareerType[],
     description: career?.description || "",
     requirements: career?.requirements || "",
@@ -214,7 +214,7 @@ export default function PositionModal({
               <Label className="text-sm font-bold text-gray-700">Employment Type *</Label>
               <div className="flex flex-wrap gap-4 pt-1">
                 {[
-                  { id: "full-time", label: "Full-time" },
+                  { id: "full time", label: "Full-time" },
                   { id: "part-time", label: "Part-time" },
                   { id: "contract", label: "Contract" },
                 ].map((option) => (
