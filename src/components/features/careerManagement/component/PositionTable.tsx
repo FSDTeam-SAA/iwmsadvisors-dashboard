@@ -97,11 +97,21 @@ export default function PositionTable({
     {
       accessorKey: "type",
       header: "Type",
-      cell: ({ row }) => (
-        <span className="capitalize px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-[#0057B8] border border-blue-100">
-          {row.original.type}
-        </span>
-      ),
+      cell: ({ row }) => {
+        const types = Array.isArray(row.original.type) ? row.original.type : [row.original.type];
+        return (
+          <div className="flex flex-wrap gap-1">
+            {types.map((type, index) => (
+              <span 
+                key={index} 
+                className="capitalize px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#0057B8] border border-blue-100 whitespace-nowrap"
+              >
+                {type}
+              </span>
+            ))}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "createdAt",

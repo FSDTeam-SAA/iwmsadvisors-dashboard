@@ -38,7 +38,11 @@ export default function PositionModal({
     role: career?.role || "",
     department: career?.department || "",
     location: career?.location || "",
-    type: (career?.type || "full time") as CareerType,
+    type: (Array.isArray(career?.type) 
+      ? career?.type 
+      : career?.type 
+        ? [career.type === "full time" ? "full-time" : career.type] 
+        : []) as CareerType[],
     description: career?.description || "",
     requirements: career?.requirements || "",
     responsibilities: career?.responsibilities || "",
@@ -56,6 +60,7 @@ export default function PositionModal({
     if (!formData.description) newErrors.description = "Description is required";
     if (!formData.requirements) newErrors.requirements = "Requirements are required";
     if (!formData.responsibilities) newErrors.responsibilities = "Responsibilities are required";
+    if (formData.type.length === 0) newErrors.type = "At least one employment type is required";
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -72,6 +77,24 @@ export default function PositionModal({
       setErrors((prev) => {
         const next = { ...prev };
         delete next[name];
+        return next;
+      });
+    }
+  };
+
+  const handleTypeChange = (type: CareerType) => {
+    setFormData((prev) => {
+      const types = prev.type.includes(type)
+        ? prev.type.filter((t) => t !== type)
+        : [...prev.type, type];
+      
+      return { ...prev, type: types };
+    });
+    
+    if (errors.type) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.type;
         return next;
       });
     }
@@ -187,20 +210,33 @@ export default function PositionModal({
               {errors.department && <p className="text-xs text-red-500 font-medium">{errors.department}</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="type" className="text-sm font-bold text-gray-700">Employment Type *</Label>
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <option value="full time">Full Time</option>
-                <option value="part-time">Part-time</option>
-                {/* <option value="freelance">Freelance</option> */}
-                <option value="contract">Contract</option>
-              </select>
+            <div className="space-y-3">
+              <Label className="text-sm font-bold text-gray-700">Employment Type *</Label>
+              <div className="flex flex-wrap gap-4 pt-1">
+                {[
+                  { id: "full-time", label: "Full-time" },
+                  { id: "part-time", label: "Part-time" },
+                  { id: "contract", label: "Contract" },
+                ].map((option) => (
+                  <label 
+                    key={option.id}
+                    className="flex items-center space-x-2 cursor-pointer group"
+                  >
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.type.includes(option.id as CareerType)}
+                        onChange={() => handleTypeChange(option.id as CareerType)}
+                        className="w-5 h-5 rounded border-gray-300 text-[#0057B8] focus:ring-[#0057B8] cursor-pointer"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-[#0057B8] transition-colors">
+                      {option.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {errors.type && <p className="text-xs text-red-500 font-medium">{errors.type}</p>}
             </div>
           </div>
 

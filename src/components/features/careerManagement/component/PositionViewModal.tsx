@@ -48,7 +48,7 @@ export default function PositionViewModal({
               </DialogTitle>
               <div className="flex flex-wrap gap-4 text-sm text-gray-500 font-medium ml-1">
                 <span className="flex items-center"><MapPin className="w-4 h-4 mr-1.5" /> {career.location}</span>
-                <span className="flex items-center"><Clock className="w-4 h-4 mr-1.5" /> {career.type}</span>
+                <span className="flex items-center capitalize"><Clock className="w-4 h-4 mr-1.5" /> {(Array.isArray(career.type) ? career.type : [career.type]).join(", ")}</span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-2">
