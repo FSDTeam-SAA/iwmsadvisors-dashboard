@@ -61,24 +61,12 @@ const navigation: NavItem[] = [
             name: "Banner Management",
             href: "/content-management/introduction-section?tab=banner",
           },
-          // {
-          //   name: "About IWMS",
-          //   href: "/content-management/introduction-section?tab=about",
-          // },
-          // {
-          //   name: "IWMS Solutions",
-          //   href: "/content-management/iwms-solutions",
-          // },
           { name: "Why Choose Us", href: "/content-management/why-choose-us" },
+          { name: "Our Services", href: "/content-management/service-management" },
           {
             name: "MREF Section",
             href: "/content-management/mref-section",
           },
-          // {
-          //   name: "Real Estate",
-          //   href: "/content-management/real-estate",
-          // },
-          // { name: "Why Choose Us", href: "/content-management/why-choose-us" },
           {
             name: "IWMS Solutions",
             href: "/content-management/iwms-solutions",
@@ -86,6 +74,10 @@ const navigation: NavItem[] = [
           {
             name: "Our Proven Result",
             href: "/content-management/stats-section",
+          },
+          {
+            name: "Recent Insights",
+            href: "/content-management/recent-insights",
           },
           { name: "Consultant", href: "/content-management/consultant" },
           { name: "Footer", href: "/content-management/footer-section" },
@@ -97,6 +89,7 @@ const navigation: NavItem[] = [
         icon: LayoutGrid,
         subItems: [
           { name: "Services Hero", href: "/content-management/services-hero" },
+          { name: "Services", href: "/content-management/services" },
           { name: "Our Approach", href: "/content-management/our-approach" },
         ],
       },
@@ -113,12 +106,12 @@ const navigation: NavItem[] = [
         ],
       },
       {
-        name: "Blog",
-        href: "/content-management/blog-hero",
+        name: "Insights",
+        href: "/content-management/insights-hero",
         icon: LayoutGrid,
         subItems: [
-          { name: "Blog Hero", href: "/content-management/blog-hero" },
-          { name: "Blog Section", href: "/content-management/blog-section" },
+          { name: "Insights Hero", href: "/content-management/insights-hero" },
+          { name: "Insights", href: "/content-management/insights-section" },
         ],
       },
       {

@@ -25,7 +25,9 @@ const categories = [
       { name: "Banner Management", href: "/content-management/introduction-section?tab=banner" },
       { name: "IWMS Solutions", href: "/content-management/iwms-solutions" },
       { name: "Why Choose Us", href: "/content-management/why-choose-us" },
+      { name: "Our Services", href: "/content-management/service-management" },
       { name: "Our Proven Result", href: "/content-management/stats-section" },
+      { name: "Recent Insights", href: "/content-management/recent-insights" },
       { name: "Consultant", href: "/content-management/consultant" },
       { name: "Footer", href: "/content-management/footer-section" },
     ],
@@ -36,6 +38,7 @@ const categories = [
     description: "Update service hero and approach details",
     items: [
       { name: "Services Hero", href: "/content-management/services-hero" },
+      { name: "Services", href: "/content-management/service" },
       { name: "Our Approach", href: "/content-management/our-approach" },
     ],
   },
