@@ -63,6 +63,10 @@ const navigation: NavItem[] = [
             href: "/content-management/introduction-section?tab=banner",
           },
           {
+            name: "About Section",
+            href: "/content-management/about-section",
+          },
+          {
             name: "Service Title & Subtitle",
             href: "/content-management/service-title-subtitle",
           },
