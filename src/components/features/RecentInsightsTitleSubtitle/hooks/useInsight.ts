@@ -11,7 +11,7 @@ import { CreateInsightDTO } from "../types/insight.types";
 
 export const useInsights = () => {
   return useQuery({
-    queryKey: ["insights-general"], // Separate query key
+    queryKey: ["insights-recent"],
     queryFn: () => getAllInsights(),
   });
 };
@@ -21,7 +21,7 @@ export const useCreateInsight = () => {
   return useMutation({
     mutationFn: createInsight,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["insights-general"] });
+      queryClient.invalidateQueries({ queryKey: ["insights-recent"] });
     },
   });
 };
@@ -37,7 +37,7 @@ export const useUpdateInsight = () => {
       data: Partial<CreateInsightDTO>;
     }) => updateInsight(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["insights-general"] });
+      queryClient.invalidateQueries({ queryKey: ["insights-recent"] });
     },
   });
 };
@@ -47,7 +47,7 @@ export const useDeleteInsight = () => {
   return useMutation({
     mutationFn: deleteInsight,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["insights-general"] });
+      queryClient.invalidateQueries({ queryKey: ["insights-recent"] });
     },
   });
 };

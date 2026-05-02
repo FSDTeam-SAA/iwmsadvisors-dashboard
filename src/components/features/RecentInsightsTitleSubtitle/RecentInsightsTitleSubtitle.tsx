@@ -1,5 +1,3 @@
-// src/components/features/InsightsTitleSubtitle/InsightsTitleSubtitle.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -17,7 +15,7 @@ import InsightModal from "./component/InsightModal";
 import { InsightCard } from "./component/InsightCard";
 import { Insight, CreateInsightDTO } from "./types/insight.types";
 
-export default function InsightsTitleSubtitle() {
+export default function RecentInsightsTitleSubtitle() {
   const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -91,13 +89,13 @@ export default function InsightsTitleSubtitle() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Insights Title & Subtitle
+            Recent Insights Title & Subtitle
           </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
             <span className="text-gray-900 font-medium">
-              Insights Title Subtitle
+              Recent Insights Title Subtitle
             </span>
           </nav>
         </div>

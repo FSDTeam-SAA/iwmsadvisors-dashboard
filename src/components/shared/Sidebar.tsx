@@ -66,18 +66,27 @@ const navigation: NavItem[] = [
             href: "/content-management/service-title-subtitle",
           },
           { name: "Our Services", href: "/content-management/service-management" },
-          { name: "Why Choose Us", href: "/content-management/why-choose-us" },
-          {
-            name: "MREF Section",
-            href: "/content-management/mref-section",
-          },
+          // { name: "Why Choose Us", href: "/content-management/why-choose-us" },
           {
             name: "IWMS Solutions",
             href: "/content-management/iwms-solutions",
           },
           {
+            name: "MREF Section",
+            href: "/content-management/mref-section",
+          },
+          // {
+          //   name: "IWMS Solutions",
+          //   href: "/content-management/iwms-solutions",
+          // },
+          { name: "Why Choose Us", href: "/content-management/why-choose-us" },
+          {
             name: "Our Proven Result",
             href: "/content-management/stats-section",
+          },
+          {
+            name: "Recent Insights Title & Subtitle",
+            href: "/content-management/recent-insights-title-subtitle",
           },
           {
             name: "Recent Insights",
