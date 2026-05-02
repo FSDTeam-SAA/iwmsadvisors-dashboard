@@ -30,7 +30,7 @@ export default function HeroSection({
   const orderLabelMap: Record<number, string> = {
     1: "Services Page",
     2: "Case Studies Page",
-    3: "Blog Page",
+    3: "Insights Page",
     4: "About Page",
     5: "FAQ Section Page",
     6: "Careers Page",
