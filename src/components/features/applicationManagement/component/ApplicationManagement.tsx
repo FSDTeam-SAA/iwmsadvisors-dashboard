@@ -40,11 +40,6 @@ export default function ApplicationManagement() {
   const { mutate: deleteApplication } = useDeleteApplication();
 
   const handleDelete = (id: string) => {
-    const isConfirmed = globalThis.confirm(
-      "Are you sure you want to delete this application?",
-    );
-    if (!isConfirmed) return;
-
     deleteApplication(id, {
       onSuccess: () => {
         toast.success("Application deleted successfully");

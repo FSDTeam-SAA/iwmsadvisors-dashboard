@@ -1,4 +1,4 @@
-// src/components/features/InsightsTitleSubtitle/InsightsTitleSubtitle.tsx
+// src/components/features/CareerTitleSubtitle/CareerTitleSubtitle.tsx
 
 "use client";
 
@@ -8,64 +8,64 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
-  useInsights,
-  useCreateInsight,
-  useUpdateInsight,
-  useDeleteInsight,
-} from "./hooks/useInsight";
-import InsightModal from "./component/InsightModal";
-import { InsightCard } from "./component/InsightCard";
-import { Insight, CreateInsightDTO } from "./types/insight.types";
+  useCareerTitles,
+  useCreateCareerTitle,
+  useUpdateCareerTitle,
+  useDeleteCareerTitle,
+} from "./hooks/useCareerTitle";
+import CareerTitleModal from "./component/CareerTitleModal";
+import { CareerTitleCard } from "./component/CareerTitleCard";
+import { CareerTitle, CreateCareerTitleDTO } from "./types/careerTitle.types";
 
-export default function InsightsTitleSubtitle() {
-  const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
+export default function CareerTitleSubtitle() {
+  const [selectedCareerTitle, setSelectedCareerTitle] = useState<CareerTitle | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: response, isLoading, isError } = useInsights();
-  const { mutate: createInsight, isPending: isCreating } = useCreateInsight();
-  const { mutate: updateInsight, isPending: isUpdating } = useUpdateInsight();
-  const { mutate: deleteInsight, isPending: isDeleting } = useDeleteInsight();
+  const { data: response, isLoading, isError } = useCareerTitles();
+  const { mutate: createCareerTitle, isPending: isCreating } = useCreateCareerTitle();
+  const { mutate: updateCareerTitle, isPending: isUpdating } = useUpdateCareerTitle();
+  const { mutate: deleteCareerTitle, isPending: isDeleting } = useDeleteCareerTitle();
 
-  const insights = response?.data || [];
+  const careerTitles = response?.data || [];
 
   const handleAdd = () => {
-    setSelectedInsight(null);
+    setSelectedCareerTitle(null);
     setIsModalOpen(true);
   };
 
-  const handleEdit = (insight: Insight) => {
-    setSelectedInsight(insight);
+  const handleEdit = (careerTitle: CareerTitle) => {
+    setSelectedCareerTitle(careerTitle);
     setIsModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
-
-      deleteInsight(id, {
-        onSuccess: () => toast.success("Insight deleted successfully"),
-        onError: () => toast.error("Failed to delete insight"),
+   
+      deleteCareerTitle(id, {
+        onSuccess: () => toast.success("Career title deleted successfully"),
+        onError: () => toast.error("Failed to delete career title"),
       });
   
   };
 
-  const handleSave = (data: CreateInsightDTO) => {
-    if (selectedInsight) {
-      updateInsight(
-        { id: selectedInsight._id, data },
+  const handleSave = (data: CreateCareerTitleDTO) => {
+    if (selectedCareerTitle) {
+      updateCareerTitle(
+        { id: selectedCareerTitle._id, data },
         {
           onSuccess: () => {
-            toast.success("Insight updated successfully");
+            toast.success("Career title updated successfully");
             setIsModalOpen(false);
           },
-          onError: () => toast.error("Failed to update insight"),
+          onError: () => toast.error("Failed to update career title"),
         }
       );
     } else {
-      createInsight(data, {
+      createCareerTitle(data, {
         onSuccess: () => {
-          toast.success("Insight created successfully");
+          toast.success("Career title created successfully");
           setIsModalOpen(false);
         },
-        onError: () => toast.error("Failed to create insight"),
+        onError: () => toast.error("Failed to create career title"),
       });
     }
   };
@@ -81,7 +81,7 @@ export default function InsightsTitleSubtitle() {
   if (isError) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500 font-medium">Error loading insights</p>
+        <p className="text-red-500 font-medium">Error loading career titles</p>
       </div>
     );
   }
@@ -91,25 +91,25 @@ export default function InsightsTitleSubtitle() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Insights Title & Subtitle
+            Career Title & Subtitle
           </h1>
           <nav className="flex items-center text-sm text-gray-500 mt-1">
             <span>Dashboard</span>
             <ChevronRight className="w-4 h-4 mx-1" />
             <span className="text-gray-900 font-medium">
-              Insights Title Subtitle
+              Career Title Subtitle
             </span>
           </nav>
         </div>
 
-        {/* Show Add button only if there are no insights */}
-        {insights.length === 0 && (
+        {/* Show Add button only if there are no career titles */}
+        {careerTitles.length === 0 && (
           <Button
             onClick={handleAdd}
             className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Insight
+            Add Career Title
           </Button>
         )}
       </div>
@@ -120,11 +120,11 @@ export default function InsightsTitleSubtitle() {
           (isDeleting || isCreating || isUpdating) && "opacity-50 pointer-events-none"
         )}
       >
-        {insights.length > 0 ? (
-          insights.map((insight: Insight) => (
-            <InsightCard
-              key={insight._id}
-              insight={insight}
+        {careerTitles.length > 0 ? (
+          careerTitles.map((careerTitle: CareerTitle) => (
+            <CareerTitleCard
+              key={careerTitle._id}
+              careerTitle={careerTitle}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
@@ -132,25 +132,25 @@ export default function InsightsTitleSubtitle() {
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
             <p className="text-gray-400 text-lg font-medium">
-              No insights found
+              No career titles found
             </p>
             <Button
               variant="link"
               className="text-[#0057B8] mt-2 font-semibold cursor-pointer"
               onClick={handleAdd}
             >
-              Create your first insight title & subtitle
+              Create your first career title & subtitle
             </Button>
           </div>
         )}
       </div>
 
-      <InsightModal
-        key={isModalOpen ? (selectedInsight?._id || "new") : "closed"}
+      <CareerTitleModal
+        key={isModalOpen ? (selectedCareerTitle?._id || "new") : "closed"}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
-        initialData={selectedInsight}
+        initialData={selectedCareerTitle}
       />
     </div>
   );

@@ -27,12 +27,11 @@ export default function ConsultantManagement() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this consultant?")) {
+  
       deleteConsultant(id, {
         onSuccess: () => toast.success("Consultant deleted successfully"),
         onError: () => toast.error("Failed to delete consultant"),
       });
-    }
   };
 
   let content;

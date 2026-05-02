@@ -37,12 +37,12 @@ export default function RecentInsightsTitleSubtitle() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this insight?")) {
+
       deleteInsight(id, {
         onSuccess: () => toast.success("Insight deleted successfully"),
         onError: () => toast.error("Failed to delete insight"),
       });
-    }
+  
   };
 
   const handleSave = (data: CreateInsightDTO) => {

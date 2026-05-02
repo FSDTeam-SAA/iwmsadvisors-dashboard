@@ -39,12 +39,12 @@ export default function ServiceTitleSubtitle() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this service title?")) {
+
       deleteServiceTitle(id, {
         onSuccess: () => toast.success("Service title deleted successfully"),
         onError: () => toast.error("Failed to delete service title"),
       });
-    }
+
   };
 
   const handleSave = (data: CreateServiceTitleDTO) => {

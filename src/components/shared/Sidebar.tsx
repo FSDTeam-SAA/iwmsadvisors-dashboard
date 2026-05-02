@@ -19,6 +19,7 @@ import {
   Users,
   FolderKanban,
   type LucideIcon,
+  ScrollText,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -202,6 +203,11 @@ const navigation: NavItem[] = [
     name: "Career Management",
     href: "/career-management",
     icon: BowArrow,
+  },
+  {
+    name: "Career Title & Subtitle",
+    href: "/career-title-subtitle",
+    icon: ScrollText,
   },
   {
     name: "Performance & Reporting",

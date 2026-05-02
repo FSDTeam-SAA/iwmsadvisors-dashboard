@@ -39,12 +39,11 @@ export default function SubscriberTitleSubtitle() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this subscriber title?")) {
+
       deleteSubscriberTitle(id, {
         onSuccess: () => toast.success("Subscriber title deleted successfully"),
         onError: () => toast.error("Failed to delete subscriber title"),
       });
-    }
   };
 
   const handleSave = (data: CreateSubscriberTitleDTO) => {
