@@ -61,8 +61,12 @@ const navigation: NavItem[] = [
             name: "Banner Management",
             href: "/content-management/introduction-section?tab=banner",
           },
-          { name: "Why Choose Us", href: "/content-management/why-choose-us" },
+          {
+            name: "Service Title & Subtitle",
+            href: "/content-management/service-title-subtitle",
+          },
           { name: "Our Services", href: "/content-management/service-management" },
+          { name: "Why Choose Us", href: "/content-management/why-choose-us" },
           {
             name: "MREF Section",
             href: "/content-management/mref-section",
@@ -111,6 +115,10 @@ const navigation: NavItem[] = [
         icon: LayoutGrid,
         subItems: [
           { name: "Insights Hero", href: "/content-management/insights-hero" },
+          {
+            name: "Insights Title & Subtitle",
+            href: "/content-management/insights-title-subtitle",
+          },
           { name: "Insights", href: "/content-management/insights-section" },
         ],
       },
