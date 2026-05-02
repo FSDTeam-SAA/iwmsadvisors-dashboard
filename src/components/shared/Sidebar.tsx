@@ -75,10 +75,6 @@ const navigation: NavItem[] = [
             name: "MREF Section",
             href: "/content-management/mref-section",
           },
-          // {
-          //   name: "IWMS Solutions",
-          //   href: "/content-management/iwms-solutions",
-          // },
           { name: "Why Choose Us", href: "/content-management/why-choose-us" },
           {
             name: "Our Proven Result",
@@ -129,6 +125,10 @@ const navigation: NavItem[] = [
             href: "/content-management/insights-title-subtitle",
           },
           { name: "Insights", href: "/content-management/insights-section" },
+          {
+            name: "Subscriber Titles & Description",
+            href: "/content-management/subscriber-titles-description",
+          },
         ],
       },
       {
