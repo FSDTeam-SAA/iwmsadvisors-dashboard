@@ -81,12 +81,11 @@ export default function IwmsSolutionsSection() {
   };
 
   const handleDelete = (section: IwmsSolutionsSectionType) => {
-    if (globalThis.confirm(`Are you sure you want to delete the "${section.title}" section?`)) {
-      deleteSection(section._id, {
-        onSuccess: () => toast.success(`${section.title} section deleted successfully`),
-        onError: () => toast.error(`Failed to delete "${section.title}" section`),
-      });
-    }
+
+    deleteSection(section._id, {
+      onSuccess: () => toast.success(`${section.title} section deleted successfully`),
+      onError: () => toast.error(`Failed to delete "${section.title}" section`),
+    });
   };
 
   if (isError || response?.status === false) {

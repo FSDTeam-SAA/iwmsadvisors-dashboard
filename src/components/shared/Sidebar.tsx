@@ -71,7 +71,6 @@ const navigation: NavItem[] = [
             href: "/content-management/service-title-subtitle",
           },
           { name: "Our Services", href: "/content-management/service-management" },
-          // { name: "Why Choose Us", href: "/content-management/why-choose-us" },
           {
             name: "IWMS Solutions",
             href: "/content-management/iwms-solutions",
@@ -146,10 +145,10 @@ const navigation: NavItem[] = [
             name: "Transform Management",
             href: "/content-management/transforming-section",
           },
-          {
-            name: "Mission & Vision",
-            href: "/content-management/mission-vision",
-          },
+          // {
+          //   name: "Mission & Vision",
+          //   href: "/content-management/mission-vision",
+          // },
           {
             name: "Our Core Strengths",
             href: "/content-management/strength-section",

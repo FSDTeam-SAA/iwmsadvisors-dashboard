@@ -1,0 +1,318 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useCreateIwmsSolutionsSection } from "../../iwmsSolutionsSection/hooks/useIwmsSolutionsSection";
+import { X, Upload } from "lucide-react";
+import Image from "next/image";
+import { isAxiosError } from "axios";
+
+interface CertificationSectionAddModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  defaultTitle?: string;
+  defaultOrder?: number;
+}
+
+interface ModalItem {
+  order: number;
+  title: string;
+  description: string;
+  iconFile: File | null;
+  preview: string;
+  id: string;
+}
+
+export default function CertificationSectionAddModal({
+  isOpen,
+  onClose,
+  defaultTitle = "Certifications",
+  defaultOrder = 4,
+}: CertificationSectionAddModalProps) {
+  const [title, setTitle] = useState(defaultTitle);
+  const [subtitle, setSubtitle] = useState("");
+  const [order, setOrder] = useState(defaultOrder);
+
+  const [items, setItems] = useState<ModalItem[]>(() => [
+    {
+      order: 1,
+      title: "",
+      description: "",
+      iconFile: null as File | null,
+      preview: "",
+      id: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(),
+    }
+  ]);
+
+  const { mutate: createSection, isPending } = useCreateIwmsSolutionsSection();
+
+  const handleAddItem = () => {
+    const nextOrder = items.length > 0 ? Math.max(...items.map((i) => Number(i.order) || 0)) + 1 : 1;
+    setItems([
+      ...items,
+      {
+        order: nextOrder,
+        title: "",
+        description: "",
+        iconFile: null,
+        preview: "",
+        id: Date.now().toString() + Math.random().toString(),
+      },
+    ]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    const newItems = [...items];
+    if (newItems[index].preview) {
+      URL.revokeObjectURL(newItems[index].preview);
+    }
+    newItems.splice(index, 1);
+    setItems(newItems);
+  };
+
+  const handleItemChange = (index: number, field: string, value: string) => {
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setItems(newItems);
+  };
+
+  const handleImageChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const newItems = [...items];
+      newItems[index].iconFile = file;
+      newItems[index].preview = URL.createObjectURL(file);
+      setItems(newItems);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const newItems = [...items];
+    if (newItems[index].preview) {
+      URL.revokeObjectURL(newItems[index].preview);
+    }
+    newItems[index].iconFile = null;
+    newItems[index].preview = "";
+    setItems(newItems);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!title) {
+      toast.error("Title is required");
+      return;
+    }
+
+    const cleanedItems = items.map((item) => ({
+      order: item.order,
+      title: item.title,
+      description: item.description,
+    }));
+
+    const payload: Record<string, string | number | object | File | undefined> = {
+      order,
+      title,
+      subtitle,
+      items: cleanedItems,
+    };
+
+    items.forEach((item, index) => {
+      if (item.iconFile) {
+        payload[`icon_${index + 1}`] = item.iconFile;
+      }
+    });
+
+    createSection(payload,
+      {
+        onSuccess: () => {
+          toast.success("Certification section created successfully");
+          onClose();
+        },
+        onError: (error) => {
+          const errorMessage =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to create certification section";
+          toast.error(errorMessage);
+        },
+      },
+    );
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-semibold">
+            Add Certification Section
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Section Title
+              </label>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Our Certifications"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Section Order
+              </label>
+              <Input
+                type="number"
+                value={order}
+                onChange={(e) => setOrder(Number.parseInt(e.target.value))}
+                min={1}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Section Subtitle
+              </label>
+              <Input
+                value={subtitle}
+                onChange={(e) => setSubtitle(e.target.value)}
+                placeholder="e.g. Recognized worldwide"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b pb-2">
+              <h3 className="font-medium text-lg">Items</h3>
+              <Button type="button" onClick={handleAddItem} variant="outline" size="sm" className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 cursor-pointer font-semibold">
+                + Add Item
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {items.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="relative border p-4 rounded-lg bg-gray-50 space-y-3"
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <h4 className="font-semibold text-sm text-[#0057B8]">Item Sequence</h4>
+                    <button type="button" onClick={() => handleRemoveItem(index)} className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-1.5 rounded-md cursor-pointer transition-colors shadow-sm">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Order Number
+                    </label>
+                    <Input
+                      type="number"
+                      value={item.order}
+                      onChange={(e) => handleItemChange(index, "order", e.target.value)}
+                      placeholder="e.g. 1"
+                      className="bg-white"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Item Title
+                    </label>
+                    <Input
+                      value={item.title}
+                      onChange={(e) =>
+                        handleItemChange(index, "title", e.target.value)
+                      }
+                      placeholder="Title"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Item Description
+                    </label>
+                    <Input
+                      value={item.description}
+                      onChange={(e) =>
+                        handleItemChange(index, "description", e.target.value)
+                      }
+                      placeholder="Description"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-700">
+                      Icon Image
+                    </label>
+                    <div className="mt-1 flex items-center gap-4">
+                      {item.preview ? (
+                        <div className="relative w-16 h-16 rounded-md overflow-hidden border">
+                          <Image
+                            src={item.preview}
+                            alt={`Icon ${item.order}`}
+                            fill
+                            className="object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : null}
+
+                      <label className="cursor-pointer">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-50 text-sm">
+                          <Upload className="w-4 h-4 text-gray-500" />
+                          <span>
+                            {item.preview ? "Change Icon" : "Upload Icon"}
+                          </span>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleImageChange(index, e)}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-[#0057B8] text-white hover:bg-[#004494]"
+              disabled={isPending}
+            >
+              {isPending ? "Creating..." : "Create Section"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
