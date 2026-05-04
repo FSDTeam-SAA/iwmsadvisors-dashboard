@@ -175,7 +175,7 @@ export default function CareerManagement() {
             >
               <option value="">All Job Types</option>
               <option value="full time">Full Time</option>
-              <option value="part-time">Part-time</option>
+              <option value="part-time">Part Time</option>
               {/* <option value="freelance">Freelance</option> */}
               <option value="contract">Contract</option>
             </select>
@@ -211,7 +211,7 @@ export default function CareerManagement() {
             )}
           </div>
         </div>
-        
+
         <PositionTable
           data={careerData?.data || []}
           isLoading={isLoadingCareers}

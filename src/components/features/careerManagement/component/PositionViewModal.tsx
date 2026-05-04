@@ -29,6 +29,13 @@ export default function PositionViewModal({
 }: PositionViewModalProps) {
   if (!career) return null;
 
+  const typeLabels = [
+  { id: "full time", label: "Full Time" },
+  { id: "part-time", label: "Part Time" },
+  { id: "contract", label: "Contract" },
+];
+
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0 overflow-hidden rounded-xl">
@@ -48,7 +55,18 @@ export default function PositionViewModal({
               </DialogTitle>
               <div className="flex flex-wrap gap-4 text-sm text-gray-500 font-medium ml-1">
                 <span className="flex items-center"><MapPin className="w-4 h-4 mr-1.5" /> {career.location}</span>
-                <span className="flex items-center capitalize"><Clock className="w-4 h-4 mr-1.5" /> {(Array.isArray(career.type) ? career.type : [career.type]).join(", ")}</span>
+
+<span className="flex items-center capitalize">
+  <Clock className="w-4 h-4 mr-1.5" />
+  {
+    (Array.isArray(career.type) ? career.type : [career.type])
+      .map(type => {
+        const matchedType = typeLabels.find(t => t.id === type);
+        return matchedType ? matchedType.label : type; // if no match, display the type as is
+      })
+      .join(", ")
+  }
+</span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-2">

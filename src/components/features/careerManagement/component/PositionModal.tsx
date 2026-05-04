@@ -38,10 +38,10 @@ export default function PositionModal({
     role: career?.role || "",
     department: career?.department || "",
     location: career?.location || "",
-    type: (Array.isArray(career?.type) 
-      ? career?.type.map((t: string) => t === "full-time" ? "full time" : t) 
-      : career?.type 
-        ? [career.type === "full-time" ? "full time" : career.type] 
+    type: (Array.isArray(career?.type)
+      ? career?.type.map((t: string) => t === "full-time" ? "full time" : t)
+      : career?.type
+        ? [career.type === "full-time" ? "full time" : career.type]
         : []) as CareerType[],
     description: career?.description || "",
     requirements: career?.requirements || "",
@@ -61,7 +61,7 @@ export default function PositionModal({
     if (!formData.requirements) newErrors.requirements = "Requirements are required";
     if (!formData.responsibilities) newErrors.responsibilities = "Responsibilities are required";
     if (formData.type.length === 0) newErrors.type = "At least one employment type is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -71,7 +71,7 @@ export default function PositionModal({
   ) => {
     const { name, value, type } = e.target;
     const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-    
+
     setFormData((prev) => ({ ...prev, [name]: val }));
     if (errors[name]) {
       setErrors((prev) => {
@@ -87,10 +87,10 @@ export default function PositionModal({
       const types = prev.type.includes(type)
         ? prev.type.filter((t) => t !== type)
         : [...prev.type, type];
-      
+
       return { ...prev, type: types };
     });
-    
+
     if (errors.type) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -170,8 +170,8 @@ export default function PositionModal({
                 onChange={handleChange}
                 className="w-5 h-5 rounded border-gray-300 text-[#0057B8] focus:ring-[#0057B8] cursor-pointer"
               />
-              <Label 
-                htmlFor="multiplePosition" 
+              <Label
+                htmlFor="multiplePosition"
                 className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
               >
                 Multiple positions available
@@ -187,8 +187,8 @@ export default function PositionModal({
                 onChange={handleChange}
                 className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600 cursor-pointer"
               />
-              <Label 
-                htmlFor="isActive" 
+              <Label
+                htmlFor="isActive"
                 className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
               >
                 Position is Active
@@ -214,11 +214,11 @@ export default function PositionModal({
               <Label className="text-sm font-bold text-gray-700">Employment Type *</Label>
               <div className="flex flex-wrap gap-4 pt-1">
                 {[
-                  { id: "full time", label: "Full-time" },
-                  { id: "part-time", label: "Part-time" },
+                  { id: "full time", label: "Full Time" },
+                  { id: "part-time", label: "Part Time" },
                   { id: "contract", label: "Contract" },
                 ].map((option) => (
-                  <label 
+                  <label
                     key={option.id}
                     className="flex items-center space-x-2 cursor-pointer group"
                   >

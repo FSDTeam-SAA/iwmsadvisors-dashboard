@@ -49,6 +49,12 @@ export default function PositionTable({
   itemsPerPage,
   onPageChange,
 }: PositionTableProps) {
+
+  const typeLabels = [
+    { id: "full time", label: "Full Time" },
+    { id: "part-time", label: "Part Time" },
+    { id: "contract", label: "Contract" },
+  ];
   const columns: ColumnDef<Career>[] = [
     {
       accessorKey: "title",
@@ -101,14 +107,18 @@ export default function PositionTable({
         const types = Array.isArray(row.original.type) ? row.original.type : [row.original.type];
         return (
           <div className="flex flex-wrap gap-1">
-            {types.map((type, index) => (
-              <span 
-                key={index} 
-                className="capitalize px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#0057B8] border border-blue-100 whitespace-nowrap"
-              >
-                {type}
-              </span>
-            ))}
+            {types.map((type, index) => {
+              // Find the matching label for the type
+              const matchedType = typeLabels.find(t => t.id === type);
+              return (
+                <span
+                  key={index}
+                  className="capitalize px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#0057B8] border border-blue-100 whitespace-nowrap"
+                >
+                  {matchedType ? matchedType.label : type}
+                </span>
+              );
+            })}
           </div>
         );
       },
