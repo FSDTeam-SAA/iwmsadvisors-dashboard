@@ -232,7 +232,7 @@ export default function TransformEditModal({
               id="edit-transform-desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[100px]"
+              className="min-h-[200px]"
               placeholder="Enter description"
             />
           </div>
