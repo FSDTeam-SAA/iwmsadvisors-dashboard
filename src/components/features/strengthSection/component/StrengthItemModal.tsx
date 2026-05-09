@@ -1,5 +1,6 @@
 "use client";
-
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Dialog,
@@ -74,8 +75,10 @@ export default function StrengthItemModal({
         },
         {
           onSuccess: onClose,
-          onError: (error: any) => {
-            const message = error.response?.data?.message || "Failed to update item";
+          onError: (error: unknown) => {
+            const message =
+              (isAxiosError(error) && error.response?.data?.message) ||
+              "Failed to update item";
             toast.error(message);
           },
         },
@@ -89,8 +92,10 @@ export default function StrengthItemModal({
         { title, subtitle, image: imageFile },
         {
           onSuccess: onClose,
-          onError: (error: any) => {
-            const message = error.response?.data?.message || "Failed to create item";
+          onError: (error: unknown) => {
+            const message =
+              (isAxiosError(error) && error.response?.data?.message) ||
+              "Failed to create item";
             toast.error(message);
           },
         },

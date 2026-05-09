@@ -1,5 +1,5 @@
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
@@ -91,15 +91,17 @@ export default function BlogSection() {
 
   const handleDelete = (id: string) => {
     // You might want to add a confirmation dialog here or use toast.promise if supported by your UI
- 
-      deleteBlog(id, {
-        onSuccess: () => toast.success("Blog post deleted successfully"),
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to delete blog post";
-          toast.error(message);
-        },
-      });
-  
+
+    deleteBlog(id, {
+      onSuccess: () => toast.success("Blog post deleted successfully"),
+      onError: (error: unknown) => {
+        const message =
+          (isAxiosError(error) && error.response?.data?.message) ||
+          "Failed to delete blog post";
+        toast.error(message);
+      },
+    });
+
   };
 
   const handleSave = (
@@ -113,8 +115,10 @@ export default function BlogSection() {
             toast.success("Blog post updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: (error: any) => {
-            const message = error.response?.data?.message || "Failed to update blog post";
+          onError: (error: unknown) => {
+            const message =
+              (isAxiosError(error) && error.response?.data?.message) ||
+              "Failed to update blog post";
             toast.error(message);
           },
         },
@@ -136,8 +140,10 @@ export default function BlogSection() {
           toast.success("Blog post added successfully");
           setIsAddModalOpen(false);
         },
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to add blog post";
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to add blog post";
           toast.error(message);
         },
       },
@@ -169,7 +175,7 @@ export default function BlogSection() {
             className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add Blog Post
+            Add Insights
           </Button>
         </div>
       </div>

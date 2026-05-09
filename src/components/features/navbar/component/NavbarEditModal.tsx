@@ -1,5 +1,6 @@
 "use client";
-
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Dialog,
@@ -84,8 +85,10 @@ export default function NavbarEditModal({
           toast.success("Navbar logo updated successfully");
           handleClose();
         },
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to update navbar logo";
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to update navbar logo";
           toast.error(message);
         },
       },

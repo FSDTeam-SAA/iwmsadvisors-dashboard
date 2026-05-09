@@ -1,5 +1,6 @@
 "use client";
-
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Dialog,
@@ -67,8 +68,10 @@ export default function NavbarAddModal({
           toast.success("Navbar logo added successfully");
           handleClose();
         },
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to add navbar logo";
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to add navbar logo";
           toast.error(message);
         },
       },
