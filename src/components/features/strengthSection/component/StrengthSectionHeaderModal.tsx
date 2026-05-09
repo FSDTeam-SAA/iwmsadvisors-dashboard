@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -48,10 +49,25 @@ export default function StrengthSectionHeaderModal({
     if (section) {
       updateSection(
         { id: section._id, data: { title, subtitle } },
-        { onSuccess: onClose },
+        {
+          onSuccess: onClose,
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update section";
+            toast.error(message);
+          },
+        },
       );
     } else {
-      createSection({ title, subtitle }, { onSuccess: onClose });
+      createSection(
+        { title, subtitle },
+        {
+          onSuccess: onClose,
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to create section";
+            toast.error(message);
+          },
+        },
+      );
     }
   };
 

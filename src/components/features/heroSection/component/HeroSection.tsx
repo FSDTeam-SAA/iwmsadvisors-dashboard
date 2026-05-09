@@ -1,5 +1,5 @@
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -94,7 +94,12 @@ export default function HeroSection({
           setIsDeleteDialogOpen(false);
           setSelectedHeroForDelete(null);
         },
-        onError: () => toast.error("Failed to delete hero section"),
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to delete hero section";
+          toast.error(message);
+        },
       });
     }
   };

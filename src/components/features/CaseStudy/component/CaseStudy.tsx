@@ -112,8 +112,9 @@ export default function CaseStudy() {
             toast.success("Case study updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: () => {
-            toast.error("Failed to update case study");
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update case study";
+            toast.error(message);
           },
         },
       );
@@ -125,8 +126,9 @@ export default function CaseStudy() {
       onSuccess: () => {
         toast.success("Case study deleted successfully");
       },
-      onError: () => {
-        toast.error("Failed to delete case study");
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete case study";
+        toast.error(message);
       },
     });
   };
@@ -161,8 +163,9 @@ export default function CaseStudy() {
           toast.success("Case study added successfully");
           setIsAddModalOpen(false);
         },
-        onError: () => {
-          toast.error("Failed to add case study");
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to add case study";
+          toast.error(message);
         },
       },
     );

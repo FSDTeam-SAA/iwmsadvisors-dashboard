@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X, Upload, Plus } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 
 interface CaseStudyAddModalProps {
   readonly isOpen: boolean;
@@ -202,6 +203,14 @@ export default function CaseStudyAddModal({
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
+
+                if (file && !validateImage(file)) {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  }
+                  return;
+                }
+
                 setImageFile(file);
                 if (imagePreview) URL.revokeObjectURL(imagePreview);
                 if (file) {

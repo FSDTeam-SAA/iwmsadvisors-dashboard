@@ -15,6 +15,7 @@ import Image from "next/image";
 import { Upload, X, Plus } from "lucide-react";
 import { useCreateTransformSection } from "../hooks/useTransforming";
 import { toast } from "sonner";
+import { validateImage } from "@/lib/utils";
 
 interface TransformAddModalProps {
   readonly isOpen: boolean;
@@ -69,6 +70,14 @@ export default function TransformAddModal({
     key: keyof typeof imageFiles,
   ) => {
     const file = e.target.files?.[0] || null;
+
+    if (file && !validateImage(file)) {
+      if (fileInputRefs[key].current) {
+        fileInputRefs[key].current.value = "";
+      }
+      return;
+    }
+
     setImageFiles((prev) => ({ ...prev, [key]: file }));
 
     if (previews[key]) URL.revokeObjectURL(previews[key]!);
@@ -120,7 +129,11 @@ export default function TransformAddModal({
           toast.success("Transform section added successfully");
           handleClose();
         },
-        onError: () => toast.error("Failed to add transform section"),
+        onError: (error: any) => {
+          const message =
+            error.response?.data?.message || "Failed to add transform section";
+          toast.error(message);
+        },
       },
     );
   };

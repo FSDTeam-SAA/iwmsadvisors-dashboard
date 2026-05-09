@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2, X, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { ServicePage } from "../types/service-management.types";
 
 interface ServiceManagementEditModalProps {
@@ -242,6 +243,12 @@ export default function ServiceManagementEditModal({
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
+
+                if (file && !validateImage(file)) {
+                  e.target.value = "";
+                  return;
+                }
+
                 setImageFile(file);
                 if (imagePreview?.startsWith("blob:")) {
                   URL.revokeObjectURL(imagePreview);

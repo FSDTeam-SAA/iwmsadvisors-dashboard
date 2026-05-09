@@ -1,4 +1,5 @@
 "use client";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
@@ -49,7 +50,12 @@ export default function Certifications() {
       onSuccess: () => {
         toast.success("Certification deleted successfully");
       },
-      onError: () => toast.error("Failed to delete certification"),
+      onError: (error: unknown) => {
+        const message =
+          (isAxiosError(error) && error.response?.data?.message) ||
+          "Failed to delete certification";
+        toast.error(message);
+      },
     });
   };
 

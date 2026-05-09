@@ -46,7 +46,10 @@ export default function StrengthHeaderSection() {
   const handleDelete = (id: string) => {
     deleteSection(id, {
       onSuccess: () => toast.success("Strength header deleted successfully"),
-      onError: () => toast.error("Failed to delete strength header"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete strength header";
+        toast.error(message);
+      },
     });
   };
 

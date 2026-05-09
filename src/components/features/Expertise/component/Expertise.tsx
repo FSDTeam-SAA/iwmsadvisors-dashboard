@@ -1,5 +1,6 @@
 "use client";
 
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import {
@@ -64,7 +65,12 @@ export default function Expertise() {
 
     deleteSection(section._id, {
       onSuccess: () => toast.success(`${section.title} section deleted successfully`),
-      onError: () => toast.error(`Failed to delete "${section.title}" section`),
+      onError: (error: unknown) => {
+        const message =
+          (isAxiosError(error) && error.response?.data?.message) ||
+          `Failed to delete "${section.title}" section`;
+        toast.error(message);
+      },
     });
 
   };

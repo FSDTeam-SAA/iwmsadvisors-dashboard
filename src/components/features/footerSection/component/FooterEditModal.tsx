@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 
 interface FooterEditModalProps {
   readonly isOpen: boolean;
@@ -243,6 +244,14 @@ export default function FooterEditModal({
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0] ?? null;
+
+                  if (file && !validateImage(file)) {
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = "";
+                    }
+                    return;
+                  }
+
                   setLogoFile(file);
                   if (logoPreview?.startsWith("blob:")) {
                     URL.revokeObjectURL(logoPreview);

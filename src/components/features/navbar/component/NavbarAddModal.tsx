@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { useCreateNavbar } from "../hooks/useNavbar";
 
 interface NavbarAddModalProps {
@@ -29,6 +30,12 @@ export default function NavbarAddModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       setLogoFile(file);
       const render = new FileReader();
@@ -57,7 +64,12 @@ export default function NavbarAddModal({
       { logo: logoFile },
       {
         onSuccess: () => {
+          toast.success("Navbar logo added successfully");
           handleClose();
+        },
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to add navbar logo";
+          toast.error(message);
         },
       },
     );

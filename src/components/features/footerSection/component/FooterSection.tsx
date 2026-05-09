@@ -56,7 +56,10 @@ export default function FooterSection() {
           toast.success("Footer updated successfully");
           setIsEditModalOpen(false);
         },
-        onError: () => toast.error("Failed to update footer"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to update footer";
+          toast.error(message);
+        },
       },
     );
   };
@@ -67,7 +70,10 @@ export default function FooterSection() {
         toast.success("Footer added successfully");
         setIsAddModalOpen(false);
       },
-      onError: () => toast.error("Failed to add footer"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to add footer";
+        toast.error(message);
+      },
     });
   };
 
@@ -76,7 +82,10 @@ export default function FooterSection() {
       onSuccess: () => {
         toast.success("Footer deleted successfully");
       },
-      onError: () => toast.error("Failed to delete footer"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete footer";
+        toast.error(message);
+      },
     });
   };
 

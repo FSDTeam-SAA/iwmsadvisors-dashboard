@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isAxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, X, Plus } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { useUpdateVision } from "../hooks/useMissionVision";
 import { Vision } from "../types/missionVision.type";
 import { toast } from "sonner";
@@ -37,6 +39,12 @@ export default function VisionEditModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       // Revoke only blob URLs, not Cloudinary URLs
       if (imagePreview.startsWith("blob:")) URL.revokeObjectURL(imagePreview);
@@ -75,7 +83,12 @@ export default function VisionEditModal({
           toast.success("Vision updated successfully");
           handleClose();
         },
-        onError: () => toast.error("Failed to update vision"),
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to update vision";
+          toast.error(message);
+        },
       },
     );
   };

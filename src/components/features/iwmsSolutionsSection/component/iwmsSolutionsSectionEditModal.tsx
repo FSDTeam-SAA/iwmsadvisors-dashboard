@@ -14,6 +14,7 @@ import { useUpdateIwmsSolutionsSection } from "../hooks/useIwmsSolutionsSection"
 import { IwmsSolutionsSection } from "../types/iwmsSolutionsSection.type";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { isAxiosError } from "axios";
 
 interface IwmsSolutionsSectionEditModalProps {
@@ -102,6 +103,12 @@ export default function IwmsSolutionsSectionEditModal({
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       const newItems = [...items];
       newItems[index].iconFile = file;

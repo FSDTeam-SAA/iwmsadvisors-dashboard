@@ -1,7 +1,5 @@
-// src/components/features/Expertise/component/ExpertiseAddModal.tsx
-
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import {
   Dialog,
@@ -60,7 +58,12 @@ export default function ExpertiseAddModal({
           toast.success("Expertise added successfully");
           handleClose();
         },
-        onError: () => toast.error("Failed to add expertise"),
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to add expertise";
+          toast.error(message);
+        },
       },
     );
   };

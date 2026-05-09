@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { Upload } from "lucide-react";
 
 interface BannerSectionEditModalProps {
@@ -149,6 +150,14 @@ export default function BannerSectionEditModal({
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
+
+                if (file && !validateImage(file)) {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  }
+                  return;
+                }
+
                 setImageFile(file);
                 if (imagePreview?.startsWith("blob:")) {
                   URL.revokeObjectURL(imagePreview);

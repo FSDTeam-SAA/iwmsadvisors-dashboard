@@ -55,7 +55,10 @@ export default function NavbarManagement() {
   const handleDelete = (id: string) => {
     deleteNavbar(id, {
       onSuccess: () => toast.success("Navbar logo deleted successfully"),
-      onError: () => toast.error("Failed to delete navbar logo"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete navbar logo";
+        toast.error(message);
+      },
     });
   };
 

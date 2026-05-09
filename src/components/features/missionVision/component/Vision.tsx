@@ -47,7 +47,10 @@ export default function VisionSection() {
       onSuccess: () => {
         toast.success("Vision deleted successfully");
       },
-      onError: () => toast.error("Failed to delete vision"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete vision";
+        toast.error(message);
+      },
     });
   };
 

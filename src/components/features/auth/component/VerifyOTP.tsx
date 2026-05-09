@@ -54,7 +54,7 @@ export default function VerifyOTP() {
 
       setTimeout(() => {
         router.push(
-          `/reset-password?token=${encodeURIComponent(resetToken || "")}`,
+          `/reset-password`,
         );
       }, 1000);
     } else {

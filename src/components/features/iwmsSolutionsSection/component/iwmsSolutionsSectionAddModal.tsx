@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useCreateIwmsSolutionsSection } from "../hooks/useIwmsSolutionsSection";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { isAxiosError } from "axios";
 
 interface IwmsSolutionsSectionAddModalProps {
@@ -89,6 +90,12 @@ export default function IwmsSolutionsSectionAddModal({
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       const newItems = [...items];
       newItems[index].iconFile = file;

@@ -47,7 +47,10 @@ export default function StrengthItemsSection() {
   const handleDeleteItem = (id: string) => {
     deleteItem(id, {
       onSuccess: () => toast.success("Strength item deleted successfully"),
-      onError: () => toast.error("Failed to delete strength item"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete strength item";
+        toast.error(message);
+      },
     });
   };
 

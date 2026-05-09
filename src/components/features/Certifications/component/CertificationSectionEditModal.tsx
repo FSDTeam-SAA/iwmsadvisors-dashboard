@@ -15,6 +15,7 @@ import { IwmsSolutionsSection } from "../../iwmsSolutionsSection/types/iwmsSolut
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
 import { isAxiosError } from "axios";
+import { validateImage } from "@/lib/utils";
 
 interface CertificationSectionEditModalProps {
   isOpen: boolean;
@@ -100,6 +101,12 @@ export default function CertificationSectionEditModal({
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       const newItems = [...items];
       newItems[index].iconFile = file;

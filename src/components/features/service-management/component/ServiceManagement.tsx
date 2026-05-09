@@ -92,7 +92,10 @@ export default function ServiceManagement() {
   const handleDelete = (id: string) => {
     deleteService(id, {
       onSuccess: () => toast.success("Service page deleted successfully"),
-      onError: () => toast.error("Failed to delete service page"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete service page";
+        toast.error(message);
+      },
     });
   };
 
@@ -111,7 +114,10 @@ export default function ServiceManagement() {
             toast.success("Service page updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: () => toast.error("Failed to update service page"),
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update service page";
+            toast.error(message);
+          },
         },
       );
     }
@@ -131,7 +137,10 @@ export default function ServiceManagement() {
         toast.success("Service page added successfully");
         setIsAddModalOpen(false);
       },
-      onError: () => toast.error("Failed to add service page"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to add service page";
+        toast.error(message);
+      },
     });
   };
 

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { useUpdateNavbar } from "../hooks/useNavbar";
 import { Navbar } from "../types/navbar.type";
 
@@ -34,6 +35,12 @@ export default function NavbarEditModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       setLogoFile(file);
       const render = new FileReader();
@@ -74,7 +81,12 @@ export default function NavbarEditModal({
       { id: navbar._id, data },
       {
         onSuccess: () => {
+          toast.success("Navbar logo updated successfully");
           handleClose();
+        },
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to update navbar logo";
+          toast.error(message);
         },
       },
     );

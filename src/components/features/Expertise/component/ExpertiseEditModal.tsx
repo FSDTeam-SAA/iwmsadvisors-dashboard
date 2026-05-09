@@ -1,7 +1,5 @@
-// src/components/features/Expertise/component/ExpertiseEditModal.tsx
-
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import {
   Dialog,
@@ -64,7 +62,12 @@ export default function ExpertiseEditModal({
           toast.success("Expertise updated successfully");
           handleClose();
         },
-        onError: () => toast.error("Failed to update expertise"),
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to update expertise";
+          toast.error(message);
+        },
       },
     );
   };

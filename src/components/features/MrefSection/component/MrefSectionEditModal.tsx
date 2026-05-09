@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { MrefSection } from "../types/mrefSection.types";
 
 interface Capability {
@@ -152,6 +153,14 @@ export default function MrefSectionEditModal({
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
+
+                if (file && !validateImage(file)) {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  }
+                  return;
+                }
+
                 setImageFile(file);
                 if (imagePreview && imagePreview.startsWith("blob:"))
                   URL.revokeObjectURL(imagePreview);

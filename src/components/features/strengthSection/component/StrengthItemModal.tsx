@@ -17,6 +17,7 @@ import {
 import { StrengthItem } from "../types/strengthSection.type";
 import { Upload, X, Plus } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 
 interface StrengthItemModalProps {
   readonly isOpen: boolean;
@@ -50,6 +51,12 @@ export default function StrengthItemModal({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       setImageFile(file);
       setPreviewUrl(URL.createObjectURL(file));
@@ -65,14 +72,29 @@ export default function StrengthItemModal({
           id: item._id,
           data: { title, subtitle, image: imageFile || undefined },
         },
-        { onSuccess: onClose },
+        {
+          onSuccess: onClose,
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update item";
+            toast.error(message);
+          },
+        },
       );
     } else {
       if (!imageFile) {
-        alert("Please select an image");
+        toast.error("Please select an image");
         return;
       }
-      createItem({ title, subtitle, image: imageFile }, { onSuccess: onClose });
+      createItem(
+        { title, subtitle, image: imageFile },
+        {
+          onSuccess: onClose,
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to create item";
+            toast.error(message);
+          },
+        },
+      );
     }
   };
 

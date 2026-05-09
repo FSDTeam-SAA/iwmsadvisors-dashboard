@@ -94,7 +94,10 @@ export default function BlogSection() {
  
       deleteBlog(id, {
         onSuccess: () => toast.success("Blog post deleted successfully"),
-        onError: () => toast.error("Failed to delete blog post"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to delete blog post";
+          toast.error(message);
+        },
       });
   
   };
@@ -110,7 +113,10 @@ export default function BlogSection() {
             toast.success("Blog post updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: () => toast.error("Failed to update blog post"),
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update blog post";
+            toast.error(message);
+          },
         },
       );
     }
@@ -130,7 +136,10 @@ export default function BlogSection() {
           toast.success("Blog post added successfully");
           setIsAddModalOpen(false);
         },
-        onError: () => toast.error("Failed to add blog post"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to add blog post";
+          toast.error(message);
+        },
       },
     );
   };

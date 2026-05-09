@@ -1,5 +1,5 @@
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState, useRef } from "react";
 import {
   Dialog,
@@ -14,6 +14,7 @@ import { useUpdateHeroSection } from "../hooks/useHeroSection";
 import { HeroSection } from "../types/heroSection.type";
 import { Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 
 interface HeroSectionEditModalProps {
   isOpen: boolean;
@@ -38,6 +39,12 @@ export default function HeroSectionEditModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       if (preview?.startsWith("blob:")) {
         URL.revokeObjectURL(preview);
@@ -73,10 +80,10 @@ export default function HeroSectionEditModal({
           toast.success("Hero section updated successfully");
           onClose();
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
+        onError: (error: unknown) => {
           const errorMessage =
-            error?.response?.data?.message || "Failed to update hero section";
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to update hero section";
           toast.error(errorMessage);
         },
       },

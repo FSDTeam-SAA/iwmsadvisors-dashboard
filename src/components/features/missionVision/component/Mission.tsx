@@ -48,7 +48,10 @@ export default function MissionSection() {
       onSuccess: () => {
         toast.success("Mission deleted successfully");
       },
-      onError: () => toast.error("Failed to delete mission"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete mission";
+        toast.error(message);
+      },
     });
   };
 

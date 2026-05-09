@@ -56,7 +56,10 @@ export default function AboutSection({
   const handleDelete = (id: string) => {
     deleteAbout(id, {
       onSuccess: () => toast.success("Section deleted successfully"),
-      onError: () => toast.error("Failed to delete section"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete section";
+        toast.error(message);
+      },
     });
   };
 
@@ -71,7 +74,10 @@ export default function AboutSection({
             toast.success("Section updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: () => toast.error("Failed to update section"),
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update section";
+            toast.error(message);
+          },
         },
       );
     }
@@ -93,7 +99,10 @@ export default function AboutSection({
           toast.success("Section added successfully");
           setIsAddModalOpen(false);
         },
-        onError: () => toast.error("Failed to add section"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to add section";
+          toast.error(message);
+        },
       },
     );
   };

@@ -16,6 +16,7 @@ import { Upload, X, Plus } from "lucide-react";
 import { useUpdateTransformSection } from "../hooks/useTransforming";
 import { TransformSection } from "../types/transforming.type";
 import { toast } from "sonner";
+import { validateImage } from "@/lib/utils";
 
 interface TransformEditModalProps {
   readonly isOpen: boolean;
@@ -75,6 +76,14 @@ export default function TransformEditModal({
     key: keyof typeof imageFiles,
   ) => {
     const file = e.target.files?.[0] || null;
+
+    if (file && !validateImage(file)) {
+      if (fileInputRefs[key].current) {
+        fileInputRefs[key].current.value = "";
+      }
+      return;
+    }
+
     setImageFiles((prev) => ({ ...prev, [key]: file }));
 
     if (previews[key]?.startsWith("blob:")) URL.revokeObjectURL(previews[key]!);
@@ -126,7 +135,11 @@ export default function TransformEditModal({
           toast.success("Transform section updated successfully");
           handleClose();
         },
-        onError: () => toast.error("Failed to update transform section"),
+        onError: (error: any) => {
+          const message =
+            error.response?.data?.message || "Failed to update transform section";
+          toast.error(message);
+        },
       },
     );
   };

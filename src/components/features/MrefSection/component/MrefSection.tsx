@@ -89,7 +89,10 @@ export default function MrefSection() {
   const onDelete = (id: string) => {
     deleteItem(id, {
       onSuccess: () => toast.success("Deleted successfully"),
-      onError: () => toast.error("Failed to delete"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete";
+        toast.error(message);
+      },
     });
   };
 
@@ -112,7 +115,10 @@ export default function MrefSection() {
           toast.success("MREF Section added successfully");
           setIsAddOpen(false);
         },
-        onError: () => toast.error("Failed to add MREF Section"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to add MREF Section";
+          toast.error(message);
+        },
       },
     );
   };
@@ -128,7 +134,10 @@ export default function MrefSection() {
           toast.success("MREF Section updated successfully");
           setIsEditOpen(false);
         },
-        onError: () => toast.error("Failed to update MREF Section"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to update MREF Section";
+          toast.error(message);
+        },
       },
     );
   };

@@ -1,5 +1,5 @@
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, X, Plus } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 import { useCreateMission } from "../hooks/useMissionVision";
 import { toast } from "sonner";
 
@@ -34,6 +35,12 @@ export default function MissionAddModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
       setImageFile(file);
@@ -72,7 +79,12 @@ export default function MissionAddModal({
           toast.success("Mission added successfully");
           handleClose();
         },
-        onError: () => toast.error("Failed to add mission"),
+        onError: (error: unknown) => {
+          const message =
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to add mission";
+          toast.error(message);
+        },
       },
     );
   };

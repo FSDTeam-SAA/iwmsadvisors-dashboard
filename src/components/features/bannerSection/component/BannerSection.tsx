@@ -49,7 +49,10 @@ export default function BannerSection({
   const handleDelete = (id: string) => {
     deleteBanner(id, {
       onSuccess: () => toast.success("Banner deleted successfully"),
-      onError: () => toast.error("Failed to delete banner"),
+      onError: (error: any) => {
+        const message = error.response?.data?.message || "Failed to delete banner";
+        toast.error(message);
+      },
     });
   };
 
@@ -64,7 +67,10 @@ export default function BannerSection({
             toast.success("Banner updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: () => toast.error("Failed to update banner"),
+          onError: (error: any) => {
+            const message = error.response?.data?.message || "Failed to update banner";
+            toast.error(message);
+          },
         },
       );
     }
@@ -85,7 +91,10 @@ export default function BannerSection({
           toast.success("Banner added successfully");
           setIsAddModalOpen(false);
         },
-        onError: () => toast.error("Failed to add banner"),
+        onError: (error: any) => {
+          const message = error.response?.data?.message || "Failed to add banner";
+          toast.error(message);
+        },
       },
     );
   };

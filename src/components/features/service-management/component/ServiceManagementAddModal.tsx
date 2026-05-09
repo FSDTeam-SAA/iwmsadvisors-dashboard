@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2, X, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 
 interface ServiceManagementAddModalProps {
   readonly isOpen: boolean;
@@ -232,6 +233,12 @@ export default function ServiceManagementAddModal({
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
+
+                if (file && !validateImage(file)) {
+                  e.target.value = "";
+                  return;
+                }
+
                 setImageFile(file);
                 if (imagePreview) URL.revokeObjectURL(imagePreview);
                 if (file) {

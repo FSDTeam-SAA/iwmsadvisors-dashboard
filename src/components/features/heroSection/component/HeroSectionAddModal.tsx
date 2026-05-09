@@ -1,5 +1,5 @@
 "use client";
-
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import {
   Dialog,
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useCreateHeroSection } from "../hooks/useHeroSection";
 import { X, Upload } from "lucide-react";
 import Image from "next/image";
+import { validateImage } from "@/lib/utils";
 
 interface HeroSectionAddModalProps {
   isOpen: boolean;
@@ -33,6 +34,12 @@ export default function HeroSectionAddModal({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    if (file && !validateImage(file)) {
+      e.target.value = "";
+      return;
+    }
+
     if (file) {
       setImageFile(file);
       setPreview(URL.createObjectURL(file));
@@ -73,10 +80,10 @@ export default function HeroSectionAddModal({
           onClose();
           // Reset form state is handled by unmounting or the parent component
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
+        onError: (error: unknown) => {
           const errorMessage =
-            error?.response?.data?.message || "Failed to create hero section";
+            (isAxiosError(error) && error.response?.data?.message) ||
+            "Failed to create hero section";
           toast.error(errorMessage);
         },
       },
