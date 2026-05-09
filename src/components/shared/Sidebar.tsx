@@ -20,6 +20,7 @@ import {
   FolderKanban,
   type LucideIcon,
   ScrollText,
+  UserRoundCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -217,6 +218,12 @@ const navigation: NavItem[] = [
     href: "/performance-reporting",
     icon: ClockPlus,
   },
+  {
+    name: "Subscriber Management",
+    href: "/subscriber-management",
+    icon: UserRoundCheck,
+  },
+
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
