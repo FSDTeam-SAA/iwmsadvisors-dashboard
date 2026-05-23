@@ -20,12 +20,13 @@ export const serviceManagementApi = {
     description: string;
     faq: { question: string; answer: string }[];
     imageFile?: File | null;
+    iconFile?: File | null;
+    order?: number;
   }): Promise<ServicePage> => {
     const formData = new FormData();
     formData.append("heading", data.heading);
     formData.append("title", data.title);
 
-    // Subtitles (array of strings)
     data.subtitles.forEach((subtitle) => {
       formData.append("subtitles[]", subtitle);
     });
@@ -33,10 +34,6 @@ export const serviceManagementApi = {
     formData.append("guideline", data.guideline);
     formData.append("description", data.description);
 
-    // FAQ (array of objects) - Backend likely expects indexed fields or stringified JSON
-    // Assuming stringified JSON based on complex object structure or standard array notation
-    // If backend expects specific format, adjust here.
-    // Using index notation common in PHP/Node: faq[0][question]
     data.faq.forEach((item, index) => {
       formData.append(`faq[${index}][question]`, item.question);
       formData.append(`faq[${index}][answer]`, item.answer);
@@ -46,10 +43,16 @@ export const serviceManagementApi = {
       formData.append("file", data.imageFile);
     }
 
+    if (data.iconFile) {
+      formData.append("icon", data.iconFile);
+    }
+
+    if (data.order !== undefined) {
+      formData.append("order", String(data.order));
+    }
+
     const response = await axiosInstance.post("/service-page", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   },
@@ -64,6 +67,8 @@ export const serviceManagementApi = {
       description: string;
       faq: { question: string; answer: string }[];
       imageFile?: File | null;
+      iconFile?: File | null;
+      order?: number;
     }>,
   ): Promise<ServicePage> => {
     const formData = new FormData();
@@ -90,10 +95,16 @@ export const serviceManagementApi = {
       formData.append("file", data.imageFile);
     }
 
+    if (data.iconFile) {
+      formData.append("icon", data.iconFile);
+    }
+
+    if (data.order !== undefined) {
+      formData.append("order", String(data.order));
+    }
+
     const response = await axiosInstance.put(`/service-page/${id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   },

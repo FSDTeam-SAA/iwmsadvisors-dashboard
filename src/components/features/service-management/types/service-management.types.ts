@@ -16,6 +16,8 @@ export interface ServicePageFaq {
 export interface ServicePage {
   _id: string;
   image: ServicePageImage;
+  icon?: ServicePageImage;
+  order?: number;
   heading: string;
   subtitles: string[];
   title: string;
