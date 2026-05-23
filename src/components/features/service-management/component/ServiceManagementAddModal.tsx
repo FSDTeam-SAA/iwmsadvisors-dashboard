@@ -26,6 +26,8 @@ interface ServiceManagementAddModalProps {
     description: string;
     faq: { question: string; answer: string }[];
     imageFile?: File | null;
+    iconFile?: File | null;
+    order?: number;
   }) => void;
 }
 
@@ -40,13 +42,19 @@ export default function ServiceManagementAddModal({
     guideline: "",
     description: "",
   });
+  const [order, setOrder] = useState<number>(0);
   const [subtitles, setSubtitles] = useState<string[]>([""]);
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([
     { question: "", answer: "" },
   ]);
+
+  // Main image
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  // Icon image
+  const [iconFile, setIconFile] = useState<File | null>(null);
+  const [iconPreview, setIconPreview] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -62,9 +70,7 @@ export default function ServiceManagementAddModal({
     setSubtitles(newSubtitles);
   };
 
-  const addSubtitle = () => {
-    setSubtitles([...subtitles, ""]);
-  };
+  const addSubtitle = () => setSubtitles([...subtitles, ""]);
 
   const removeSubtitle = (index: number) => {
     const newSubtitles = subtitles.filter((_, i) => i !== index);
@@ -82,9 +88,7 @@ export default function ServiceManagementAddModal({
     setFaqs(newFaqs);
   };
 
-  const addFaq = () => {
-    setFaqs([...faqs, { question: "", answer: "" }]);
-  };
+  const addFaq = () => setFaqs([...faqs, { question: "", answer: "" }]);
 
   const removeFaq = (index: number) => {
     const newFaqs = faqs.filter((_, i) => i !== index);
@@ -95,29 +99,29 @@ export default function ServiceManagementAddModal({
     e.preventDefault();
     onSave({
       ...formData,
+      order,
       subtitles: subtitles.filter((s) => s.trim() !== ""),
       faq: faqs.filter(
         (f) => f.question.trim() !== "" || f.answer.trim() !== "",
       ),
       imageFile,
+      iconFile,
     });
     handleClose();
   };
 
   const handleClose = () => {
-    setFormData({
-      heading: "",
-      title: "",
-      guideline: "",
-      description: "",
-    });
+    setFormData({ heading: "", title: "", guideline: "", description: "" });
+    setOrder(0);
     setSubtitles([""]);
     setFaqs([{ question: "", answer: "" }]);
+
     setImageFile(null);
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-      setImagePreview(null);
-    }
+    if (imagePreview) { URL.revokeObjectURL(imagePreview); setImagePreview(null); }
+
+    setIconFile(null);
+    if (iconPreview) { URL.revokeObjectURL(iconPreview); setIconPreview(null); }
+
     onClose();
   };
 
@@ -131,12 +135,26 @@ export default function ServiceManagementAddModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
+
+          {/* Order */}
+          <div className="space-y-2">
+            <Label htmlFor="add-order" className="text-sm font-bold text-gray-700">
+              Order
+            </Label>
+            <Input
+              id="add-order"
+              type="number"
+              min={0}
+              value={order}
+              onChange={(e) => setOrder(Number(e.target.value))}
+              className="w-full"
+              placeholder="e.g. 1"
+            />
+          </div>
+
           {/* Heading */}
           <div className="space-y-2">
-            <Label
-              htmlFor="heading"
-              className="text-sm font-bold text-gray-700"
-            >
+            <Label htmlFor="heading" className="text-sm font-bold text-gray-700">
               Heading *
             </Label>
             <Input
@@ -169,9 +187,7 @@ export default function ServiceManagementAddModal({
           {/* Subtitles */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <Label className="text-sm font-bold text-gray-700">
-                Subtitles
-              </Label>
+              <Label className="text-sm font-bold text-gray-700">Subtitles</Label>
               <Button
                 type="button"
                 variant="ghost"
@@ -206,10 +222,7 @@ export default function ServiceManagementAddModal({
 
           {/* Guideline */}
           <div className="space-y-2">
-            <Label
-              htmlFor="guideline"
-              className="text-sm font-bold text-gray-700"
-            >
+            <Label htmlFor="guideline" className="text-sm font-bold text-gray-700">
               Guideline *
             </Label>
             <Textarea
@@ -224,6 +237,7 @@ export default function ServiceManagementAddModal({
             />
           </div>
 
+          {/* Main Image */}
           <div className="space-y-4">
             <Label className="text-sm font-bold text-gray-700">Image</Label>
             <input
@@ -233,20 +247,10 @@ export default function ServiceManagementAddModal({
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0] ?? null;
-
-                if (file && !validateImage(file)) {
-                  e.target.value = "";
-                  return;
-                }
-
+                if (file && !validateImage(file)) { e.target.value = ""; return; }
                 setImageFile(file);
                 if (imagePreview) URL.revokeObjectURL(imagePreview);
-                if (file) {
-                  const url = URL.createObjectURL(file);
-                  setImagePreview(url);
-                } else {
-                  setImagePreview(null);
-                }
+                setImagePreview(file ? URL.createObjectURL(file) : null);
               }}
             />
             <div className="flex flex-col items-center gap-4 text-center">
@@ -257,21 +261,14 @@ export default function ServiceManagementAddModal({
               >
                 {imagePreview ? (
                   <div className="relative w-full h-full rounded-lg overflow-hidden bg-gray-100">
-                    <Image
-                      src={imagePreview}
-                      alt="Preview"
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={imagePreview} alt="Preview" fill className="object-cover" />
                     <button
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         setImageFile(null);
-                        if (imagePreview) {
-                          URL.revokeObjectURL(imagePreview);
-                        }
+                        if (imagePreview) URL.revokeObjectURL(imagePreview);
                         setImagePreview(null);
                       }}
                       className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10 shadow-sm"
@@ -282,36 +279,83 @@ export default function ServiceManagementAddModal({
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full w-full">
                     <Plus className="w-8 h-8 text-gray-400 mb-2" />
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider text-center px-4">
-                      Choose Image
-                    </p>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Choose Image</p>
                   </div>
                 )}
               </label>
-
               {imagePreview && (
-                <div className="flex flex-col items-center gap-2">
-                  <label
-                    htmlFor="service-add-image-input"
-                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
-                  >
-                    <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    Change Image
-                  </label>
-                  <p className="text-xs text-gray-500">
-                    Click to select a different image
-                  </p>
-                </div>
+                <label
+                  htmlFor="service-add-image-input"
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
+                >
+                  <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Change Image
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Icon Image */}
+          <div className="space-y-4">
+            <Label className="text-sm font-bold text-gray-700">Icon Image</Label>
+            <input
+              type="file"
+              id="service-add-icon-input"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                if (file && !validateImage(file)) { e.target.value = ""; return; }
+                setIconFile(file);
+                if (iconPreview) URL.revokeObjectURL(iconPreview);
+                setIconPreview(file ? URL.createObjectURL(file) : null);
+              }}
+            />
+            <div className="flex flex-col items-center gap-4 text-center">
+              <label
+                htmlFor="service-add-icon-input"
+                className="relative group w-32 h-32 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-100/50 transition-colors"
+                aria-label="Choose Icon Image"
+              >
+                {iconPreview ? (
+                  <div className="relative w-full h-full rounded-lg overflow-hidden bg-gray-100">
+                    <Image src={iconPreview} alt="Icon Preview" fill className="object-cover" />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIconFile(null);
+                        if (iconPreview) URL.revokeObjectURL(iconPreview);
+                        setIconPreview(null);
+                      }}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10 shadow-sm"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full w-full">
+                    <Plus className="w-6 h-6 text-gray-400 mb-1" />
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider text-center">Icon</p>
+                  </div>
+                )}
+              </label>
+              {iconPreview && (
+                <label
+                  htmlFor="service-add-icon-input"
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-[#0057B8] hover:bg-gray-50 hover:border-[#0057B8]/30 transition-all cursor-pointer group"
+                >
+                  <Upload className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Change Icon
+                </label>
               )}
             </div>
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <Label
-              htmlFor="description"
-              className="text-sm font-bold text-gray-700"
-            >
+            <Label htmlFor="description" className="text-sm font-bold text-gray-700">
               Description *
             </Label>
             <Textarea
@@ -359,27 +403,19 @@ export default function ServiceManagementAddModal({
                   )}
                 </div>
                 <div>
-                  <Label className="text-xs text-gray-500">
-                    Question {index + 1}
-                  </Label>
+                  <Label className="text-xs text-gray-500">Question {index + 1}</Label>
                   <Input
                     value={faq.question}
-                    onChange={(e) =>
-                      handleFaqChange(index, "question", e.target.value)
-                    }
+                    onChange={(e) => handleFaqChange(index, "question", e.target.value)}
                     placeholder="Enter question"
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-gray-500">
-                    Answer {index + 1}
-                  </Label>
+                  <Label className="text-xs text-gray-500">Answer {index + 1}</Label>
                   <Textarea
                     value={faq.answer}
-                    onChange={(e) =>
-                      handleFaqChange(index, "answer", e.target.value)
-                    }
+                    onChange={(e) => handleFaqChange(index, "answer", e.target.value)}
                     placeholder="Enter answer"
                     rows={2}
                     className="mt-1 resize-none"

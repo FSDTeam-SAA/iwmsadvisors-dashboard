@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { ServicePage } from "../types/service-management.types";
 import {
@@ -92,8 +93,8 @@ export default function ServiceManagement() {
   const handleDelete = (id: string) => {
     deleteService(id, {
       onSuccess: () => toast.success("Service page deleted successfully"),
-      onError: (error: any) => {
-        const message = error.response?.data?.message || "Failed to delete service page";
+      onError: (error: unknown) => {
+        const message = (isAxiosError(error) && error.response?.data?.message) || "Failed to delete service page";
         toast.error(message);
       },
     });
@@ -104,6 +105,8 @@ export default function ServiceManagement() {
       subtitles?: string[];
       faq?: { question: string; answer: string }[];
       imageFile?: File | null;
+      iconFile?: File | null;
+      order?: number;
     },
   ) => {
     if (selectedService) {
@@ -114,8 +117,8 @@ export default function ServiceManagement() {
             toast.success("Service page updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: (error: any) => {
-            const message = error.response?.data?.message || "Failed to update service page";
+          onError: (error: unknown) => {
+            const message = (isAxiosError(error) && error.response?.data?.message) || "Failed to update service page";
             toast.error(message);
           },
         },
@@ -131,14 +134,16 @@ export default function ServiceManagement() {
     description: string;
     faq: { question: string; answer: string }[];
     imageFile?: File | null;
+    iconFile?: File | null;
+    order?: number;
   }) => {
     createService(newData, {
       onSuccess: () => {
         toast.success("Service page added successfully");
         setIsAddModalOpen(false);
       },
-      onError: (error: any) => {
-        const message = error.response?.data?.message || "Failed to add service page";
+      onError: (error: unknown) => {
+        const message = (isAxiosError(error) && error.response?.data?.message) || "Failed to add service page";
         toast.error(message);
       },
     });
@@ -184,6 +189,12 @@ export default function ServiceManagement() {
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
+                  Order
+                </TableHead>
+                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                  Icon
+                </TableHead>
+                <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Image
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
@@ -207,6 +218,32 @@ export default function ServiceManagement() {
                     key={service._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
+                    {/* Order */}
+                    <TableCell className="py-4 text-center">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-[#0057B8] font-bold text-sm">
+                        {service.order ?? "-"}
+                      </span>
+                    </TableCell>
+
+                    {/* Icon */}
+                    <TableCell className="py-4 text-center">
+                      <div className="relative w-10 h-10 mx-auto rounded-lg overflow-hidden bg-gray-100">
+                        {service.icon?.url ? (
+                          <Image
+                            src={service.icon.url}
+                            alt={`${service.title} icon`}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                            N/A
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+
+                    {/* Image */}
                     <TableCell className="py-4 text-center">
                       <div className="relative w-12 h-12 mx-auto rounded-lg overflow-hidden bg-gray-100">
                         {service.image?.url ? (
@@ -223,6 +260,7 @@ export default function ServiceManagement() {
                         )}
                       </div>
                     </TableCell>
+
                     <TableCell className="py-4 text-center text-gray-700 font-medium">
                       {service.title}
                     </TableCell>
