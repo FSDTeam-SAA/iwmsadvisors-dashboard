@@ -24,7 +24,7 @@ export default function PerformanceReporting() {
           <h1 className="text-2xl font-bold text-gray-900">Performance & Reporting</h1>
           <p className="text-gray-500 mt-1">Detailed analysis of contact trends and service performance.</p>
         </div>
-        
+
         <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
           <Calendar className="w-4 h-4 text-gray-400" />
           <span className="text-sm font-medium text-gray-600">

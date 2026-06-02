@@ -72,13 +72,13 @@ export default function PerformanceCharts({ year }: PerformanceChartsProps) {
   }
 
   const yearData = overviewData.data[year];
-  
+
   // Transform data for trend chart
   const trendData = yearData
     ? Object.entries(yearData).map(([month, stats]) => ({
-        name: MONTH_NAMES[month] || month,
-        contacts: stats.total,
-      }))
+      name: MONTH_NAMES[month] || month,
+      contacts: stats.total,
+    }))
     : [];
 
   // Transform data for service distribution (current year total)
@@ -91,7 +91,18 @@ export default function PerformanceCharts({ year }: PerformanceChartsProps) {
     });
   }
 
-  const distributionData = Object.entries(serviceAggregates).map(([name, value], index) => ({
+  const sortedServices = Object.entries(serviceAggregates).sort((a, b) => b[1] - a[1]);
+  const topServices = sortedServices.slice(0, 5);
+  const otherServices = sortedServices.slice(5);
+  
+  if (otherServices.length > 0) {
+    const othersCount = otherServices.reduce((sum, [, count]) => sum + count, 0);
+    if (othersCount > 0) {
+      topServices.push(["Others", othersCount]);
+    }
+  }
+
+  const distributionData = topServices.map(([name, value], index) => ({
     name,
     value,
     color: COLORS[index % COLORS.length],
@@ -110,18 +121,18 @@ export default function PerformanceCharts({ year }: PerformanceChartsProps) {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid vertical={false} stroke="#F3F4F6" />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: "#9CA3AF" }}
                 />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 12, fill: "#9CA3AF" }}
                 />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   cursor={{ stroke: '#008AFF', strokeWidth: 1 }}
                 />
@@ -151,17 +162,17 @@ export default function PerformanceCharts({ year }: PerformanceChartsProps) {
               <BarChart data={distributionData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                 <CartesianGrid horizontal={false} stroke="#F3F4F6" />
                 <XAxis type="number" hide />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
-                  axisLine={false} 
-                  tickLine={false} 
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  axisLine={false}
+                  tickLine={false}
                   tick={{ fontSize: 11, fill: "#4B5563" }}
-                  width={100}
+                  width={130}
                 />
-                <Tooltip 
-                   cursor={{ fill: '#F9FAFB' }}
-                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                <Tooltip
+                  cursor={{ fill: '#F9FAFB' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
                   {distributionData.map((entry, index) => (

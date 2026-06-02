@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { useOverview } from "../../hooks/useOverView";
 
@@ -45,17 +45,34 @@ export default function TopPerformingServices({
 
   // Get data for selected year
   const yearData = overviewData.data[year];
-  const currentMonthData = yearData?.["jan"];
 
-  const chartData = currentMonthData
-    ? Object.entries(currentMonthData.percentages).map(
-        ([name, value], index) => ({
-          name,
-          value,
-          color: COLORS[index % COLORS.length],
-        }),
-      )
-    : [];
+  // Aggregate counts for the whole year
+  const aggregatedCounts: Record<string, number> = {};
+  let totalBookings = 0;
+
+  if (yearData) {
+    Object.values(yearData).forEach((monthData) => {
+      const counts = monthData?.counts;
+      if (counts) {
+        Object.entries(counts).forEach(([serviceName, count]) => {
+          aggregatedCounts[serviceName] = (aggregatedCounts[serviceName] || 0) + count;
+          totalBookings += count;
+        });
+      }
+    });
+  }
+
+  const chartData = Object.entries(aggregatedCounts)
+    .sort((a, b) => b[1] - a[1]) // Sort descending by count
+    .map(([name, count], index) => {
+      const value = totalBookings > 0 ? Number(((count / totalBookings) * 100).toFixed(1)) : 0;
+      return {
+        name,
+        value,
+        color: COLORS[index % COLORS.length],
+      };
+    })
+    .filter(item => item.value > 0); // Only include services with bookings
 
   return (
     <Card className="border shadow-sm rounded-xl overflow-hidden">
@@ -68,14 +85,15 @@ export default function TopPerformingServices({
             See which services are booked the most by users in {year}.
           </p>
         </div>
-        {/* <button className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-lg bg-white hover:bg-gray-50 transition-colors text-gray-700">
-          Monthly <ChevronDown className="w-4 h-4 text-gray-500" />
-        </button> */}
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="">
         <div className="h-[300px] w-full relative flex flex-col items-center">
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
+              <Tooltip 
+                formatter={(value: number, name: string) => [`${value}%`, name]}
+                contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+              />
               <Pie
                 data={chartData}
                 cx="50%"

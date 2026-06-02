@@ -216,10 +216,10 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
 
           <div className="space-y-2">
             <Label htmlFor="overview" className="text-sm font-bold text-gray-700">Overview</Label>
-            <Textarea id="overview" rows={4} value={overview} onChange={(e) => setOverview(e.target.value)} className="w-full resize-none" placeholder="Enter overview" />
+            <Textarea id="overview" rows={8} value={overview} onChange={(e) => setOverview(e.target.value)} className="w-full resize-none" placeholder="Enter overview" />
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label className="text-sm font-bold text-gray-700">Subtitles</Label>
             <div className="flex gap-2">
               <Input
@@ -246,7 +246,7 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
                 </span>
               ))}
             </div>
-          </div>
+          </div> */}
 
           <div className="space-y-4">
             <Label className="text-sm font-bold text-gray-700">Key Capabilities</Label>

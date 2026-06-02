@@ -254,7 +254,7 @@ export default function MrefSectionEditModal({
             </Label>
             <Textarea
               id="overview"
-              rows={4}
+              rows={8}
               value={overview}
               onChange={(e) => setOverview(e.target.value)}
               className="w-full resize-none"
@@ -262,7 +262,7 @@ export default function MrefSectionEditModal({
             />
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label className="text-sm font-bold text-gray-700">Subtitles</Label>
             <div className="flex gap-2">
               <Input
@@ -302,7 +302,7 @@ export default function MrefSectionEditModal({
                 </span>
               ))}
             </div>
-          </div>
+          </div> */}
 
           <div className="space-y-4">
             <Label className="text-sm font-bold text-gray-700">

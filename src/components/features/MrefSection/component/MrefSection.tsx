@@ -184,9 +184,9 @@ export default function MrefSection() {
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Title
                 </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                {/* <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Subtitles
-                </TableHead>
+                </TableHead> */}
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Capabilities
                 </TableHead>
@@ -205,11 +205,11 @@ export default function MrefSection() {
                     <TableCell className="py-4 text-center text-gray-700 font-medium">
                       {item.title}
                     </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600">
+                    {/* <TableCell className="py-4 text-center text-gray-600">
                       {item.subtitles?.length
                         ? item.subtitles.join(", ")
                         : "N/A"}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className="py-4 text-center text-gray-600">
                       {item.keyCapabilities?.length ?? 0}
                     </TableCell>
