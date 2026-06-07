@@ -89,8 +89,9 @@ export default function MrefSection() {
   const onDelete = (id: string) => {
     deleteItem(id, {
       onSuccess: () => toast.success("Deleted successfully"),
-      onError: (error: any) => {
-        const message = error.response?.data?.message || "Failed to delete";
+      onError: (error: unknown) => {
+        const err = error as { response?: { data?: { message?: string } } };
+        const message = err.response?.data?.message || "Failed to delete";
         toast.error(message);
       },
     });
@@ -100,8 +101,10 @@ export default function MrefSection() {
 
   const handleCreate = (data: {
     title: string;
+    subTitle?: string;
     subtitles: string[];
     overview: string;
+    overviewTitle?: string;
     keyCapabilities: { title: string; subtitles: string[] }[];
     imageFile?: File | null;
   }) => {
@@ -115,8 +118,9 @@ export default function MrefSection() {
           toast.success("MREF Section added successfully");
           setIsAddOpen(false);
         },
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to add MREF Section";
+        onError: (error: unknown) => {
+          const err = error as { response?: { data?: { message?: string } } };
+          const message = err.response?.data?.message || "Failed to add MREF Section";
           toast.error(message);
         },
       },
@@ -134,8 +138,9 @@ export default function MrefSection() {
           toast.success("MREF Section updated successfully");
           setIsEditOpen(false);
         },
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to update MREF Section";
+        onError: (error: unknown) => {
+          const err = error as { response?: { data?: { message?: string } } };
+          const message = err.response?.data?.message || "Failed to update MREF Section";
           toast.error(message);
         },
       },

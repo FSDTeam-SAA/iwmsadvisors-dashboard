@@ -18,8 +18,10 @@ interface Props {
   readonly onClose: () => void;
   readonly onSave: (payload: {
     title: string;
+    subTitle?: string;
     subtitles: string[];
     overview: string;
+    overviewTitle?: string;
     keyCapabilities: Capability[];
     imageFile?: File | null;
   }) => void;
@@ -27,7 +29,9 @@ interface Props {
 
 export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) {
   const [title, setTitle] = useState("");
+  const [subTitle, setSubTitle] = useState("");
   const [overview, setOverview] = useState("");
+  const [overviewTitle, setOverviewTitle] = useState("");
   const [subtitles, setSubtitles] = useState<string[]>([]);
   const [subtitleInput, setSubtitleInput] = useState("");
 
@@ -84,13 +88,15 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, overview, subtitles, keyCapabilities, imageFile });
+    onSave({ title, subTitle, overview, overviewTitle, subtitles, keyCapabilities, imageFile });
     resetAll();
   };
 
   const resetAll = () => {
     setTitle("");
+    setSubTitle("");
     setOverview("");
+    setOverviewTitle("");
     setSubtitles([]);
     setSubtitleInput("");
     setKeyCapabilities([]);
@@ -120,6 +126,22 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
           <div className="space-y-2">
             <Label htmlFor="title" className="text-sm font-bold text-gray-700">Title *</Label>
             <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter title" />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="subTitle" className="text-sm font-bold text-gray-700">Subtitle</Label>
+            <Input id="subTitle" value={subTitle} onChange={(e) => setSubTitle(e.target.value)} placeholder="Enter subtitle" />
+          </div>
+
+
+          <div className="space-y-2">
+            <Label htmlFor="overview" className="text-sm font-bold text-gray-700">Overview</Label>
+            <Textarea id="overview" rows={8} value={overview} onChange={(e) => setOverview(e.target.value)} className="w-full resize-none" placeholder="Enter overview" />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="overviewTitle" className="text-sm font-bold text-gray-700">Overview Title</Label>
+            <Input id="overviewTitle" value={overviewTitle} onChange={(e) => setOverviewTitle(e.target.value)} placeholder="Enter overview title" />
           </div>
 
           <div className="space-y-2">
@@ -214,10 +236,6 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="overview" className="text-sm font-bold text-gray-700">Overview</Label>
-            <Textarea id="overview" rows={8} value={overview} onChange={(e) => setOverview(e.target.value)} className="w-full resize-none" placeholder="Enter overview" />
-          </div>
 
           {/* <div className="space-y-2">
             <Label className="text-sm font-bold text-gray-700">Subtitles</Label>

@@ -37,7 +37,9 @@ export default function MrefSectionEditModal({
   const initial = useMemo(
     () => ({
       title: section?.title ?? "",
+      subTitle: section?.subTitle ?? "",
       overview: section?.overview ?? "",
+      overviewTitle: section?.overviewTitle ?? "",
       subtitles: section?.subtitles ?? [],
       keyCapabilities: section?.keyCapabilities ?? [],
     }),
@@ -45,7 +47,9 @@ export default function MrefSectionEditModal({
   );
 
   const [title, setTitle] = useState(initial.title);
+  const [subTitle, setSubTitle] = useState(initial.subTitle);
   const [overview, setOverview] = useState(initial.overview);
+  const [overviewTitle, setOverviewTitle] = useState(initial.overviewTitle);
   const [subtitles, setSubtitles] = useState<string[]>(initial.subtitles);
   const [subtitleInput, setSubtitleInput] = useState("");
 
@@ -112,7 +116,9 @@ export default function MrefSectionEditModal({
     e.preventDefault();
     onSave({
       title,
+      subTitle,
       overview,
+      overviewTitle,
       subtitles,
       keyCapabilities: caps,
       ...(imageFile ? { imageFile } : {}),
@@ -140,6 +146,55 @@ export default function MrefSectionEditModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter title"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="subTitle" className="text-sm font-bold text-gray-700">
+              Subtitle
+            </Label>
+            <Input
+              id="subTitle"
+              value={subTitle}
+              onChange={(e) => setSubTitle(e.target.value)}
+              placeholder="Enter subtitle"
+            />
+          </div>
+
+
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="overview"
+              className="text-sm font-bold text-gray-700"
+            >
+              Overview
+            </Label>
+            <Textarea
+              id="overview"
+              rows={8}
+              value={overview}
+              onChange={(e) => setOverview(e.target.value)}
+              className="w-full resize-none"
+              placeholder="Enter overview"
+            />
+          </div>
+
+
+
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="overviewTitle"
+              className="text-sm font-bold text-gray-700"
+            >
+              Overview Title
+            </Label>
+            <Input
+              id="overviewTitle"
+              value={overviewTitle}
+              onChange={(e) => setOverviewTitle(e.target.value)}
+              placeholder="Enter overview title"
             />
           </div>
 
@@ -243,23 +298,6 @@ export default function MrefSectionEditModal({
                 </Button>
               </div>
             )}
-          </div>
-
-          <div className="space-y-2">
-            <Label
-              htmlFor="overview"
-              className="text-sm font-bold text-gray-700"
-            >
-              Overview
-            </Label>
-            <Textarea
-              id="overview"
-              rows={8}
-              value={overview}
-              onChange={(e) => setOverview(e.target.value)}
-              className="w-full resize-none"
-              placeholder="Enter overview"
-            />
           </div>
 
           {/* <div className="space-y-2">

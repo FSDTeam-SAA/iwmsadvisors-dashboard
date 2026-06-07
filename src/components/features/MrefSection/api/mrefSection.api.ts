@@ -21,7 +21,9 @@ export const mrefSectionApi = {
     if ("imageFile" in data && data.imageFile) {
       const form = new FormData();
       form.append("title", data.title);
+      if (data.subTitle !== undefined) form.append("subTitle", data.subTitle);
       form.append("overview", data.overview ?? "");
+      if (data.overviewTitle !== undefined) form.append("overviewTitle", data.overviewTitle);
       const subtitles = data.subtitles ?? [];
       subtitles.forEach((subtitle) => {
         form.append("subtitles", subtitle);
@@ -53,7 +55,9 @@ export const mrefSectionApi = {
     if ("imageFile" in data && data.imageFile) {
       const form = new FormData();
       if (data.title !== undefined) form.append("title", data.title);
+      if (data.subTitle !== undefined) form.append("subTitle", data.subTitle);
       if (data.overview !== undefined) form.append("overview", data.overview);
+      if (data.overviewTitle !== undefined) form.append("overviewTitle", data.overviewTitle);
       if (data.subtitles) {
         data.subtitles.forEach((subtitle) => {
           form.append("subtitles", subtitle);

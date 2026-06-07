@@ -16,8 +16,10 @@ export interface MrefSection {
   _id: string;
   image?: MrefImage;
   title: string;
+  subTitle?: string;
   subtitles: string[];
   overview: string;
+  overviewTitle?: string;
   keyCapabilities: MrefCapability[];
   createdAt: string;
   updatedAt: string;

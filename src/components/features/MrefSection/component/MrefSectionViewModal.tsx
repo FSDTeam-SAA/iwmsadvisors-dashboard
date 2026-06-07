@@ -33,6 +33,9 @@ export default function MrefSectionViewModal({ isOpen, onClose, section }: Props
 
           <div className="space-y-2">
             <h2 className="text-3xl font-bold text-gray-900">{section.title}</h2>
+            {section.subTitle && (
+              <p className="text-lg text-gray-600 font-medium">{section.subTitle}</p>
+            )}
             <p className="text-sm text-gray-500">Created {formattedDate}</p>
           </div>
 
@@ -53,6 +56,9 @@ export default function MrefSectionViewModal({ isOpen, onClose, section }: Props
             <div className="space-y-3">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Overview</p>
               <div className="bg-[#F8FAFC] rounded-2xl p-6">
+                {section.overviewTitle && (
+                  <h4 className="text-base font-bold text-gray-800 mb-2">{section.overviewTitle}</h4>
+                )}
                 <p className="text-sm text-gray-600 leading-relaxed font-medium">{section.overview}</p>
               </div>
             </div>
