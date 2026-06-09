@@ -27,11 +27,17 @@ export default function ContactServicesEditModal({
   titleData,
 }: ContactServicesEditModalProps) {
   const [title, setTitle] = useState("");
+  const [order, setOrder] = useState<number>(1);
   const { mutate: updateTitle, isPending } = useUpdateContactServicesTitle();
 
   useEffect(() => {
-    if (titleData && titleData.title !== title) {
-      setTitle(titleData.title);
+    if (titleData) {
+      if (titleData.title !== title) {
+        setTitle(titleData.title);
+      }
+      if (titleData.order !== undefined && titleData.order !== order) {
+        setOrder(titleData.order);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [titleData]);
@@ -49,8 +55,10 @@ export default function ContactServicesEditModal({
       return;
     }
 
+    console.log("Contact Services Edit form submit data:", { title, order });
+
     updateTitle(
-      { id: titleData._id, data: { title } },
+      { id: titleData._id, data: { title, order } },
       {
         onSuccess: () => {
           toast.success("Title updated successfully");
@@ -75,6 +83,24 @@ export default function ContactServicesEditModal({
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="space-y-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="edit-order"
+                className="text-sm font-medium text-gray-700"
+              >
+                Order
+              </label>
+              <Input
+                id="edit-order"
+                type="number"
+                min={1}
+                value={order}
+                onChange={(e) => setOrder(Number(e.target.value))}
+                placeholder="e.g. 1"
+              />
+              <p className="text-xs text-gray-500">Lower numbers appear first.</p>
+            </div>
+
             <div className="space-y-2">
               <label
                 htmlFor="edit-title"

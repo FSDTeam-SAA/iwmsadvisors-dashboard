@@ -105,9 +105,13 @@ export default function ContactServices() {
           <Table>
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
+                <TableHead className="py-4 text-gray-600 font-bold text-center">
+                  Order
+                </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-left pl-8">
                   Title
                 </TableHead>
+
                 <TableHead className="py-4 text-gray-600 font-bold text-left">
                   Created At
                 </TableHead>
@@ -123,9 +127,13 @@ export default function ContactServices() {
                     key={item._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
+                    <TableCell className="py-4 text-center text-gray-700 font-medium">
+                      {item.order ?? 1}
+                    </TableCell>
                     <TableCell className="py-4 text-left text-gray-700 font-medium pl-8">
                       {item.title}
                     </TableCell>
+
                     <TableCell className="py-4 text-left text-gray-500 text-sm">
                       {new Date(item.createdAt).toLocaleDateString()}
                     </TableCell>
@@ -152,7 +160,7 @@ export default function ContactServices() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={3}
+                    colSpan={4}
                     className="py-16 text-center text-gray-400 italic bg-white"
                   >
                     {isLoading ? "Loading..." : "No service titles found."}

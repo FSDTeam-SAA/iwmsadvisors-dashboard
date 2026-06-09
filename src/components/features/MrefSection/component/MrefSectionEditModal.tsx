@@ -24,7 +24,7 @@ interface Props {
   readonly onClose: () => void;
   readonly section: MrefSection | null;
   readonly onSave: (
-    payload: Partial<MrefSection> & { imageFile?: File },
+    payload: Partial<MrefSection> & { imageFile?: File; order?: number },
   ) => void;
 }
 
@@ -38,6 +38,7 @@ export default function MrefSectionEditModal({
     () => ({
       title: section?.title ?? "",
       subTitle: section?.subTitle ?? "",
+      order: section?.order ?? 1,
       overview: section?.overview ?? "",
       overviewTitle: section?.overviewTitle ?? "",
       subtitles: section?.subtitles ?? [],
@@ -48,6 +49,7 @@ export default function MrefSectionEditModal({
 
   const [title, setTitle] = useState(initial.title);
   const [subTitle, setSubTitle] = useState(initial.subTitle);
+  const [order, setOrder] = useState<number>(initial.order);
   const [overview, setOverview] = useState(initial.overview);
   const [overviewTitle, setOverviewTitle] = useState(initial.overviewTitle);
   const [subtitles, setSubtitles] = useState<string[]>(initial.subtitles);
@@ -114,9 +116,20 @@ export default function MrefSectionEditModal({
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Edit modal submit data:', {
+      title,
+      subTitle,
+      order,
+      overview,
+      overviewTitle,
+      subtitles,
+      keyCapabilities: caps,
+      ...(imageFile ? { imageFile } : {}),
+    });
     onSave({
       title,
       subTitle,
+      order,
       overview,
       overviewTitle,
       subtitles,
@@ -137,16 +150,20 @@ export default function MrefSectionEditModal({
 
         <form onSubmit={submit} className="p-8 space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm font-bold text-gray-700">
-              Title *
-            </Label>
+            <Label htmlFor="order" className="text-sm font-bold text-gray-700">Order</Label>
             <Input
-              id="title"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter title"
+              id="order"
+              type="number"
+              min={1}
+              value={order}
+              onChange={(e) => setOrder(Number(e.target.value))}
+              placeholder="e.g. 1"
             />
+            <p className="text-xs text-gray-500">Lower numbers appear first.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="title" className="text-sm font-bold text-gray-700">Title *</Label>
+            <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter title" />
           </div>
 
           <div className="space-y-2">
@@ -179,9 +196,6 @@ export default function MrefSectionEditModal({
               placeholder="Enter overview"
             />
           </div>
-
-
-
 
           <div className="space-y-2">
             <Label

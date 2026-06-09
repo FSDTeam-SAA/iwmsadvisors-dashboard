@@ -3,6 +3,7 @@
 export interface ContactServiceTitle {
   _id: string;
   title: string;
+  order?: number;
   createdAt: string;
 }
 
@@ -13,10 +14,12 @@ export interface ContactServicesResponse {
 
 export interface CreateTitleRequest {
   title: string;
+  order?: number;
 }
 
 export interface UpdateTitleRequest {
   title: string;
+  order?: number;
 }
 
 export interface BaseResponse {

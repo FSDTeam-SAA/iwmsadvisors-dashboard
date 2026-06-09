@@ -17,6 +17,7 @@ export interface MrefSection {
   image?: MrefImage;
   title: string;
   subTitle?: string;
+  order?: number;
   subtitles: string[];
   overview: string;
   overviewTitle?: string;
