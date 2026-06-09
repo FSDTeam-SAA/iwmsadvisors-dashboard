@@ -148,19 +148,18 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
 
           <div className="space-y-2">
             <Label htmlFor="subTitle" className="text-sm font-bold text-gray-700">Subtitle</Label>
-            <Input id="subTitle" value={subTitle} onChange={(e) => setSubTitle(e.target.value)} placeholder="Enter subtitle" />
+            <Textarea rows={6} id="subTitle" value={subTitle} onChange={(e) => setSubTitle(e.target.value)} placeholder="Enter subtitle" />
           </div>
 
 
-
           <div className="space-y-2">
-            <Label htmlFor="overview" className="text-sm font-bold text-gray-700">Overview</Label>
-            <Textarea id="overview" rows={8} value={overview} onChange={(e) => setOverview(e.target.value)} className="w-full resize-none" placeholder="Enter overview" />
+            <Label htmlFor="overview" className="text-sm font-bold text-gray-700">Overview Title</Label>
+            <Input id="overview" value={overview} onChange={(e) => setOverview(e.target.value)} className="w-full resize-none" placeholder="Enter overview title" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="overviewTitle" className="text-sm font-bold text-gray-700">Overview Title</Label>
-            <Input id="overviewTitle" value={overviewTitle} onChange={(e) => setOverviewTitle(e.target.value)} placeholder="Enter overview title" />
+            <Label htmlFor="overviewTitle" className="text-sm font-bold text-gray-700">Overview Subtitle</Label>
+            <Textarea id="overviewTitle" rows={6} value={overviewTitle} onChange={(e) => setOverviewTitle(e.target.value)} placeholder="Enter overview sub title" />
           </div>
 
           <div className="space-y-2">
