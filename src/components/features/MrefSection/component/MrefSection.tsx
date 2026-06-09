@@ -31,6 +31,17 @@ import {
   useUpdateMrefSection,
 } from "../hooks/useMrefSection";
 
+type MrefSectionFormData = {
+  title: string;
+  subTitle?: string;
+  order?: number;
+  subtitles: string[];
+  overview: string;
+  overviewTitle?: string;
+  keyCapabilities: { title: string; subtitles: string[] }[];
+  imageFile?: File | null;
+};
+
 export default function MrefSection() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -45,7 +56,13 @@ export default function MrefSection() {
   const { mutate: updateItem } = useUpdateMrefSection();
   const { mutate: deleteItem } = useDeleteMrefSection();
 
-  const sections = response?.data ?? [];
+  const sections = response?.data
+    ? [...response.data].sort((a, b) => {
+        const orderA = a.order === 0 || a.order === undefined ? 9999 : a.order;
+        const orderB = b.order === 0 || b.order === undefined ? 9999 : b.order;
+        return orderA - orderB;
+      })
+    : [];
   const pagination = response?.pagination;
 
   const handlePageChange = (newPage: number) => {
@@ -99,17 +116,14 @@ export default function MrefSection() {
 
   const onAdd = () => setIsAddOpen(true);
 
-  const handleCreate = (data: {
-    title: string;
-    subTitle?: string;
-    subtitles: string[];
-    overview: string;
-    overviewTitle?: string;
-    keyCapabilities: { title: string; subtitles: string[] }[];
-    imageFile?: File | null;
-  }) => {
+  const handleCreate = (data: MrefSectionFormData) => {
+    console.log("MREF Section add form data:", data);
+
     createItem(
-      data as unknown as Omit<
+      {
+        ...data,
+        order: data.order,
+      } as unknown as Omit<
         MrefSectionType,
         "_id" | "createdAt" | "updatedAt" | "__v"
       >,
@@ -128,11 +142,13 @@ export default function MrefSection() {
   };
 
   const handleSave = (
-    data: Partial<MrefSectionType> & { imageFile?: File },
+    data: Partial<MrefSectionType> & { imageFile?: File; order?: number },
   ) => {
     if (!selected) return;
+    console.log("MREF Section edit form data:", data);
+
     updateItem(
-      { id: selected._id, data },
+      { id: selected._id, data: { ...data, order: data.order } },
       {
         onSuccess: () => {
           toast.success("MREF Section updated successfully");
@@ -187,8 +203,13 @@ export default function MrefSection() {
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
+                  Order
+                </TableHead>
+
+                <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Title
                 </TableHead>
+
                 {/* <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Subtitles
                 </TableHead> */}
@@ -207,9 +228,13 @@ export default function MrefSection() {
                     key={item._id}
                     className="border-b last:border-0 hover:bg-gray-50 transition-colors"
                   >
+                    <TableCell className="py-4 text-center text-gray-600">
+                      {item.order ?? "N/A"}
+                    </TableCell>
                     <TableCell className="py-4 text-center text-gray-700 font-medium">
                       {item.title}
                     </TableCell>
+
                     {/* <TableCell className="py-4 text-center text-gray-600">
                       {item.subtitles?.length
                         ? item.subtitles.join(", ")

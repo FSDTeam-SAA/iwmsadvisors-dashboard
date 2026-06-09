@@ -24,10 +24,12 @@ export default function ContactServicesAddModal({
   onClose,
 }: ContactServicesAddModalProps) {
   const [title, setTitle] = useState("");
+  const [order, setOrder] = useState<number>(1);
   const { mutate: createTitle, isPending } = useCreateContactServicesTitle();
 
   const handleClose = () => {
     setTitle("");
+    setOrder(1);
     onClose();
   };
 
@@ -39,8 +41,10 @@ export default function ContactServicesAddModal({
       return;
     }
 
+    console.log("Contact Services Add form submit data:", { title, order });
+
     createTitle(
-      { title },
+      { title, order },
       {
         onSuccess: () => {
           toast.success("Title created successfully");
@@ -65,6 +69,24 @@ export default function ContactServicesAddModal({
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="space-y-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="order"
+                className="text-sm font-medium text-gray-700"
+              >
+                Order
+              </label>
+              <Input
+                id="order"
+                type="number"
+                min={1}
+                value={order}
+                onChange={(e) => setOrder(Number(e.target.value))}
+                placeholder="e.g. 1"
+              />
+              <p className="text-xs text-gray-500">Lower numbers appear first.</p>
+            </div>
+
             <div className="space-y-2">
               <label
                 htmlFor="title"

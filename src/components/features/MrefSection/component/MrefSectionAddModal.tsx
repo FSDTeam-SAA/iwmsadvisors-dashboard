@@ -22,6 +22,7 @@ interface Props {
     subtitles: string[];
     overview: string;
     overviewTitle?: string;
+    order?: number;
     keyCapabilities: Capability[];
     imageFile?: File | null;
   }) => void;
@@ -30,6 +31,7 @@ interface Props {
 export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) {
   const [title, setTitle] = useState("");
   const [subTitle, setSubTitle] = useState("");
+  const [order, setOrder] = useState<number>(1);
   const [overview, setOverview] = useState("");
   const [overviewTitle, setOverviewTitle] = useState("");
   const [subtitles, setSubtitles] = useState<string[]>([]);
@@ -88,13 +90,14 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, subTitle, overview, overviewTitle, subtitles, keyCapabilities, imageFile });
+    onSave({ title, subTitle, order, overview, overviewTitle, subtitles, keyCapabilities, imageFile });
     resetAll();
   };
 
   const resetAll = () => {
     setTitle("");
     setSubTitle("");
+    setOrder(1);
     setOverview("");
     setOverviewTitle("");
     setSubtitles([]);
@@ -122,7 +125,22 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
           <DialogTitle className="text-2xl font-bold text-[#1E293B]">Add MREF Section</DialogTitle>
         </DialogHeader>
 
+
+
         <form onSubmit={submit} className="p-8 space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="order" className="text-sm font-bold text-gray-700">Order</Label>
+            <Input
+              id="order"
+              type="number"
+              min={1}
+              value={order}
+              onChange={(e) => setOrder(Number(e.target.value))}
+              placeholder="e.g. 1"
+            />
+            <p className="text-xs text-gray-500">Lower numbers appear first in the display order.</p>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="title" className="text-sm font-bold text-gray-700">Title *</Label>
             <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter title" />
@@ -132,6 +150,7 @@ export default function MrefSectionAddModal({ isOpen, onClose, onSave }: Props) 
             <Label htmlFor="subTitle" className="text-sm font-bold text-gray-700">Subtitle</Label>
             <Input id="subTitle" value={subTitle} onChange={(e) => setSubTitle(e.target.value)} placeholder="Enter subtitle" />
           </div>
+
 
 
           <div className="space-y-2">
