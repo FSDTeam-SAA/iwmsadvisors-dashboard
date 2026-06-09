@@ -56,7 +56,13 @@ export default function MrefSection() {
   const { mutate: updateItem } = useUpdateMrefSection();
   const { mutate: deleteItem } = useDeleteMrefSection();
 
-  const sections = response?.data ?? [];
+  const sections = response?.data
+    ? [...response.data].sort((a, b) => {
+        const orderA = a.order === 0 || a.order === undefined ? 9999 : a.order;
+        const orderB = b.order === 0 || b.order === undefined ? 9999 : b.order;
+        return orderA - orderB;
+      })
+    : [];
   const pagination = response?.pagination;
 
   const handlePageChange = (newPage: number) => {
