@@ -58,10 +58,10 @@ export default function MrefSection() {
 
   const sections = response?.data
     ? [...response.data].sort((a, b) => {
-        const orderA = a.order === 0 || a.order === undefined ? 9999 : a.order;
-        const orderB = b.order === 0 || b.order === undefined ? 9999 : b.order;
-        return orderA - orderB;
-      })
+      const orderA = a.order === 0 || a.order === undefined ? 9999 : a.order;
+      const orderB = b.order === 0 || b.order === undefined ? 9999 : b.order;
+      return orderA - orderB;
+    })
     : [];
   const pagination = response?.pagination;
 

@@ -170,8 +170,9 @@ export default function MrefSectionEditModal({
             <Label htmlFor="subTitle" className="text-sm font-bold text-gray-700">
               Subtitle
             </Label>
-            <Input
+            <Textarea
               id="subTitle"
+              rows={6}
               value={subTitle}
               onChange={(e) => setSubTitle(e.target.value)}
               placeholder="Enter subtitle"
@@ -185,15 +186,14 @@ export default function MrefSectionEditModal({
               htmlFor="overview"
               className="text-sm font-bold text-gray-700"
             >
-              Overview
+              Overview Title
             </Label>
-            <Textarea
+            <Input
               id="overview"
-              rows={8}
               value={overview}
               onChange={(e) => setOverview(e.target.value)}
               className="w-full resize-none"
-              placeholder="Enter overview"
+              placeholder="Enter overview title"
             />
           </div>
 
@@ -202,13 +202,14 @@ export default function MrefSectionEditModal({
               htmlFor="overviewTitle"
               className="text-sm font-bold text-gray-700"
             >
-              Overview Title
+              Overview Subtitle
             </Label>
-            <Input
+            <Textarea
               id="overviewTitle"
               value={overviewTitle}
+              rows={6}
               onChange={(e) => setOverviewTitle(e.target.value)}
-              placeholder="Enter overview title"
+              placeholder="Enter overview subtitle"
             />
           </div>
 
