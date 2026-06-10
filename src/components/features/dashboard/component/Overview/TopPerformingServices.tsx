@@ -91,7 +91,7 @@ export default function TopPerformingServices({
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Tooltip 
-                formatter={(value: number, name: string) => [`${value}%`, name]}
+                formatter={(value, name) => [`${value ?? 0}%`, String(name)]}
                 contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
               />
               <Pie
