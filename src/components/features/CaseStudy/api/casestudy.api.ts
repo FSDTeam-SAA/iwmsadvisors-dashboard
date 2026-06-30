@@ -3,6 +3,27 @@
 import axiosInstance from "@/lib/instance/axios-instance";
 import { CaseStudy } from "../types/casestudy.types";
 
+const formFields = [
+  "title",
+  "subtitle",
+  "description",
+  "customer",
+  "challenge",
+  "solution",
+  "benefit",
+] as const;
+
+const appendCaseStudyFields = (
+  formData: FormData,
+  data: Partial<CaseStudy>,
+) => {
+  formFields.forEach((field) => {
+    if (Object.prototype.hasOwnProperty.call(data, field)) {
+      formData.append(field, String(data[field] ?? ""));
+    }
+  });
+};
+
 // get all case studies
 export const casestudyApi = {
   getAllCaseStudies: async () => {
@@ -23,24 +44,7 @@ export const casestudyApi = {
 
     if ("imageFile" in data && data.imageFile) {
       const formData = new FormData();
-      formData.append("title", data.title ?? "");
-      formData.append("subtitle", data.subtitle ?? "");
-      formData.append("description", data.description ?? "");
-      formData.append("client", data.client ?? "");
-      formData.append("duration", data.duration ?? "");
-      formData.append("teamSize", data.teamSize ?? "");
-      formData.append("challenge", data.challenge ?? "");
-      formData.append("solution", data.solution ?? "");
-      if (data.technologiesUsed) {
-        formData.append(
-          "technologiesUsed",
-          JSON.stringify(data.technologiesUsed),
-        );
-      }
-      formData.append("resultImpact", data.resultImpact ?? "");
-      formData.append("caseExperience", data.caseExperience ?? "");
-      formData.append("clientName", data.clientName ?? "");
-      formData.append("companyName", data.companyName ?? "");
+      appendCaseStudyFields(formData, data);
       formData.append("file", data.imageFile);
 
       const response = await axiosInstance.put(`/case-study/${id}`, formData, {
@@ -74,22 +78,7 @@ export const casestudyApi = {
 
     if ("imageFile" in data && data.imageFile) {
       const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("subtitle", data.subtitle ?? "");
-      formData.append("description", data.description);
-      formData.append("client", data.client ?? "");
-      formData.append("duration", data.duration ?? "");
-      formData.append("teamSize", data.teamSize ?? "");
-      formData.append("challenge", data.challenge ?? "");
-      formData.append("solution", data.solution ?? "");
-      formData.append(
-        "technologiesUsed",
-        JSON.stringify(data.technologiesUsed ?? []),
-      );
-      formData.append("resultImpact", data.resultImpact ?? "");
-      formData.append("caseExperience", data.caseExperience ?? "");
-      formData.append("clientName", data.clientName ?? "");
-      formData.append("companyName", data.companyName ?? "");
+      appendCaseStudyFields(formData, data);
       formData.append("file", data.imageFile);
 
       const response = await axiosInstance.post("/case-study", formData, {

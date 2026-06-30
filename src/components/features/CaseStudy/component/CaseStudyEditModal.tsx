@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +11,12 @@ import {
 import { CaseStudy } from "../types/casestudy.types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { X, Upload, Plus } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { validateImage } from "@/lib/utils";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 interface CaseStudyEditModalProps {
   readonly isOpen: boolean;
@@ -24,6 +26,62 @@ interface CaseStudyEditModalProps {
     updatedCaseStudy: Partial<CaseStudy> & { imageFile?: File },
   ) => void;
 }
+
+type RichTextField = "customer" | "challenge" | "solution";
+
+const richTextSections: {
+  field: RichTextField;
+  label: string;
+  placeholder: string;
+}[] = [
+  {
+    field: "customer",
+    label: "Customer",
+    placeholder: "Write customer details",
+  },
+  {
+    field: "challenge",
+    label: "Challenge",
+    placeholder: "Describe the challenge",
+  },
+  {
+    field: "solution",
+    label: "Solution",
+    placeholder: "Describe the solution",
+  },
+];
+
+const richTextModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link"],
+    ["clean"],
+  ],
+};
+
+const richTextFormats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "list",
+  "bullet",
+  "link",
+];
+
+const splitBenefitText = (value?: string) => {
+  const lines = (value || "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return {
+    title: lines[0] || "",
+    items: lines.length > 1 ? lines.slice(1) : [""],
+  };
+};
 
 export default function CaseStudyEditModal({
   isOpen,
@@ -35,61 +93,81 @@ export default function CaseStudyEditModal({
     () => ({
       title: caseStudy?.title || "",
       subtitle: caseStudy?.subtitle || "",
-      description: caseStudy?.description || "",
-      client: caseStudy?.client || "",
-      duration: caseStudy?.duration || "",
-      teamSize: caseStudy?.teamSize || "",
+      description: caseStudy?.description || caseStudy?.title || "",
+      customer: caseStudy?.customer || "",
       challenge: caseStudy?.challenge || "",
       solution: caseStudy?.solution || "",
-      technologiesUsed: caseStudy?.technologiesUsed || [],
-      resultImpact: caseStudy?.resultImpact || "",
-      caseExperience: caseStudy?.caseExperience || "",
-      clientName: caseStudy?.clientName || "",
-      companyName: caseStudy?.companyName || "",
+      benefit: caseStudy?.benefit || "",
     }),
     [caseStudy],
   );
 
+  const initialBenefits = useMemo(
+    () => splitBenefitText(caseStudy?.benefit),
+    [caseStudy],
+  );
+
   const [formData, setFormData] = useState(initialFormData);
-  const [techInput, setTechInput] = useState("");
+  const [benefitTitle, setBenefitTitle] = useState(initialBenefits.title);
+  const [benefitItems, setBenefitItems] = useState(initialBenefits.items);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(caseStudy?.image?.url || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    caseStudy?.image?.url || null,
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Set default preview to existing image when modal opens or caseStudy changes
-
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddTechnology = () => {
-    if (
-      techInput.trim() &&
-      !formData.technologiesUsed.includes(techInput.trim())
-    ) {
-      setFormData((prev) => ({
-        ...prev,
-        technologiesUsed: [...prev.technologiesUsed, techInput.trim()],
-      }));
-      setTechInput("");
+  useEffect(() => {
+    if (!isOpen) return;
+    setFormData(initialFormData);
+    setBenefitTitle(initialBenefits.title);
+    setBenefitItems(initialBenefits.items);
+    setImageFile(null);
+    setImagePreview(caseStudy?.image?.url || null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
+  }, [caseStudy?.image?.url, initialBenefits, initialFormData, isOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview?.startsWith("blob:")) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
+  const handleBenefitItemChange = (rowIndex: number, value: string) => {
+    setBenefitItems((prev) =>
+      prev.map((item, index) => (index === rowIndex ? value : item)),
+    );
   };
 
-  const handleRemoveTechnology = (tech: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      technologiesUsed: prev.technologiesUsed.filter((t) => t !== tech),
-    }));
+  const handleAddBenefitItem = () => {
+    setBenefitItems((prev) => [...prev, ""]);
+  };
+
+  const handleRemoveBenefitItem = (rowIndex: number) => {
+    setBenefitItems((prev) => {
+      const nextItems = prev.filter((_, index) => index !== rowIndex);
+      return nextItems.length ? nextItems : [""];
+    });
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const benefit = [
+      benefitTitle.trim(),
+      ...benefitItems.map((item) => item.trim()).filter(Boolean),
+    ]
+      .filter(Boolean)
+      .join("\n");
+
     onSave({
       ...formData,
+      description: formData.subtitle || formData.description || formData.title,
+      benefit,
       ...(imageFile ? { imageFile } : {}),
     });
     onClose();
@@ -98,8 +176,8 @@ export default function CaseStudyEditModal({
   if (!caseStudy) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0 border-none shadow-2xl">
         <DialogHeader className="px-8 py-6 border-b sticky top-0 bg-white z-10">
           <DialogTitle className="text-2xl font-bold text-[#1E293B]">
             Edit Case Study
@@ -107,48 +185,50 @@ export default function CaseStudyEditModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          {/* Title */}
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm font-bold text-gray-700">
+            <Label
+              htmlFor="edit-title"
+              className="text-sm font-bold text-gray-700"
+            >
               Title *
             </Label>
             <Input
-              id="title"
+              id="edit-title"
               name="title"
               value={formData.title}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               required
               className="w-full"
               placeholder="Enter case study title"
             />
           </div>
 
-          {/* Subtitle */}
           <div className="space-y-2">
             <Label
-              htmlFor="subtitle"
+              htmlFor="edit-subtitle"
               className="text-sm font-bold text-gray-700"
             >
               Subtitle
             </Label>
             <Input
-              id="subtitle"
+              id="edit-subtitle"
               name="subtitle"
               value={formData.subtitle}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, subtitle: e.target.value }))
+              }
               className="w-full"
-              placeholder="Enter subtitle"
+              placeholder="Enter case study subtitle"
             />
           </div>
 
-          {/* Image Preview and Upload */}
           <div className="space-y-2">
-            <Label htmlFor="image" className="text-sm font-bold text-gray-700">
-              Image
-            </Label>
+            <Label className="text-sm font-bold text-gray-700">Image</Label>
             <input
               ref={fileInputRef}
-              id="image"
+              id="edit-case-study-image"
               name="image"
               type="file"
               accept="image/*"
@@ -167,18 +247,17 @@ export default function CaseStudyEditModal({
                 if (imagePreview?.startsWith("blob:")) {
                   URL.revokeObjectURL(imagePreview);
                 }
-                if (file) {
-                  const url = URL.createObjectURL(file);
-                  setImagePreview(url);
-                } else {
-                  setImagePreview(caseStudy?.image?.url ?? null);
-                }
+                setImagePreview(
+                  file ? URL.createObjectURL(file) : caseStudy?.image?.url || null,
+                );
               }}
             />
+
             <div className="flex flex-col items-center gap-4 text-center">
               <label
-                htmlFor="image"
+                htmlFor="edit-case-study-image"
                 className="relative group w-full max-w-[400px] h-48 mx-auto overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-100/50 transition-colors"
+                aria-label="Choose Case Study Image"
               >
                 {imagePreview ? (
                   <Image
@@ -215,247 +294,110 @@ export default function CaseStudyEditModal({
             </div>
           </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="description"
-              className="text-sm font-bold text-gray-700"
-            >
-              Description *
-            </Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              rows={4}
-              className="w-full resize-none"
-              placeholder="Enter case study description"
-            />
-          </div>
-
-          {/* Client Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label
-                htmlFor="client"
-                className="text-sm font-bold text-gray-700"
-              >
-                Client
+          {richTextSections.map((section) => (
+            <div key={section.field} className="space-y-2">
+              <Label className="text-sm font-bold text-gray-700">
+                {section.label} (Multi Text)
               </Label>
-              <Input
-                id="client"
-                name="client"
-                value={formData.client}
-                onChange={handleChange}
-                placeholder="Enter client name"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label
-                htmlFor="companyName"
-                className="text-sm font-bold text-gray-700"
-              >
-                Company Name
-              </Label>
-              <Input
-                id="companyName"
-                name="companyName"
-                value={formData.companyName}
-                onChange={handleChange}
-                placeholder="Enter company name"
-              />
-            </div>
-          </div>
-
-          {/* Duration and Team Size */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label
-                htmlFor="duration"
-                className="text-sm font-bold text-gray-700"
-              >
-                Duration
-              </Label>
-              <Input
-                id="duration"
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                placeholder="e.g., 12 Months"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label
-                htmlFor="teamSize"
-                className="text-sm font-bold text-gray-700"
-              >
-                Team Size
-              </Label>
-              <Input
-                id="teamSize"
-                name="teamSize"
-                value={formData.teamSize}
-                onChange={handleChange}
-                placeholder="e.g., 200 Members"
-              />
-            </div>
-          </div>
-
-          {/* Challenge */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="challenge"
-              className="text-sm font-bold text-gray-700"
-            >
-              Challenge
-            </Label>
-            <Textarea
-              id="challenge"
-              name="challenge"
-              value={formData.challenge}
-              onChange={handleChange}
-              rows={3}
-              className="w-full resize-none"
-              placeholder="Describe the challenge"
-            />
-          </div>
-
-          {/* Solution */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="solution"
-              className="text-sm font-bold text-gray-700"
-            >
-              Solution
-            </Label>
-            <Textarea
-              id="solution"
-              name="solution"
-              value={formData.solution}
-              onChange={handleChange}
-              rows={3}
-              className="w-full resize-none"
-              placeholder="Describe the solution"
-            />
-          </div>
-
-          {/* Technologies Used */}
-          <div className="space-y-2">
-            <Label className="text-sm font-bold text-gray-700">
-              Technologies Used
-            </Label>
-            <div className="flex gap-2">
-              <Input
-                value={techInput}
-                onChange={(e) => setTechInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleAddTechnology();
+              <div className="overflow-hidden rounded-md border border-gray-200 bg-white [&_.ql-toolbar]:border-0 [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-gray-200 [&_.ql-container]:border-0 [&_.ql-editor]:min-h-[140px] [&_.ql-editor]:text-sm">
+                <ReactQuill
+                  theme="snow"
+                  value={formData[section.field]}
+                  onChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      [section.field]: value,
+                    }))
                   }
-                }}
-                placeholder="Add technology and press Enter"
-                className="flex-1"
-              />
-              <Button
-                type="button"
-                onClick={handleAddTechnology}
-                className="bg-[#0057B8] hover:bg-[#004494]"
-              >
-                Add
-              </Button>
+                  modules={richTextModules}
+                  formats={richTextFormats}
+                  placeholder={section.placeholder}
+                />
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {formData.technologiesUsed.map((tech) => (
-                <span
-                  key={`edit-tech-${tech}`}
-                  className="px-4 py-2 bg-[#0057B8] text-white text-sm font-semibold rounded-lg flex items-center gap-2"
+          ))}
+
+          <div className="space-y-3 rounded-lg border border-gray-200 bg-gray-50/50 p-4">
+            <Label className="text-sm font-bold text-gray-700">
+              Benefits (Multi Text)
+            </Label>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="edit-benefit-title"
+                className="text-xs font-semibold text-gray-500"
+              >
+                Title
+              </Label>
+              <Input
+                id="edit-benefit-title"
+                value={benefitTitle}
+                onChange={(e) => setBenefitTitle(e.target.value)}
+                placeholder="Enter benefits title"
+                className="bg-white"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <Label className="text-xs font-semibold text-gray-500">
+                  Items
+                </Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleAddBenefitItem}
+                  className="text-blue-600 hover:text-blue-700"
                 >
-                  {tech}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTechnology(tech)}
-                    className="hover:bg-white/20 rounded-full p-0.5"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </span>
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add Item
+                </Button>
+              </div>
+
+              {benefitItems.map((item, rowIndex) => (
+                <div
+                  key={`edit-benefit-item-${rowIndex}`}
+                  className="flex gap-2"
+                >
+                  <Input
+                    value={item}
+                    onChange={(e) =>
+                      handleBenefitItemChange(rowIndex, e.target.value)
+                    }
+                    placeholder={`Benefit item ${rowIndex + 1}`}
+                    className="w-full bg-white"
+                  />
+                  {benefitItems.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => handleRemoveBenefitItem(rowIndex)}
+                      className="px-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+                      aria-label={`Remove benefit item ${rowIndex + 1}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Result Impact */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="resultImpact"
-              className="text-sm font-bold text-gray-700"
-            >
-              Result & Impact
-            </Label>
-            <Textarea
-              id="resultImpact"
-              name="resultImpact"
-              value={formData.resultImpact}
-              onChange={handleChange}
-              rows={3}
-              className="w-full resize-none"
-              placeholder="Describe the results and impact"
-            />
-          </div>
-
-          {/* Case Experience */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="caseExperience"
-              className="text-sm font-bold text-gray-700"
-            >
-              Case Experience
-            </Label>
-            <Textarea
-              id="caseExperience"
-              name="caseExperience"
-              value={formData.caseExperience}
-              onChange={handleChange}
-              rows={3}
-              className="w-full resize-none"
-              placeholder="Describe the case experience"
-            />
-          </div>
-
-          {/* Client Name */}
-          <div className="space-y-2">
-            <Label
-              htmlFor="clientName"
-              className="text-sm font-bold text-gray-700"
-            >
-              Client Contact Name
-            </Label>
-            <Input
-              id="clientName"
-              name="clientName"
-              value={formData.clientName}
-              onChange={handleChange}
-              placeholder="Enter client contact name"
-            />
-          </div>
-
-          {/* Action Buttons */}
           <div className="flex justify-end gap-4 pt-4 border-t">
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-6"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="px-6 bg-[#0057B8] hover:bg-[#004494] cursor-pointer"
+              className="px-6 bg-[#0057B8] hover:bg-[#004494]"
             >
-              Save Changes
+              Save
             </Button>
           </div>
         </form>
