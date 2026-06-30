@@ -32,6 +32,12 @@ import { Button } from "@/components/ui/button";
 import CaseStudyAddModal from "./CaseStudyAddModal";
 import { useCreateCaseStudy } from "../hooks/casestudy";
 
+const stripHtml = (value?: string) =>
+  (value || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 export default function CaseStudy() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -141,16 +147,10 @@ export default function CaseStudy() {
     title: string;
     subtitle?: string;
     description: string;
-    client?: string;
-    duration?: string;
-    teamSize?: string;
     challenge?: string;
     solution?: string;
-    technologiesUsed: string[];
-    resultImpact?: string;
-    caseExperience?: string;
-    clientName?: string;
-    companyName?: string;
+    benefit?: string;
+    customer?: string;
     imageFile?: File | null;
   }) => {
     createCaseStudy(
@@ -216,13 +216,13 @@ export default function CaseStudy() {
                   Title
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Client
+                  Subtitle
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Duration
+                  Customer
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Technologies
+                  Created
                 </TableHead>
                 <TableHead className="py-4 text-gray-600 font-bold text-center">
                   Action
@@ -240,15 +240,17 @@ export default function CaseStudy() {
                       {caseStudy.title}
                     </TableCell>
                     <TableCell className="py-4 text-center text-gray-600">
-                      {caseStudy.client || caseStudy.companyName || "N/A"}
+                      {caseStudy.subtitle || "N/A"}
                     </TableCell>
                     <TableCell className="py-4 text-center text-gray-600">
-                      {caseStudy.duration || "N/A"}
+                      {stripHtml(caseStudy.customer) || "N/A"}
                     </TableCell>
                     <TableCell className="py-4 text-center text-gray-600">
-                      {caseStudy.technologiesUsed.length > 0
-                        ? caseStudy.technologiesUsed.join(", ")
-                        : "N/A"}
+                      {new Intl.DateTimeFormat("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      }).format(new Date(caseStudy.createdAt))}
                     </TableCell>
                     <TableCell className="py-4 text-center">
                       <button
