@@ -31,12 +31,17 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import CaseStudyAddModal from "./CaseStudyAddModal";
 import { useCreateCaseStudy } from "../hooks/casestudy";
+import { toPlainText } from "@/lib/plainText";
 
-const stripHtml = (value?: string) =>
-  (value || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (typeof error === "object" && error !== null && "response" in error) {
+    const response = (error as { response?: { data?: { message?: string } } })
+      .response;
+    return response?.data?.message || fallback;
+  }
+
+  return fallback;
+};
 
 export default function CaseStudy() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -118,9 +123,8 @@ export default function CaseStudy() {
             toast.success("Case study updated successfully");
             setIsEditModalOpen(false);
           },
-          onError: (error: any) => {
-            const message = error.response?.data?.message || "Failed to update case study";
-            toast.error(message);
+          onError: (error: unknown) => {
+            toast.error(getErrorMessage(error, "Failed to update case study"));
           },
         },
       );
@@ -132,9 +136,8 @@ export default function CaseStudy() {
       onSuccess: () => {
         toast.success("Case study deleted successfully");
       },
-      onError: (error: any) => {
-        const message = error.response?.data?.message || "Failed to delete case study";
-        toast.error(message);
+      onError: (error: unknown) => {
+        toast.error(getErrorMessage(error, "Failed to delete case study"));
       },
     });
   };
@@ -163,9 +166,8 @@ export default function CaseStudy() {
           toast.success("Case study added successfully");
           setIsAddModalOpen(false);
         },
-        onError: (error: any) => {
-          const message = error.response?.data?.message || "Failed to add case study";
-          toast.error(message);
+        onError: (error: unknown) => {
+          toast.error(getErrorMessage(error, "Failed to add case study"));
         },
       },
     );
@@ -243,7 +245,7 @@ export default function CaseStudy() {
                       {caseStudy.subtitle || "N/A"}
                     </TableCell>
                     <TableCell className="py-4 text-center text-gray-600">
-                      {stripHtml(caseStudy.customer) || "N/A"}
+                      {toPlainText(caseStudy.customer).replace(/\n/g, " ") || "N/A"}
                     </TableCell>
                     <TableCell className="py-4 text-center text-gray-600">
                       {new Intl.DateTimeFormat("en-US", {
@@ -352,7 +354,7 @@ export default function CaseStudy() {
       <CaseStudyEditModal
         key={
           selectedCaseStudy?._id
-            ? `edit-${selectedCaseStudy._id}`
+            ? `edit-${selectedCaseStudy._id}-${isEditModalOpen ? "open" : "closed"}`
             : "edit-modal"
         }
         isOpen={isEditModalOpen}
