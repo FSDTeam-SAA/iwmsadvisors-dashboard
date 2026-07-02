@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { validateImage } from "@/lib/utils";
+import { toPlainText } from "@/lib/plainText";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -90,7 +91,6 @@ export default function CaseStudyAddModal({
   onSave,
 }: CaseStudyAddModalProps) {
   const [formData, setFormData] = useState(emptyFormData);
-  const [benefitTitle, setBenefitTitle] = useState("");
   const [benefitItems, setBenefitItems] = useState([""]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -104,7 +104,6 @@ export default function CaseStudyAddModal({
 
   const resetForm = () => {
     setFormData(emptyFormData);
-    setBenefitTitle("");
     setBenefitItems([""]);
     setImageFile(null);
     if (imagePreview) {
@@ -135,15 +134,14 @@ export default function CaseStudyAddModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const resultImpact = [
-      benefitTitle.trim(),
-      ...benefitItems.map((item) => item.trim()).filter(Boolean),
-    ]
-      .filter(Boolean)
-      .join("\n");
+    const resultImpact = benefitItems.map((item) => item.trim()).filter(Boolean).join("\n");
 
     onSave({
-      ...formData,
+      title: formData.title,
+      subtitle: formData.subtitle,
+      customer: toPlainText(formData.customer),
+      challenge: toPlainText(formData.challenge),
+      solution: toPlainText(formData.solution),
       description: formData.subtitle || formData.title,
       benefit: resultImpact,
       imageFile,
@@ -295,22 +293,6 @@ export default function CaseStudyAddModal({
             <Label className="text-sm font-bold text-gray-700">
               Benefits (Multi Text)
             </Label>
-
-            <div className="space-y-2">
-              <Label
-                htmlFor="benefitTitle"
-                className="text-xs font-semibold text-gray-500"
-              >
-                Title
-              </Label>
-              <Input
-                id="benefitTitle"
-                value={benefitTitle}
-                onChange={(e) => setBenefitTitle(e.target.value)}
-                placeholder="Enter benefits title"
-                className="bg-white"
-              />
-            </div>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3">

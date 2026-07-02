@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { CaseStudy } from "../types/casestudy.types";
 import Image from "next/image";
+import { plainTextLines } from "@/lib/plainText";
 
 interface CaseStudyViewModalProps {
   readonly isOpen: boolean;
@@ -16,20 +17,10 @@ interface CaseStudyViewModalProps {
 }
 
 const RichContent = ({ value }: { value: string }) => {
-  const hasHtml = /<\/?[a-z][\s\S]*>/i.test(value);
-
-  if (hasHtml) {
-    return (
-      <div
-        className="text-sm text-gray-600 leading-relaxed font-medium [&_a]:text-[#0057B8] [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
-        dangerouslySetInnerHTML={{ __html: value }}
-      />
-    );
-  }
-
+  const lines = plainTextLines(value);
   return (
     <div className="space-y-2 text-sm text-gray-600 leading-relaxed font-medium">
-      {value.split(/\r?\n/).map((line, index) => (
+      {lines.map((line, index) => (
         <p key={`${line}-${index}`}>{line}</p>
       ))}
     </div>

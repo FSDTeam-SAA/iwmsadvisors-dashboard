@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { validateImage } from "@/lib/utils";
+import { plainTextLines, toPlainText } from "@/lib/plainText";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -72,15 +73,8 @@ const richTextFormats = [
 ];
 
 const splitBenefitText = (value?: string) => {
-  const lines = (value || "")
-    .split(/\r?\n/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-
-  return {
-    title: lines[0] || "",
-    items: lines.length > 1 ? lines.slice(1) : [""],
-  };
+  const lines = plainTextLines(value);
+  return lines.length ? lines : [""];
 };
 
 export default function CaseStudyEditModal({
@@ -108,25 +102,12 @@ export default function CaseStudyEditModal({
   );
 
   const [formData, setFormData] = useState(initialFormData);
-  const [benefitTitle, setBenefitTitle] = useState(initialBenefits.title);
-  const [benefitItems, setBenefitItems] = useState(initialBenefits.items);
+  const [benefitItems, setBenefitItems] = useState(initialBenefits);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     caseStudy?.image?.url || null,
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    setFormData(initialFormData);
-    setBenefitTitle(initialBenefits.title);
-    setBenefitItems(initialBenefits.items);
-    setImageFile(null);
-    setImagePreview(caseStudy?.image?.url || null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, [caseStudy?.image?.url, initialBenefits, initialFormData, isOpen]);
 
   useEffect(() => {
     return () => {
@@ -157,15 +138,14 @@ export default function CaseStudyEditModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const benefit = [
-      benefitTitle.trim(),
-      ...benefitItems.map((item) => item.trim()).filter(Boolean),
-    ]
-      .filter(Boolean)
-      .join("\n");
+    const benefit = benefitItems.map((item) => item.trim()).filter(Boolean).join("\n");
 
     onSave({
-      ...formData,
+      title: formData.title,
+      subtitle: formData.subtitle,
+      customer: toPlainText(formData.customer),
+      challenge: toPlainText(formData.challenge),
+      solution: toPlainText(formData.solution),
       description: formData.subtitle || formData.description || formData.title,
       benefit,
       ...(imageFile ? { imageFile } : {}),
@@ -321,22 +301,6 @@ export default function CaseStudyEditModal({
             <Label className="text-sm font-bold text-gray-700">
               Benefits (Multi Text)
             </Label>
-
-            <div className="space-y-2">
-              <Label
-                htmlFor="edit-benefit-title"
-                className="text-xs font-semibold text-gray-500"
-              >
-                Title
-              </Label>
-              <Input
-                id="edit-benefit-title"
-                value={benefitTitle}
-                onChange={(e) => setBenefitTitle(e.target.value)}
-                placeholder="Enter benefits title"
-                className="bg-white"
-              />
-            </div>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3">
