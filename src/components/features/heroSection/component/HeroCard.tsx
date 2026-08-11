@@ -43,9 +43,9 @@ export function HeroCard({ section, onView, onEdit, onDelete }: HeroCardProps) {
                   2: "Case Studies Page",
                   3: "Insights Page",
                   4: "About Page",
-                  5: "FAQ Section Page",
+                  5: "FAQ Page",
                   6: "Careers Page",
-                  7: "Need",
+                  7: "Contact Page",
                 };
                 return orderLabelMap[section.order] || `Order: ${section.order}`;
               })()}

@@ -35,9 +35,9 @@ export default function HeroSection({
     2: "Case Studies Page",
     3: "Insights Page",
     4: "About Page",
-    5: "Contact Page",
+    5: "FAQ Page",
     6: "Careers Page",
-    7: "FAQ Page",
+    7: "Contact Page",
   };
 
   // Filter sections if filterOrder is provided

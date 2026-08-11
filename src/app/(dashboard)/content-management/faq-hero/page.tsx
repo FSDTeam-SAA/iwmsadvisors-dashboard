@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 const page = () => {
-  return <HeroSection filterOrder={7} />;
+  return <HeroSection filterOrder={5} />;
 };
 
 export default page;
