@@ -189,11 +189,13 @@ export default function StrengthItemsSection() {
         item={selectedItem}
       />
 
-      <StrengthItemModal
-        isOpen={isItemModalOpen}
-        onClose={() => setIsItemModalOpen(false)}
-        item={selectedItem}
-      />
+      {isItemModalOpen && (
+        <StrengthItemModal
+          isOpen={isItemModalOpen}
+          onClose={() => setIsItemModalOpen(false)}
+          item={selectedItem}
+        />
+      )}
     </div>
   );
 }

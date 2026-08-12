@@ -16,7 +16,7 @@ export const getExpertises = async (): Promise<ExpertiseListResponse> => {
 export const createExpertise = async (
   data: ExpertiseCreateInput,
 ): Promise<ExpertiseResponse> => {
-  const response = await axiosInstance.post("/expertise/create", data);
+  const response = await axiosInstance.post("/expertise/all", data);
   return response.data;
 };
 

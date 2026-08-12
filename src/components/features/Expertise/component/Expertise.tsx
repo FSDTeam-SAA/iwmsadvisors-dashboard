@@ -11,161 +11,83 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash2, Edit, Plus, Eye } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Edit, Eye, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { IwmsSolutionsSection as IwmsSolutionsSectionType } from "../../iwmsSolutionsSection/types/iwmsSolutionsSection.type";
-import {
-  useIwmsSolutionsSections,
-  useDeleteIwmsSolutionsSection,
-} from "../../iwmsSolutionsSection/hooks/useIwmsSolutionsSection";
-import ExpertiseSectionAddModal from "./ExpertiseSectionAddModal";
-import ExpertiseSectionEditModal from "./ExpertiseSectionEditModal";
-import ExpertiseSectionViewModal from "./ExpertiseSectionViewModal";
+import { Expertise as ExpertiseType } from "../types/expertise.type";
+import { useDeleteExpertise, useExpertises } from "../hooks/useExpertise";
+import ExpertiseAddModal from "./ExpertiseAddModal";
+import ExpertiseEditModal from "./ExpertiseEditModal";
+import ExpertiseViewModal from "./ExpertiseViewModal";
 
 export default function Expertise() {
-  const pageTitle = "Expertise";
-  const targetOrder = 4; // Expertise section uses order 4 as requested
-
-  const [selectedSection, setSelectedSection] =
-    useState<IwmsSolutionsSectionType | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedExpertise, setSelectedExpertise] =
+    useState<ExpertiseType | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const { data: response, isLoading, isError } = useExpertises();
+  const { mutate: deleteExpertise } = useDeleteExpertise();
+  const expertises = response?.data ?? [];
 
-  const { data: response, isLoading, isError } = useIwmsSolutionsSections();
-  const { mutate: deleteSection } = useDeleteIwmsSolutionsSection();
-
-  let sectionItems: IwmsSolutionsSectionType[] = [];
-  if (response?.data) {
-    if (Array.isArray(response.data)) {
-      sectionItems = [...response.data]
-        .filter((item) => item.order === targetOrder)
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
-    } else {
-      const data = response.data as IwmsSolutionsSectionType;
-      if (data.order === targetOrder) {
-        sectionItems = [data];
-      }
-    }
-  }
-
-  const handleEdit = (section: IwmsSolutionsSectionType) => {
-    setSelectedSection(section);
-    setIsEditModalOpen(true);
-  };
-
-  const handleView = (section: IwmsSolutionsSectionType) => {
-    setSelectedSection(section);
-    setIsViewModalOpen(true);
-  };
-
-  const handleDelete = (section: IwmsSolutionsSectionType) => {
-
-    deleteSection(section._id, {
-      onSuccess: () => toast.success(`${section.title} section deleted successfully`),
+  const handleDelete = (expertise: ExpertiseType) => {
+    deleteExpertise(expertise._id, {
+      onSuccess: () => toast.success("Expertise deleted successfully"),
       onError: (error: unknown) => {
         const message =
           (isAxiosError(error) && error.response?.data?.message) ||
-          `Failed to delete "${section.title}" section`;
+          "Failed to delete expertise";
         toast.error(message);
       },
     });
-
   };
 
   if (isError || response?.status === false) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500 font-medium">
-          Error loading {pageTitle} sections
-        </p>
+      <div className="flex min-h-[400px] items-center justify-center">
+        <p className="font-medium text-red-500">Error loading expertise sections</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end items-center gap-3">
-        {sectionItems.length >= 1 && (
-          <span className="text-sm text-amber-600 font-medium bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-            {pageTitle} section already exists
-          </span>
-        )}
+      <div className="flex justify-end">
         <Button
           onClick={() => setIsAddModalOpen(true)}
-          disabled={sectionItems.length >= 1}
-          className="bg-[#0057B8] hover:bg-[#004494] text-white font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#0057B8] font-semibold text-white hover:bg-[#004494]"
         >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Section
+          <Plus className="mr-2 h-4 w-4" />
+          Add Expertise Section
         </Button>
       </div>
 
-      <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white">
+      <Card className="overflow-hidden rounded-xl border-none bg-white shadow-sm">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-[#F8F9FA]">
               <TableRow className="border-b hover:bg-transparent">
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Order
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Title
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Subtitle
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Items Count
-                </TableHead>
-                <TableHead className="py-4 text-gray-600 font-bold text-center">
-                  Action
-                </TableHead>
+                <TableHead className="py-4 text-center font-bold text-gray-600">Title</TableHead>
+                <TableHead className="py-4 text-center font-bold text-gray-600">Subtitle</TableHead>
+                <TableHead className="py-4 text-center font-bold text-gray-600">Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className={cn(isLoading && "opacity-50")}>
-              {sectionItems.length > 0 ? (
-                sectionItems.map((item: IwmsSolutionsSectionType) => (
-                  <TableRow
-                    key={item._id}
-                    className="border-b last:border-0 hover:bg-gray-50 transition-colors"
-                  >
-                    <TableCell className="py-4 text-center text-gray-700 font-bold whitespace-nowrap">
-                      {item.order}
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-700 font-medium whitespace-nowrap">
-                      {item.title}
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600 max-w-[300px] truncate">
-                      {item.subtitle || "N/A"}
-                    </TableCell>
-                    <TableCell className="py-4 text-center text-gray-600">
-                      {item.items?.length || 0}
-                    </TableCell>
+            <TableBody className={isLoading ? "opacity-50" : undefined}>
+              {expertises.length ? (
+                expertises.map((expertise) => (
+                  <TableRow key={expertise._id} className="border-b last:border-0 hover:bg-gray-50">
+                    <TableCell className="py-4 text-center font-medium text-gray-700">{expertise.title}</TableCell>
+                    <TableCell className="max-w-[400px] truncate py-4 text-center text-gray-600">{expertise.subtitle}</TableCell>
                     <TableCell className="py-4 text-center">
-                      <div className="flex justify-center items-center gap-2">
-                        <button
-                          onClick={() => handleView(item)}
-                          className="p-2 bg-blue-500 hover:bg-blue-600 rounded-full transition-colors cursor-pointer"
-                          title="View Details"
-                        >
-                          <Eye className="w-5 h-5 text-white" />
+                      <div className="flex items-center justify-center gap-2">
+                        <button type="button" onClick={() => { setSelectedExpertise(expertise); setIsViewModalOpen(true); }} className="rounded-full bg-blue-500 p-2 text-white hover:bg-blue-600" title="View expertise">
+                          <Eye className="h-4 w-4" />
                         </button>
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors cursor-pointer"
-                          title="Edit"
-                        >
-                          <Edit className="w-5 h-5 text-white" />
+                        <button type="button" onClick={() => { setSelectedExpertise(expertise); setIsEditModalOpen(true); }} className="rounded-full bg-green-500 p-2 text-white hover:bg-green-600" title="Edit expertise">
+                          <Edit className="h-4 w-4" />
                         </button>
-                        <button
-                          onClick={() => handleDelete(item)}
-                          className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-colors cursor-pointer"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-5 h-5 text-white" />
+                        <button type="button" onClick={() => handleDelete(expertise)} className="rounded-full bg-red-500 p-2 text-white hover:bg-red-600" title="Delete expertise">
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </TableCell>
@@ -173,17 +95,8 @@ export default function Expertise() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="py-10 text-center text-gray-400"
-                  >
-                    No {pageTitle} sections found.{" "}
-                    <button
-                      className="text-[#0057B8] hover:underline font-medium cursor-pointer"
-                      onClick={() => setIsAddModalOpen(true)}
-                    >
-                      Add one now
-                    </button>
+                  <TableCell colSpan={3} className="py-10 text-center text-gray-400">
+                    No expertise sections found.
                   </TableCell>
                 </TableRow>
               )}
@@ -192,31 +105,9 @@ export default function Expertise() {
         </div>
       </Card>
 
-      {isAddModalOpen && (
-        <ExpertiseSectionAddModal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          defaultTitle={pageTitle}
-          defaultOrder={targetOrder}
-        />
-      )}
-
-      {isEditModalOpen && (
-        <ExpertiseSectionEditModal
-          key={selectedSection?._id || "edit-modal"}
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          iwmsSolutionsSection={selectedSection}
-        />
-      )}
-
-      {isViewModalOpen && (
-        <ExpertiseSectionViewModal
-          isOpen={isViewModalOpen}
-          onClose={() => setIsViewModalOpen(false)}
-          iwmsSolutionsSection={selectedSection}
-        />
-      )}
+      {isAddModalOpen && <ExpertiseAddModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />}
+      {isEditModalOpen && <ExpertiseEditModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} expertise={selectedExpertise} />}
+      {isViewModalOpen && <ExpertiseViewModal isOpen={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} expertise={selectedExpertise} />}
     </div>
   );
 }
